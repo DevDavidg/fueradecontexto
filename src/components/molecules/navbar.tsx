@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { CartSidebar } from "@/components/ecommerce/cart-sidebar";
 
 export const Navbar = () => {
   return (
@@ -40,9 +41,7 @@ export const Navbar = () => {
           >
             Checkout
           </Link>
-          <Button variant="ghost" aria-label="Ver carrito">
-            Carrito
-          </Button>
+          <CartSidebar />
         </div>
       </nav>
     </header>

@@ -11,11 +11,14 @@ export default function CheckoutPage() {
   const { subtotal } = calculateCartTotals(cart);
 
   const handlePay = () => {
-    // Simula pago exitoso
-    alert(
-      `Compra realizada. Envíanos tu estampa a ${SUPPORT_EMAIL} con tu número de pedido.`
-    );
     clearCart();
+    const subject = encodeURIComponent(
+      "Pedido Fueradecontexto - Envío de estampa"
+    );
+    const body = encodeURIComponent(
+      "Hola! Adjunto mi estampa para personalizar el pedido."
+    );
+    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -74,8 +77,8 @@ export default function CheckoutPage() {
             Pagar
           </button>
           <p className="text-xs text-neutral-600 mt-2">
-            Tras el pago, envía tu diseño a {SUPPORT_EMAIL}. Indica el número de
-            pedido y detalles de estampa.
+            Tras pagar se abrirá tu correo para enviar el diseño a{" "}
+            {SUPPORT_EMAIL}.
           </p>
         </aside>
       </main>

@@ -20,7 +20,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <div className="group rounded-lg border border-neutral-200 p-3 flex flex-col gap-3">
+    <div className="group rounded-lg border border-neutral-200 p-3 flex flex-col gap-3 hover:shadow-sm transition-shadow">
       <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-neutral-100">
         <Link
           href={`/products/${product.id}`}
@@ -34,6 +34,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </Link>
+        {!product.inStock && (
+          <div className="absolute inset-0 bg-white/70 grid place-items-center text-xs font-medium">
+            Agotado
+          </div>
+        )}
       </div>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">

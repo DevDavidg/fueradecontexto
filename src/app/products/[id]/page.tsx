@@ -27,13 +27,13 @@ export default function ProductDetailPage() {
 
   const [selectedSize, setSelectedSize] = useState<
     Product["availableSizes"][number] | undefined
-  >(undefined);
+  >(product?.availableSizes[0]);
   const [selectedPrint, setSelectedPrint] = useState<PrintOption | undefined>(
-    undefined
+    product?.customizable?.printOptions[0]
   );
   const [selectedColor, setSelectedColor] = useState<
     { name: string; hex: string } | undefined
-  >(undefined);
+  >(product?.customizable?.colors[0]);
 
   if (!product) {
     return (
