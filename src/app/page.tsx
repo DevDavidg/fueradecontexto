@@ -13,8 +13,8 @@ export default function Home() {
             <div className="relative z-0 w-full aspect-[16/9] rounded-md bg-[#111111] border border-[#333333] grid place-items-center">
               <span className="text-xs text-neutral-500 select-none">IMG</span>
             </div>
-            <p className="mt-3 text-center text-xs tracking-wide text-neutral-400 uppercase">
-              Frase motivadora
+            <p className="mt-4 text-center text-lg font-medium tracking-wide text-neutral-200 uppercase">
+              No seguimos tendencias, creamos prendas que cuentan tu historia{" "}
             </p>
           </div>
           <div className="mt-6 border-t border-[#333333]" />
