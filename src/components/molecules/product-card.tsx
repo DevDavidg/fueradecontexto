@@ -20,8 +20,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <div className="group rounded-lg border border-neutral-200 p-3 flex flex-col gap-3 hover:shadow-sm transition-shadow">
-      <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-neutral-100">
+    <div className="group rounded-lg border border-[#333333] p-3 flex flex-col gap-3 hover:shadow-sm transition-shadow">
+      <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md bg-[#111111]">
         <Link
           href={`/products/${product.id}`}
           aria-label={`Ver ${product.name}`}
@@ -35,7 +35,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           />
         </Link>
         {!product.inStock && (
-          <div className="absolute inset-0 bg-white/70 grid place-items-center text-xs font-medium">
+          <div className="absolute inset-0 bg-black/60 grid place-items-center text-xs font-medium text-[#ededed]">
             Agotado
           </div>
         )}
@@ -49,7 +49,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           >
             {product.name}
           </Link>
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-400">
             ${product.price} {product.currency}
           </p>
         </div>

@@ -12,7 +12,7 @@ export const ProductGrid = () => {
         {["a", "b", "c", "d", "e", "f", "g", "h"].map((key) => (
           <div
             key={key}
-            className="rounded-lg border border-neutral-200 p-3 h-[320px] animate-pulse bg-neutral-100"
+            className="rounded-lg border border-[#333333] p-3 h-[320px] animate-pulse bg-[#111111]"
           />
         ))}
       </div>
@@ -21,7 +21,7 @@ export const ProductGrid = () => {
 
   if (!data || data.length === 0) {
     return (
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-neutral-400">
         No hay productos por el momento.
       </p>
     );

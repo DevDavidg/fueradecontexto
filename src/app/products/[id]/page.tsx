@@ -37,10 +37,10 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-black text-[#ededed]">
         <Navbar />
         <main className="mx-auto max-w-6xl px-4 md:px-6 py-6">
-          <p className="text-sm text-neutral-600">Cargando producto...</p>
+          <p className="text-sm text-neutral-400">Cargando producto...</p>
         </main>
       </div>
     );
@@ -69,10 +69,10 @@ export default function ProductDetailPage() {
   const isCustomizable = Boolean(product.customizable);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black text-[#ededed]">
       <Navbar />
       <main className="mx-auto max-w-6xl px-4 md:px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="relative w-full aspect-square overflow-hidden rounded-md bg-neutral-100">
+        <div className="relative w-full aspect-square overflow-hidden rounded-md bg-[#111111]">
           <Image
             src={product.imageUrl}
             alt={product.name}
@@ -84,7 +84,7 @@ export default function ProductDetailPage() {
           <h1 className="text-2xl font-semibold tracking-tight">
             {product.name}
           </h1>
-          <p className="text-sm text-neutral-600 mt-1">{product.description}</p>
+          <p className="text-sm text-neutral-400 mt-1">{product.description}</p>
           <p className="text-xl font-semibold mt-3">
             {formatCurrency(total, product.currency)}
           </p>
@@ -99,10 +99,10 @@ export default function ProductDetailPage() {
                     onClick={() => setSelectedSize(size)}
                     aria-label={`Seleccionar talle ${size}`}
                     className={
-                      "px-3 py-2 rounded-md text-sm border " +
+                      "px-3 py-2 rounded-md text-sm border text-[#ededed] " +
                       (selectedSize === size
-                        ? "border-black"
-                        : "border-neutral-200")
+                        ? "border-[#C2187A]"
+                        : "border-[#333333]")
                     }
                   >
                     {size}
@@ -122,10 +122,10 @@ export default function ProductDetailPage() {
                         onClick={() => setSelectedPrint(option)}
                         aria-label={`Seleccionar estampa ${option.label}`}
                         className={
-                          "px-3 py-2 rounded-md text-sm border " +
+                          "px-3 py-2 rounded-md text-sm border text-[#ededed] " +
                           (selectedPrint?.id === option.id
-                            ? "border-black"
-                            : "border-neutral-200")
+                            ? "border-[#C2187A]"
+                            : "border-[#333333]")
                         }
                       >
                         {option.label} (+
@@ -144,15 +144,15 @@ export default function ProductDetailPage() {
                         onClick={() => setSelectedColor(color)}
                         aria-label={`Seleccionar color ${color.name}`}
                         className={
-                          "px-3 py-2 rounded-md text-sm border flex items-center gap-2 " +
+                          "px-3 py-2 rounded-md text-sm border flex items-center gap-2 text-[#ededed] " +
                           (selectedColor?.name === color.name
-                            ? "border-black"
-                            : "border-neutral-200")
+                            ? "border-[#C2187A]"
+                            : "border-[#333333]")
                         }
                       >
                         <span
                           aria-hidden
-                          className="inline-block w-4 h-4 rounded-sm border border-neutral-300"
+                          className="inline-block w-4 h-4 rounded-sm border border-[#333333]"
                           style={{ backgroundColor: color.hex }}
                         />
                         {color.name}
