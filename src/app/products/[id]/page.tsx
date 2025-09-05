@@ -5,24 +5,17 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { Navbar } from "@/components/molecules/navbar";
 import { Button } from "@/components/ui/button";
-import { useProducts } from "@/hooks/use-products";
+import { useProduct } from "@/hooks/use-products";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
 import { type PrintOption, type Product } from "@/lib/types";
 
-const getProductById = (products: Product[] | undefined, id: string) => {
-  if (!products) return undefined;
-  return products.find((p) => p.id === id);
-};
+const getProductById = (product: Product | undefined) => product;
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { data: products } = useProducts();
-  const product = useMemo(
-    () => getProductById(products, params.id),
-    [products, params.id]
-  );
+  const { data: product } = useProduct(params.id);
   const { addItem } = useCart();
 
   const [selectedSize, setSelectedSize] = useState<
@@ -72,13 +65,17 @@ export default function ProductDetailPage() {
     <div className="min-h-screen bg-black text-[#ededed]">
       <Navbar />
       <main className="mx-auto max-w-6xl px-4 md:px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="relative w-full aspect-square overflow-hidden rounded-md bg-[#111111]">
-          <Image
-            src={product.imageUrl}
-            alt={product.name}
-            fill
-            className="object-cover"
-          />
+        <div className="relative w-full aspect-square overflow-hidden rounded-md bg-[#111111] grid place-items-center">
+          {product.imageUrl ? (
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="text-neutral-500 text-sm">Imagen no disponible</div>
+          )}
         </div>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">

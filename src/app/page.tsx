@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/molecules/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
+import { LoadMoreCTA } from "@/components/molecules/load-more-cta";
 
 export default function Home() {
   return (
@@ -31,15 +32,10 @@ export default function Home() {
           </div>
           <ProductGrid />
           <div className="mt-6 flex items-center justify-center">
-            <a
-              href="#"
-              className="inline-flex items-center justify-center h-10 px-6 rounded-md bg-[#C2187A] hover:bg-pink-700 text-sm"
-              aria-label="Llamado a la acción principal"
-            >
-              CTA
-            </a>
+            <LoadMoreCTA />
           </div>
         </section>
+        {/* (Secciones de categorías y tabla de talles se muestran en /products) */}
       </main>
     </div>
   );
