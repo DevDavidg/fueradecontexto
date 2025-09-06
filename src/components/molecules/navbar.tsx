@@ -41,12 +41,12 @@ export const Navbar = () => {
             </Link>
           </li>
           <li>
-            <a
-              href="#about"
+            <Link
+              href="/sobre-nosotros"
               className="text-sm text-neutral-300 hover:underline"
             >
               Sobre nosotros
-            </a>
+            </Link>
           </li>
           <li>
             <a
