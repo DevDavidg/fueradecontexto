@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
 import Link from "next/link";
+import { CartIcon } from "@/components/ui/icons";
 
 export const CartSidebar = () => {
   const { cart, removeItem } = useCart();
@@ -35,14 +36,14 @@ export const CartSidebar = () => {
   return (
     <div ref={containerRef} aria-live="polite" className="relative">
       <button
-        className="relative inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-[#ededed]"
+        className="relative inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-fuchsia-500 hover:text-fuchsia-400 hover:border-fuchsia-400 transition-colors"
         onClick={() => setOpen((v) => !v)}
         aria-label="Abrir carrito"
         aria-expanded={open}
       >
-        🛒
+        <CartIcon className="w-4 h-4" />
         {cart.items.length > 0 && (
-          <span className="absolute -top-1 -right-1 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-[#C2187A] text-[10px] leading-none">
+          <span className="absolute -top-1 -right-1 inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-fuchsia-600 text-[10px] leading-none text-white">
             {cart.items.length}
           </span>
         )}
@@ -113,7 +114,7 @@ export const CartSidebar = () => {
         <Link
           href="/checkout"
           onClick={() => setOpen(false)}
-          className="mt-4 inline-flex items-center justify-center w-full h-10 rounded-md bg-[#C2187A] hover:bg-pink-700 text-white text-sm"
+          className="mt-4 inline-flex items-center justify-center w-full h-10 rounded-md bg-fuchsia-600 hover:bg-fuchsia-700 text-white text-sm transition-colors"
           aria-label="Ir al checkout"
         >
           Ir a pagar

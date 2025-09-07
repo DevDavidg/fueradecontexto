@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CartSidebar } from "@/components/ecommerce/cart-sidebar";
+import { CartIcon, HeartIcon } from "@/components/ui/icons";
 
 export const Navbar = () => {
   return (
@@ -49,12 +50,12 @@ export const Navbar = () => {
             </Link>
           </li>
           <li>
-            <a
-              href="#contact"
+            <Link
+              href="/contactanos"
               className="text-sm text-neutral-300 hover:underline"
             >
               Contáctenos
-            </a>
+            </Link>
           </li>
         </ul>
 
@@ -62,11 +63,11 @@ export const Navbar = () => {
         <div className="flex items-center gap-4 ml-auto">
           <CartSidebar />
           <button
-            className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-[#ededed]"
+            className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-fuchsia-500 hover:text-fuchsia-400 hover:border-fuchsia-400 transition-colors"
             aria-label="Productos favoritos"
             title="Productos favoritos"
           >
-            ★
+            <HeartIcon className="w-4 h-4" />
           </button>
         </div>
       </nav>
