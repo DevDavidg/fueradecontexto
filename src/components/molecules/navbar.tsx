@@ -29,14 +29,17 @@ export const Navbar = () => {
         {/* Center: Nav links */}
         <ul className="hidden md:flex items-center gap-8 mx-auto">
           <li>
-            <Link href="/" className="text-sm text-neutral-300 hover:underline">
+            <Link
+              href="/"
+              className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
+            >
               Inicio
             </Link>
           </li>
           <li>
             <Link
               href="/products"
-              className="text-sm text-neutral-300 hover:underline"
+              className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
             >
               Productos
             </Link>
@@ -44,7 +47,7 @@ export const Navbar = () => {
           <li>
             <Link
               href="/sobre-nosotros"
-              className="text-sm text-neutral-300 hover:underline"
+              className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
             >
               Sobre nosotros
             </Link>
@@ -52,7 +55,7 @@ export const Navbar = () => {
           <li>
             <Link
               href="/contactanos"
-              className="text-sm text-neutral-300 hover:underline"
+              className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
             >
               Contáctenos
             </Link>
