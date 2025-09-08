@@ -19,7 +19,7 @@ export const Navbar = () => {
           />
           <Link
             href="/"
-            className="text-sm font-semibold tracking-wide text-[#ededed] uppercase"
+            className="text-sm tracking-wide text-[#ededed] uppercase font-logo-header"
             aria-label="Fueradecontexto Home"
           >
             Fueradecontexto
@@ -57,7 +57,7 @@ export const Navbar = () => {
               href="/contactanos"
               className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
             >
-              Contáctenos
+              Contacto
             </Link>
           </li>
         </ul>
