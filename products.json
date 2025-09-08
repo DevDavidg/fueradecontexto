@@ -1,0 +1,80 @@
+[
+  {
+    "nombre": "Remera Oversize Negra",
+    "talles": ["S", "M", "L", "XL", "XXL"],
+    "colores": ["Negro", "Blanco", "Gris"],
+    "descripcion": "Remera oversize 100% algodón, costuras reforzadas, cómoda y versátil.",
+    "precio": {
+      "normal": 15000,
+      "transferencia": 13500
+    },
+    "metodos_pago": [
+      "Tarjeta de crédito",
+      "Tarjeta de débito",
+      "Transferencia"
+    ],
+    "imagenes": [
+      {
+        "color": "Negro",
+        "url": "https://tuweb.com/imagenes/remera-oversize-negra.jpg"
+      },
+      {
+        "color": "Blanco",
+        "url": "https://tuweb.com/imagenes/remera-oversize-blanca.jpg"
+      },
+      {
+        "color": "Gris",
+        "url": "https://tuweb.com/imagenes/remera-oversize-gris.jpg"
+      }
+    ],
+    "tamaño_estampa": {
+      "hasta_15cm": 15000,
+      "hasta_20x30cm": 17000,
+      "hasta_30x40cm": 19000,
+      "hasta_40x50cm": 21000
+    },
+    "envio": {
+      "metodo": "Correo Argentino",
+      "codigo_postal": "1406"
+    }
+  },
+  {
+    "nombre": "Buzo Canguro Bordado",
+    "talles": ["S", "M", "L", "XL", "XXL"],
+    "colores": ["Negro", "Azul Marino", "Verde"],
+    "descripcion": "Buzo canguro con bordado frontal, interior frisa para mayor abrigo.",
+    "precio": {
+      "normal": 25000,
+      "transferencia": 22500
+    },
+    "metodos_pago": [
+      "Tarjeta de crédito",
+      "Tarjeta de débito",
+      "Transferencia"
+    ],
+    "imagenes": [
+      {
+        "color": "Negro",
+        "url": "https://tuweb.com/imagenes/buzo-canguro-negro.jpg"
+      },
+      {
+        "color": "Azul Marino",
+        "url": "https://tuweb.com/imagenes/buzo-canguro-azul.jpg"
+      },
+      {
+        "color": "Verde",
+        "url": "https://tuweb.com/imagenes/buzo-canguro-verde.jpg"
+      }
+    ],
+    "tamaño_estampa": {
+      "hasta_15cm": 25000,
+      "hasta_20x30cm": 27000,
+      "hasta_30x40cm": 29000,
+      "hasta_40x50cm": 31000
+    },
+    "envio": {
+      "metodo": "Correo Argentino",
+      "codigo_postal": "1406"
+    }
+  }
+]
