@@ -1,0 +1,243 @@
+{
+  "inicio": {
+    "titles": {
+      "tituloPrincipal": "Fueradecontexto",
+      "subtitulo": "No seguimos tendencias, creamos prendas que cuentan tu historia"
+    },
+    "imagesHeroCarousel": [
+      "hero-image-1.jpg",
+      "hero-image-2.jpg",
+      "hero-image-3.jpg"
+    ],
+    "secciones": {
+      "hero": {
+        "titulo": "IMG",
+        "descripcion": "No seguimos tendencias, creamos prendas que cuentan tu historia",
+        "imagen": "placeholder-hero.jpg"
+      },
+      "productos": {
+        "titulo": "Productos",
+        "subtitulo": "Remeras",
+        "descripcion": "Catálogo de productos disponibles"
+      }
+    }
+  },
+  "productos": {
+    "titles": {
+      "tituloPrincipal": "Productos",
+      "subtitulo": "Catálogo de Fueradecontexto"
+    },
+    "categorias": {
+      "remeras": {
+        "titulo": "Remeras",
+        "estado": "disponible",
+        "descripcion": "Remeras personalizadas con estampas únicas"
+      },
+      "buzos": {
+        "titulo": "Buzos",
+        "estado": "proximamente",
+        "descripcion": "Próximamente · Placeholder"
+      },
+      "gorras": {
+        "titulo": "Gorras",
+        "estado": "proximamente",
+        "descripcion": "Próximamente · Placeholder"
+      },
+      "totebags": {
+        "titulo": "Totebags",
+        "estado": "proximamente",
+        "descripcion": "Próximamente · Placeholder"
+      }
+    },
+    "tablaTalles": {
+      "titulo": "Tabla de talles",
+      "medidas": [
+        {
+          "talle": "S",
+          "ancho": "48 cm",
+          "largo": "67 cm",
+          "equivalencia": "36-38"
+        },
+        {
+          "talle": "M",
+          "ancho": "51 cm",
+          "largo": "70 cm",
+          "equivalencia": "38-40"
+        },
+        {
+          "talle": "L",
+          "ancho": "54 cm",
+          "largo": "73 cm",
+          "equivalencia": "40-42"
+        },
+        {
+          "talle": "XL",
+          "ancho": "57 cm",
+          "largo": "76 cm",
+          "equivalencia": "42-44"
+        }
+      ],
+      "notas": [
+        "Las medidas pueden variar ±2 cm según el lote.",
+        "Lavar con agua fría y del revés para preservar la estampa.",
+        "Consulta cambios y devoluciones en la sección de ayuda."
+      ]
+    }
+  },
+  "sobreNosotros": {
+    "titles": {
+      "tituloPrincipal": "Nuestra historia",
+      "subtitulo": "Sobre nosotros"
+    },
+    "historia": {
+      "parrafo1": "Nacimos en 2020, en plena pandemia, como un proyecto entre madre e hijo de 17 años. Empezamos con remeras y buzos personalizados y, con el tiempo, evolucionamos en una marca con identidad propia. Hoy sumamos gorras, tote bags y piezas que acompañan el día a día sin perder autenticidad.",
+      "parrafo2": "Dejamos de vernos como un \"emprendimiento\": somos una marca en expansión. Diseñamos con intención, producimos con criterio y cuidamos cada detalle para que cada prenda cuente algo de quien la usa."
+    },
+    "mision": {
+      "titulo": "Misión",
+      "descripcion": "Acompañar a quienes se atreven a ser diferentes con prendas que expresan su identidad, priorizando calidad, comodidad y mensaje."
+    },
+    "vision": {
+      "titulo": "Visión",
+      "descripcion": "Ser una marca referente por su autenticidad y criterio sostenible, inspirando a elegir con conciencia y estilo propio."
+    },
+    "valores": {
+      "titulo": "Valores",
+      "descripcion": "Creemos en la calidad como base de cada prenda, en el diseño sostenible como compromiso, en la expresión individual como motor creativo y en la transparencia como principio en cada proceso."
+    }
+  },
+  "contactanos": {
+    "titles": {
+      "tituloPrincipal": "Ponte en contacto",
+      "subtitulo": "Contáctanos"
+    },
+    "descripcion": "¿Tienes alguna pregunta, sugerencia o quieres trabajar con nosotros? Estamos aquí para ayudarte. Completa el formulario y nos pondremos en contacto contigo.",
+    "formulario": {
+      "campos": [
+        {
+          "nombre": "nombre",
+          "etiqueta": "Nombre completo",
+          "tipo": "text",
+          "requerido": true,
+          "placeholder": "Tu nombre completo"
+        },
+        {
+          "nombre": "email",
+          "etiqueta": "Correo electrónico",
+          "tipo": "email",
+          "requerido": true,
+          "placeholder": "tu@email.com"
+        },
+        {
+          "nombre": "telefono",
+          "etiqueta": "Número telefónico",
+          "tipo": "tel",
+          "requerido": false,
+          "placeholder": "+54 9 11 1234-5678"
+        },
+        {
+          "nombre": "mensaje",
+          "etiqueta": "Mensaje",
+          "tipo": "textarea",
+          "requerido": true,
+          "placeholder": "Cuéntanos en qué podemos ayudarte...",
+          "filas": 5
+        },
+        {
+          "nombre": "imagen",
+          "etiqueta": "Subir imagen",
+          "tipo": "file",
+          "requerido": false,
+          "acepta": "image/*",
+          "descripcion": "Formatos aceptados: JPG, PNG, GIF (máximo 5MB)"
+        }
+      ],
+      "botones": {
+        "enviar": "Enviar formulario",
+        "limpiar": "Limpiar formulario"
+      }
+    },
+    "informacionContacto": {
+      "email": "fueradecontexto04@gmail.com",
+      "telefono": "+54 9 11 61965319",
+      "ubicacion": "Buenos Aires, Argentina"
+    },
+    "horariosAtencion": {
+      "lunesViernes": "Lunes a Viernes: 9:00 - 18:00",
+      "sabados": "Sábados: 10:00 - 14:00",
+      "domingos": "Domingos: Cerrado"
+    }
+  },
+  "checkout": {
+    "titles": {
+      "tituloPrincipal": "Checkout",
+      "subtitulo": "Finalizar compra"
+    },
+    "carritoVacio": "Tu carrito está vacío.",
+    "resumen": {
+      "subtotal": "Subtotal",
+      "botonPagar": "Pagar",
+      "descripcionPago": "Tras pagar se abrirá tu correo para enviar el diseño a fueradecontexto04@gmail.com."
+    },
+    "procesoPago": {
+      "asuntoEmail": "Pedido Fueradecontexto - Envío de estampa",
+      "cuerpoEmail": "Hola! Adjunto mi estampa para personalizar el pedido."
+    }
+  },
+  "detalleProducto": {
+    "titles": {
+      "tituloPrincipal": "Detalle del producto",
+      "subtitulo": "Información completa del producto"
+    },
+    "secciones": {
+      "imagen": {
+        "alt": "Imagen del producto",
+        "placeholder": "Imagen no disponible"
+      },
+      "informacion": {
+        "nombre": "Nombre del producto",
+        "descripcion": "Descripción del producto",
+        "precio": "Precio del producto"
+      },
+      "personalizacion": {
+        "talle": "Talle",
+        "estampa": "Estampa",
+        "color": "Color"
+      }
+    }
+  },
+  "navegacion": {
+    "logo": "Fueradecontexto",
+    "enlaces": [
+      {
+        "nombre": "Inicio",
+        "ruta": "/"
+      },
+      {
+        "nombre": "Productos",
+        "ruta": "/products"
+      },
+      {
+        "nombre": "Sobre nosotros",
+        "ruta": "/sobre-nosotros"
+      },
+      {
+        "nombre": "Contáctanos",
+        "ruta": "/contactanos"
+      }
+    ],
+    "carrito": "Carrito de compras"
+  },
+  "metadata": {
+    "titulo": "Fueradecontexto",
+    "descripcion": "Marca de ropa personalizada que crea prendas que cuentan tu historia",
+    "idioma": "es",
+    "palabrasClave": [
+      "ropa personalizada",
+      "estampas",
+      "remeras",
+      "moda",
+      "Argentina"
+    ]
+  }
+}
