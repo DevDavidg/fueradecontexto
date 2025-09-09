@@ -63,6 +63,9 @@ export default function CreateAccountPage() {
     }
 
     setLoading(true);
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      (typeof window !== "undefined" ? window.location.origin : undefined);
     const { error } = await supabase.auth.signUp({
       email: parsed.email,
       password: parsed.password,
@@ -71,10 +74,7 @@ export default function CreateAccountPage() {
           fullName: parsed.fullName,
           phone: parsed.phone ?? null,
         },
-        emailRedirectTo:
-          typeof window !== "undefined"
-            ? `${window.location.origin}/mi-cuenta`
-            : undefined,
+        emailRedirectTo: siteUrl ? `${siteUrl}/mi-cuenta` : undefined,
       },
     });
     setLoading(false);
