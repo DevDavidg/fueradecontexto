@@ -32,7 +32,7 @@ export default function AccountPage() {
           </ol>
         </nav>
 
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight">
+        <h1 className="mt-3 text-2xl md:text-3xl font-semibold tracking-tight">
           Mi Cuenta
         </h1>
 

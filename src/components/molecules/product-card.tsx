@@ -84,7 +84,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       data-disabled={isDisabled || undefined}
       style={cardStyle}
     >
-      <div className="relative w-full overflow-hidden rounded-t-2xl bg-gradient-to-b from-[#1a1a1a] to-[#111111] p-4">
+      <div className="relative w-full overflow-hidden rounded-t-2xl bg-gradient-to-b from-[#1a1a1a] to-[#111111] p-3 sm:p-4">
         <div className="aspect-[4/5] relative">
           <Link
             href={`/products/${product.id}`}
@@ -109,7 +109,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   alt={product.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover/image:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                   onError={() => setImageError(true)}
                   priority={false}
                 />
@@ -128,7 +128,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 p-5 space-y-4">
+      <div className="flex flex-col flex-1 p-4 sm:p-5 space-y-4">
         {product.customizable?.colors?.length ? (
           <fieldset
             className="flex items-center gap-2"

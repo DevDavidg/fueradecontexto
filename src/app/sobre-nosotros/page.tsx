@@ -40,13 +40,13 @@ export default function SobreNosotros() {
                 <p className="text-xs uppercase tracking-widest text-neutral-400 animate-fadeIn">
                   {t?.subtitulo ?? "Sobre nosotros"}
                 </p>
-                <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight animate-fadeInUp">
+                <h1 className="mt-2 text-3xl md:text-5xl font-semibold tracking-tight animate-fadeInUp">
                   {t?.tituloPrincipal ?? "Nuestra historia"}
                 </h1>
-                <p className="mt-5 text-lg leading-relaxed text-neutral-200 animate-fadeInUp">
+                <p className="mt-5 text-base md:text-lg leading-relaxed text-neutral-200 animate-fadeInUp">
                   {historia?.parrafo1 ?? ""}
                 </p>
-                <p className="mt-4 text-lg leading-relaxed text-neutral-200 animate-fadeInUp">
+                <p className="mt-4 text-base md:text-lg leading-relaxed text-neutral-200 animate-fadeInUp">
                   {historia?.parrafo2 ?? ""}
                 </p>
               </>

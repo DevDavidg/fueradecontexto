@@ -60,10 +60,15 @@ export default function CheckoutPage() {
                 key={`${item.productId}-${item.selectedSize}-${item.customization?.printSizeId}-${item.customization?.colorName}`}
                 className="border border-[#333333] rounded-lg p-3"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-neutral-400">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="min-w-0">
+                    <p
+                      className="text-sm font-medium truncate"
+                      title={item.name}
+                    >
+                      {item.name}
+                    </p>
+                    <p className="text-xs text-neutral-400 truncate">
                       Cant: {item.quantity}
                       {item.selectedSize ? ` · Talle ${item.selectedSize}` : ""}
                       {item.customization
@@ -71,7 +76,7 @@ export default function CheckoutPage() {
                         : ""}
                     </p>
                   </div>
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-medium shrink-0">
                     {formatCurrency(
                       (item.price + (item.customization?.extraCost ?? 0)) *
                         item.quantity,

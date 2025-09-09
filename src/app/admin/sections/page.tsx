@@ -163,7 +163,7 @@ export default function AdminSectionsPage() {
             Acceso restringido. Necesitás rol admin.
           </p>
         ) : (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {/* Listado */}
             <aside className="md:col-span-1 border border-[#333333] rounded-lg p-3 bg-[#0b0b0b]">
               <div className="flex items-center gap-2">
@@ -176,7 +176,7 @@ export default function AdminSectionsPage() {
                 <Button onClick={handleCreate}>Crear</Button>
               </div>
               <div className="mt-3 h-px bg-[#222]" />
-              <ul className="mt-3 space-y-1 text-sm max-h-[480px] overflow-y-auto">
+              <ul className="mt-3 space-y-1 text-sm max-h-[360px] md:max-h-[480px] overflow-y-auto">
                 {loadingRows ? (
                   <li className="text-neutral-500">Cargando…</li>
                 ) : rows.length === 0 ? (
@@ -236,7 +236,7 @@ export default function AdminSectionsPage() {
               </div>
               <div className="mt-3">
                 <textarea
-                  className="w-full h-[520px] bg-[#0a0a0a] border border-[#333333] rounded-md p-3 text-sm font-mono text-[#ededed] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#333333]"
+                  className="w-full h-[420px] md:h-[520px] bg-[#0a0a0a] border border-[#333333] rounded-md p-3 text-sm font-mono text-[#ededed] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#333333]"
                   value={jsonText}
                   onChange={(e) => setJsonText(e.target.value)}
                   spellCheck={false}

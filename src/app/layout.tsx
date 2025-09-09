@@ -27,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${montserrat.variable} antialiased`}>
+      <body
+        className={`${inter.variable} ${montserrat.variable} antialiased bg-black text-[#ededed] min-h-dvh`}
+      >
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

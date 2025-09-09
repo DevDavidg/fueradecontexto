@@ -91,7 +91,7 @@ export default function LoginPage() {
           </ol>
         </nav>
 
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight">
+        <h1 className="mt-3 text-2xl md:text-3xl font-semibold tracking-tight">
           Iniciar sesión
         </h1>
 

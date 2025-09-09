@@ -111,7 +111,7 @@ export default function CreateAccountPage() {
           </ol>
         </nav>
 
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight">
+        <h1 className="mt-3 text-2xl md:text-3xl font-semibold tracking-tight">
           Crear cuenta
         </h1>
         <p className="mt-1 text-sm text-neutral-400">

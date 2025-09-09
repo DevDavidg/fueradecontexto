@@ -36,11 +36,11 @@ export default async function ProductsPage() {
             {productos?.categorias?.buzos?.descripcion ??
               "Próximamente · Placeholder"}
           </p>
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="rounded-lg border border-[#333333] p-3 h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
+                className="rounded-lg border border-[#333333] p-3 h-[220px] md:h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
               >
                 Placeholder
               </div>
@@ -57,11 +57,11 @@ export default async function ProductsPage() {
             {productos?.categorias?.gorras?.descripcion ??
               "Próximamente · Placeholder"}
           </p>
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="rounded-lg border border-[#333333] p-3 h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
+                className="rounded-lg border border-[#333333] p-3 h-[220px] md:h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
               >
                 Placeholder
               </div>
@@ -78,11 +78,11 @@ export default async function ProductsPage() {
             {productos?.categorias?.totebags?.descripcion ??
               "Próximamente · Placeholder"}
           </p>
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="rounded-lg border border-[#333333] p-3 h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
+                className="rounded-lg border border-[#333333] p-3 h-[220px] md:h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
               >
                 Placeholder
               </div>

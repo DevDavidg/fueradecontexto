@@ -50,7 +50,7 @@ export const CartSidebar = () => {
       <aside
         aria-hidden={!open}
         className={
-          "absolute right-0 mt-2 z-[1000] w-80 max-h-[60vh] overflow-auto bg-[#0a0a0a] text-[#ededed] border border-[#333333] rounded-md shadow-xl p-4 transition duration-200 ease-out transform origin-top-right " +
+          "absolute right-0 mt-2 z-[1000] w-[88vw] sm:w-80 max-h-[60vh] overflow-auto bg-[#0a0a0a] text-[#ededed] border border-[#333333] rounded-md shadow-xl p-4 transition duration-200 ease-out transform origin-top-right " +
           (open
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 -translate-y-1 pointer-events-none")

@@ -91,10 +91,10 @@ export default function Contactanos() {
                 <p className="text-xs uppercase tracking-widest text-neutral-400">
                   {content?.titles?.subtitulo ?? "Contáctanos"}
                 </p>
-                <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
+                <h1 className="mt-2 text-3xl md:text-5xl font-semibold tracking-tight">
                   {content?.titles?.tituloPrincipal ?? "Ponte en contacto"}
                 </h1>
-                <p className="mt-5 text-lg leading-relaxed text-neutral-200">
+                <p className="mt-5 text-base md:text-lg leading-relaxed text-neutral-200">
                   {content?.descripcion ?? ""}
                 </p>
               </>
@@ -254,7 +254,7 @@ export default function Contactanos() {
                 </div>
 
                 {/* Botones */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                   <button
                     type="submit"
                     className="flex-1 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 focus:ring-offset-black"
@@ -279,7 +279,7 @@ export default function Contactanos() {
 
           {/* Información adicional */}
           <div className="mx-auto max-w-4xl mt-12">
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div>
                 <h3 className="text-xl font-semibold text-white mb-4">
                   Información de contacto

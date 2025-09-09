@@ -14,7 +14,7 @@ export const ProductGrid = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
         {Array.from({ length: GRID_SKELETON_COUNT }).map((_, i) => (
           <ProductCardSkeleton key={`sk-${i}`} />
         ))}
@@ -34,7 +34,7 @@ export const ProductGrid = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
         {items.map((product) => (
           <ProductCard
             key={product.id}
