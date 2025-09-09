@@ -5,33 +5,16 @@ import Link from "next/link";
 import * as React from "react";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/button";
-import { ProductPlaceholderSvg } from "@/lib/placeholder-svg";
-
-export type Product = {
-  id: string | number;
-  name: string;
-  price: number;
-  currency?: string;
-  imageUrl?: string | null;
-  inStock: boolean;
-  tags?: string[];
-  customizable?: {
-    colors?: { name: string; hex: string }[];
-  };
-};
+import { ProductPlaceholderSvg } from "@/components/ui/placeholder-svg";
+import { formatCurrency } from "@/lib/format-currency";
+import { type Product, type ColorOption } from "@/lib/types";
 
 export type ProductCardProps = {
   product: Product;
-  onAdd?: (
-    product: Product,
-    options?: { color?: { name: string; hex: string } }
-  ) => void;
+  onAdd?: (product: Product, options?: { color?: ColorOption }) => void;
   className?: string;
   highlight?: boolean;
 };
-
-const formatCurrency = (value: number, currency: string = "ARS") =>
-  new Intl.NumberFormat("es-AR", { style: "currency", currency }).format(value);
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
@@ -45,10 +28,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const id = requestAnimationFrame(() => setIsVisible(true));
     return () => cancelAnimationFrame(id);
   }, []);
-  const [selectedColor, setSelectedColor] = React.useState<{
-    name: string;
-    hex: string;
-  } | null>(product.customizable?.colors?.[0] ?? null);
+  const [selectedColor, setSelectedColor] = React.useState<ColorOption | null>(
+    product.customizable?.colors?.[0] ?? null
+  );
+
+  const accentHex = selectedColor?.hex ?? "#C2187A";
+  const hexToRgb = (hex: string) => {
+    const normalized = hex.replace("#", "");
+    const bigint = parseInt(
+      normalized.length === 3
+        ? normalized
+            .split("")
+            .map((c) => c + c)
+            .join("")
+        : normalized,
+      16
+    );
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return { r, g, b };
+  };
+  const { r, g, b } = hexToRgb(accentHex);
+  const accentShadow = `rgba(${r}, ${g}, ${b}, 0.15)`;
+  const cardStyle: React.CSSProperties & {
+    ["--accent"]?: string;
+    ["--accent-shadow"]?: string;
+  } = {
+    "--accent": accentHex,
+    "--accent-shadow": accentShadow,
+  };
 
   const isDisabled = !product.inStock;
   const discounted = Math.round(product.price * 0.9);
@@ -58,24 +67,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onAdd?.(product, { color: selectedColor ?? undefined });
   };
 
-  const hasSvg = product.imageUrl?.toLowerCase().endsWith(".svg");
+  const hasSvg = product.imageUrl.toLowerCase().endsWith(".svg");
 
   return (
     <div
       className={clsx(
         "group relative flex flex-col overflow-hidden rounded-2xl border border-[#333333]/60 bg-gradient-to-b from-[#0f0f0f] to-[#0b0b0b] backdrop-blur-sm",
         highlight &&
-          "hover:border-[#C2187A]/60 hover:shadow-[0_0_30px_rgba(194,24,122,0.15)] hover:scale-[1.02]",
-        "transition-all duration-300 ease-out focus-within:ring-2 focus-within:ring-[#C2187A]/50",
-        // fade-in on mount to smooth skeleton → content transition
+          "hover:border-[color:var(--accent)]/60 hover:shadow-[0_0_30px_var(--accent-shadow)] hover:scale-[1.02]",
+        "transition-all duration-300 ease-out focus-within:ring-2 focus-within:ring-[color:var(--accent)]/50",
         isVisible ? "opacity-100" : "opacity-0",
         "transition-opacity",
         isDisabled && "opacity-75",
         className
       )}
       data-disabled={isDisabled || undefined}
+      style={cardStyle}
     >
-      <div className="relative w-full overflow-hidden rounded-t-2xl bg-gradient-to-b from-[#1a1a1a] to-[#111111] p-4">
+      <div className="relative w-full overflow-hidden rounded-t-2xl bg-gradient-to-b from-[#1a1a1a] to-[#111111] p-3 sm:p-4">
         <div className="aspect-[4/5] relative">
           <Link
             href={`/products/${product.id}`}
@@ -100,7 +109,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   alt={product.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover/image:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                   onError={() => setImageError(true)}
                   priority={false}
                 />
@@ -119,7 +128,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 p-5 space-y-4">
+      <div className="flex flex-col flex-1 p-4 sm:p-5 space-y-4">
         {product.customizable?.colors?.length ? (
           <fieldset
             className="flex items-center gap-2"
@@ -141,7 +150,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     className={clsx(
                       "h-5 w-5 rounded-full border-2 transition-all duration-200 hover:scale-110",
                       selected
-                        ? "border-[#C2187A] ring-2 ring-[#C2187A]/30 shadow-lg"
+                        ? "border-[var(--accent)] ring-2 ring-[var(--accent)] ring-opacity-30 shadow-lg"
                         : "border-[#444444] hover:border-[#666666]"
                     )}
                     style={{ backgroundColor: color.hex }}
@@ -153,7 +162,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             })}
           </fieldset>
         ) : (
-          // Reserve space to avoid height jump when some cards have colors and others do not
           <div className="h-5" aria-hidden />
         )}
 

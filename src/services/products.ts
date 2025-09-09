@@ -1,92 +1,103 @@
-import { type Product } from "@/lib/types";
+import { type PrintOption, type Product } from "@/lib/types";
+import { RawProductSchema, type RawProduct } from "@/lib/schemas";
+import rawProducts from "../../products.json" assert { type: "json" };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const BASE_PRODUCTS: Product[] = [
-  {
-    id: "tee-black",
-    name: "Fueradecontexto Tee – Black",
-    description: "Soft cotton tee with minimal branding.",
-    price: 29,
-    currency: "USD",
-    imageUrl: "",
-    availableSizes: ["S", "M", "L", "XL"],
-    inStock: true,
-    tags: ["tee", "black", "cotton"],
-  },
-  {
-    id: "hoodie-grey",
-    name: "Fueradecontexto Hoodie – Grey",
-    description:
-      "Cozy fleece hoodie. Regular fit. Personalizable con estampas.",
-    price: 69,
-    currency: "USD",
-    imageUrl: "",
-    availableSizes: ["M", "L", "XL"],
-    inStock: true,
-    tags: ["hoodie", "grey", "custom"],
-    customizable: {
-      printOptions: [
-        {
-          id: "20x30",
-          label: "20 x 30 cm",
-          extraCost: 5,
-          maxWidthCm: 20,
-          maxHeightCm: 30,
-        },
-        {
-          id: "30x40",
-          label: "30 x 40 cm",
-          extraCost: 9,
-          maxWidthCm: 30,
-          maxHeightCm: 40,
-        },
-        {
-          id: "40x50",
-          label: "40 x 50 cm",
-          extraCost: 14,
-          maxWidthCm: 40,
-          maxHeightCm: 50,
-        },
-      ],
-      colors: [
-        { name: "Negro", hex: "#000000" },
-        { name: "Blanco", hex: "#FFFFFF" },
-        { name: "Rojo", hex: "#EF4444" },
-        { name: "Azul", hex: "#3B82F6" },
-        { name: "Verde", hex: "#22C55E" },
-        { name: "Amarillo", hex: "#F59E0B" },
-      ],
-    },
-  },
-  {
-    id: "cap-navy",
-    name: "Fueradecontexto Cap – Navy",
-    description: "Adjustable cap with embroidered logo.",
-    price: 24,
-    currency: "USD",
-    imageUrl: "",
-    availableSizes: ["S", "M", "L"],
-    inStock: false,
-    tags: ["cap", "navy"],
-  },
-];
+const COLOR_HEX_BY_NAME: Record<string, string> = {
+  Negro: "#000000",
+  Blanco: "#FFFFFF",
+  Gris: "#9CA3AF",
+  Azul: "#3B82F6",
+  "Azul Marino": "#1E3A8A",
+  Verde: "#22C55E",
+  Rojo: "#EF4444",
+  Amarillo: "#F59E0B",
+  Natural: "#E5E7EB",
+};
 
-// Expand base items into a larger mock catalog for pagination
-const ALL_PRODUCTS: Product[] = Array.from({ length: 30 }).flatMap((_, i) => {
-  const n = i + 1;
-  return BASE_PRODUCTS.map((p, idx) => ({
-    ...p,
-    id: `${p.id}-${n}`,
-    name:
-      idx === 0
-        ? `Fueradecontexto Tee – Black #${n}`
-        : idx === 1
-        ? `Fueradecontexto Hoodie – Grey #${n}`
-        : `Fueradecontexto Cap – Navy #${n}`,
-    // rotate stock state a bit
-    inStock: (n + idx) % 4 !== 0,
+const toSlug = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}+/gu, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+
+const buildPrintOptions = (raw: RawProduct): PrintOption[] => {
+  const base = raw.precio.normal;
+  const entries = Object.entries(raw.tamaño_estampa);
+  const get = (k: string) => entries.find(([key]) => key.includes(k))?.[1];
+  const p20 = get("20x30cm");
+  const p30 = get("30x40cm");
+  const p40 = get("40x50cm");
+  const options: PrintOption[] = [];
+  if (typeof p20 === "number") {
+    options.push({
+      id: "20x30",
+      label: "20 x 30 cm",
+      extraCost: Math.max(0, p20 - base),
+      maxWidthCm: 20,
+      maxHeightCm: 30,
+    });
+  }
+  if (typeof p30 === "number") {
+    options.push({
+      id: "30x40",
+      label: "30 x 40 cm",
+      extraCost: Math.max(0, p30 - base),
+      maxWidthCm: 30,
+      maxHeightCm: 40,
+    });
+  }
+  if (typeof p40 === "number") {
+    options.push({
+      id: "40x50",
+      label: "40 x 50 cm",
+      extraCost: Math.max(0, p40 - base),
+      maxWidthCm: 40,
+      maxHeightCm: 50,
+    });
+  }
+  return options;
+};
+
+const RAW: RawProduct[] = (() => {
+  const parsed = RawProductSchema.array().safeParse(rawProducts);
+  if (!parsed.success) {
+    console.error("products.json validation failed", parsed.error.flatten());
+    return rawProducts as unknown[] as RawProduct[];
+  }
+  return parsed.data;
+})();
+
+const ALL_PRODUCTS: Product[] = RAW.map((item, index): Product => {
+  const slug = toSlug(item.nombre);
+  const id = `${slug}-${index + 1}`;
+  const firstImage = item.imagenes?.[0]?.url ?? "";
+  const colors = (item.colores ?? []).map((name) => ({
+    name,
+    hex: COLOR_HEX_BY_NAME[name] ?? "#111111",
   }));
+  const totalStock = Object.values(item.stock ?? {})
+    .flatMap((sizes) => Object.values(sizes))
+    .reduce((acc, n) => acc + (n ?? 0), 0);
+  const tags = toSlug(item.nombre).split("-").filter(Boolean);
+  return {
+    id,
+    name: item.nombre,
+    description: item.descripcion,
+    price: item.precio.normal,
+    currency: "ARS",
+    imageUrl: firstImage,
+    availableSizes: item.talles,
+    inStock: totalStock > 0,
+    tags,
+    customizable: {
+      printOptions: buildPrintOptions(item),
+      colors,
+    },
+  };
 });
 
 type PageParams = { page: number; pageSize: number };
@@ -98,13 +109,11 @@ type PageResult = {
 
 export const productsService = {
   async getAll(): Promise<Product[]> {
-    // Ensure minimum 0.5s loading to show skeletons
-    await sleep(550);
+    await sleep(300);
     return ALL_PRODUCTS;
   },
   async getPage({ page, pageSize }: PageParams): Promise<PageResult> {
-    // Ensure minimum 0.5s loading to show skeletons before each page
-    await sleep(550);
+    await sleep(300);
     const start = page * pageSize;
     const end = start + pageSize;
     const items = ALL_PRODUCTS.slice(start, end);
@@ -112,7 +121,7 @@ export const productsService = {
     return { items, hasMore, nextPage: hasMore ? page + 1 : null };
   },
   async getById(id: string): Promise<Product | undefined> {
-    await sleep(300);
+    await sleep(200);
     return ALL_PRODUCTS.find((p) => p.id === id);
   },
 };

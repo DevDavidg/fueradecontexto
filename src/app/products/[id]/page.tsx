@@ -1,16 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { Navbar } from "@/components/molecules/navbar";
+import { Navbar } from "@/components/organisms/navbar";
 import { Button } from "@/components/ui/button";
 import { useProduct } from "@/hooks/use-products";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
 import { type PrintOption, type Product } from "@/lib/types";
-
-const getProductById = (product: Product | undefined) => product;
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
@@ -64,25 +62,27 @@ export default function ProductDetailPage() {
   return (
     <div className="min-h-screen bg-black text-[#ededed]">
       <Navbar />
-      <main className="mx-auto max-w-6xl px-4 md:px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <main className="mx-auto max-w-6xl px-4 md:px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div className="relative w-full aspect-square overflow-hidden rounded-md bg-[#111111] grid place-items-center">
           {product.imageUrl ? (
             <Image
               src={product.imageUrl}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-contain md:object-cover"
             />
           ) : (
             <div className="text-neutral-500 text-sm">Imagen no disponible</div>
           )}
         </div>
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
             {product.name}
           </h1>
-          <p className="text-sm text-neutral-400 mt-1">{product.description}</p>
-          <p className="text-xl font-semibold mt-3">
+          <p className="text-sm md:text-base text-neutral-400 mt-1">
+            {product.description}
+          </p>
+          <p className="text-xl md:text-2xl font-semibold mt-3">
             {formatCurrency(total, product.currency)}
           </p>
 

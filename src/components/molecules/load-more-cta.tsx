@@ -1,12 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useProducts } from "@/hooks/use-products";
 
-export const LoadMoreCTA = () => {
-  const { hasNextPage, fetchNextPage, isFetchingNextPage, isLoading } =
-    useProducts();
+type LoadMoreCTAProps = {
+  hasNextPage?: boolean;
+  isLoading?: boolean;
+  isFetchingNextPage?: boolean;
+  onClick: () => void;
+};
 
+export const LoadMoreCTA = ({
+  hasNextPage,
+  isLoading,
+  isFetchingNextPage,
+  onClick,
+}: LoadMoreCTAProps) => {
   if (isLoading) {
     return (
       <div
@@ -22,7 +30,7 @@ export const LoadMoreCTA = () => {
 
   const handleClick = () => {
     if (isFetchingNextPage) return;
-    fetchNextPage();
+    onClick();
   };
 
   return (

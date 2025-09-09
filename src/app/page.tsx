@@ -1,39 +1,30 @@
-import { Navbar } from "@/components/molecules/navbar";
+import { Navbar } from "@/components/organisms/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
-import { LoadMoreCTA } from "@/components/molecules/load-more-cta";
+import { getSectionsContent } from "@/lib/sections-server";
+import { HomeHeroSection } from "@/components/organisms/home-hero-section";
 
-export default function Home() {
+export default async function Home() {
+  const sections = await getSectionsContent();
+  const inicio = sections?.inicio;
   return (
     <div className="min-h-screen bg-black text-[#ededed]">
       <Navbar />
       <main className="mx-auto max-w-6xl px-4 md:px-6 py-6">
         {/* Hero */}
-        <section className="py-6">
-          <div className="mx-auto max-w-3xl">
-            <div className="relative z-0 w-full aspect-[16/9] rounded-md bg-[#111111] border border-[#333333] grid place-items-center">
-              <span className="text-xs text-neutral-500 select-none">IMG</span>
-            </div>
-            <p className="mt-4 text-center text-lg font-medium tracking-wide text-neutral-200 uppercase">
-              No seguimos tendencias, creamos prendas que cuentan tu historia{" "}
-            </p>
-          </div>
-          <div className="mt-6 border-t border-[#333333]" />
-        </section>
+        <HomeHeroSection />
 
         {/* Productos */}
         <section>
           <div className="mb-4">
             <p className="text-xs uppercase tracking-widest text-neutral-400">
-              Productos
+              {inicio?.secciones?.productos?.titulo ?? "Productos"}
             </p>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-              Remeras
+              {inicio?.secciones?.productos?.subtitulo ?? "Remeras"}
             </h1>
           </div>
           <ProductGrid />
-          <div className="mt-6 flex items-center justify-center">
-            <LoadMoreCTA />
-          </div>
+          {/* LoadMoreCTA se renderiza dentro de ProductGrid */}
         </section>
         {/* (Secciones de categorías y tabla de talles se muestran en /products) */}
       </main>
