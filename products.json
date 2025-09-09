@@ -1,8 +1,18 @@
 [
   {
     "nombre": "Remera Oversize Negra",
-    "talles": ["S", "M", "L", "XL", "XXL"],
-    "colores": ["Negro", "Blanco", "Gris"],
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Gris"
+    ],
     "descripcion": "Remera oversize 100% algodón, costuras reforzadas, cómoda y versátil.",
     "precio": {
       "normal": 15000,
@@ -38,15 +48,43 @@
       "codigo_postal": "1406"
     },
     "stock": {
-      "Negro": { "S": 10, "M": 8, "L": 12, "XL": 7, "XXL": 5 },
-      "Blanco": { "S": 6, "M": 9, "L": 11, "XL": 4, "XXL": 3 },
-      "Gris": { "S": 5, "M": 7, "L": 10, "XL": 6, "XXL": 2 }
+      "Negro": {
+        "S": 10,
+        "M": 8,
+        "L": 12,
+        "XL": 7,
+        "XXL": 5
+      },
+      "Blanco": {
+        "S": 6,
+        "M": 9,
+        "L": 11,
+        "XL": 4,
+        "XXL": 3
+      },
+      "Gris": {
+        "S": 5,
+        "M": 7,
+        "L": 10,
+        "XL": 6,
+        "XXL": 2
+      }
     }
   },
   {
     "nombre": "Buzo Canguro Bordado",
-    "talles": ["S", "M", "L", "XL", "XXL"],
-    "colores": ["Negro", "Azul Marino", "Verde"],
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colores": [
+      "Negro",
+      "Azul Marino",
+      "Verde"
+    ],
     "descripcion": "Buzo canguro con bordado frontal, interior frisa para mayor abrigo.",
     "precio": {
       "normal": 25000,
@@ -82,9 +120,303 @@
       "codigo_postal": "1406"
     },
     "stock": {
-      "Negro": { "S": 7, "M": 10, "L": 8, "XL": 5, "XXL": 3 },
-      "Azul Marino": { "S": 6, "M": 9, "L": 7, "XL": 4, "XXL": 2 },
-      "Verde": { "S": 5, "M": 8, "L": 6, "XL": 3, "XXL": 1 }
+      "Negro": {
+        "S": 7,
+        "M": 10,
+        "L": 8,
+        "XL": 5,
+        "XXL": 3
+      },
+      "Azul Marino": {
+        "S": 6,
+        "M": 9,
+        "L": 7,
+        "XL": 4,
+        "XXL": 2
+      },
+      "Verde": {
+        "S": 5,
+        "M": 8,
+        "L": 6,
+        "XL": 3,
+        "XXL": 1
+      }
+    }
+  },
+  {
+    "nombre": "Totebag Lona Premium",
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colores": [
+      "Negro",
+      "Blanco",
+      "Natural"
+    ],
+    "descripcion": "Totebag resistente de lona 12oz, costuras reforzadas y manijas largas.",
+    "precio": {
+      "normal": 12000,
+      "transferencia": 10800
+    },
+    "metodos_pago": [
+      "Tarjeta de crédito",
+      "Tarjeta de débito",
+      "Transferencia"
+    ],
+    "imagenes": [
+      {
+        "color": "Natural",
+        "url": "https://tuweb.com/imagenes/totebag-lona-natural.jpg"
+      },
+      {
+        "color": "Negro",
+        "url": "https://tuweb.com/imagenes/totebag-lona-negra.jpg"
+      },
+      {
+        "color": "Blanco",
+        "url": "https://tuweb.com/imagenes/totebag-lona-blanca.jpg"
+      }
+    ],
+    "tamaño_estampa": {
+      "hasta_15cm": 12000,
+      "hasta_20x30cm": 13500,
+      "hasta_30x40cm": 15000,
+      "hasta_40x50cm": 16500
+    },
+    "envio": {
+      "metodo": "Correo Argentino",
+      "codigo_postal": "1406"
+    },
+    "stock": {
+      "Natural": {
+        "S": 12,
+        "M": 14,
+        "L": 10,
+        "XL": 8,
+        "XXL": 6
+      },
+      "Negro": {
+        "S": 9,
+        "M": 11,
+        "L": 8,
+        "XL": 6,
+        "XXL": 4
+      },
+      "Blanco": {
+        "S": 7,
+        "M": 9,
+        "L": 7,
+        "XL": 5,
+        "XXL": 3
+      }
+    }
+  },
+  {
+    "nombre": "Gorra Trucker Bordada",
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colores": [
+      "Negro",
+      "Azul Marino",
+      "Rojo"
+    ],
+    "descripcion": "Gorra trucker ajustable con red trasera y bordado frontal.",
+    "precio": {
+      "normal": 18000,
+      "transferencia": 16200
+    },
+    "metodos_pago": [
+      "Tarjeta de crédito",
+      "Tarjeta de débito",
+      "Transferencia"
+    ],
+    "imagenes": [
+      {
+        "color": "Negro",
+        "url": "https://tuweb.com/imagenes/gorra-trucker-negra.jpg"
+      },
+      {
+        "color": "Azul Marino",
+        "url": "https://tuweb.com/imagenes/gorra-trucker-azul.jpg"
+      },
+      {
+        "color": "Rojo",
+        "url": "https://tuweb.com/imagenes/gorra-trucker-roja.jpg"
+      }
+    ],
+    "tamaño_estampa": {
+      "hasta_15cm": 18000,
+      "hasta_20x30cm": 19500,
+      "hasta_30x40cm": 21000,
+      "hasta_40x50cm": 22500
+    },
+    "envio": {
+      "metodo": "Correo Argentino",
+      "codigo_postal": "1406"
+    },
+    "stock": {
+      "Negro": {
+        "S": 6,
+        "M": 8,
+        "L": 7,
+        "XL": 5,
+        "XXL": 3
+      },
+      "Azul Marino": {
+        "S": 5,
+        "M": 7,
+        "L": 6,
+        "XL": 4,
+        "XXL": 2
+      },
+      "Rojo": {
+        "S": 4,
+        "M": 6,
+        "L": 5,
+        "XL": 3,
+        "XXL": 1
+      }
+    }
+  },
+  {
+    "nombre": "Campera Rompeviento Ligera",
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colores": [
+      "Negro",
+      "Gris",
+      "Azul Marino"
+    ],
+    "descripcion": "Campera rompeviento repelente al agua, capucha ajustable y bolsillos.",
+    "precio": {
+      "normal": 42000,
+      "transferencia": 37800
+    },
+    "metodos_pago": [
+      "Tarjeta de crédito",
+      "Tarjeta de débito",
+      "Transferencia"
+    ],
+    "imagenes": [
+      {
+        "color": "Negro",
+        "url": "https://tuweb.com/imagenes/rompeviento-negro.jpg"
+      },
+      {
+        "color": "Gris",
+        "url": "https://tuweb.com/imagenes/rompeviento-gris.jpg"
+      },
+      {
+        "color": "Azul Marino",
+        "url": "https://tuweb.com/imagenes/rompeviento-azul.jpg"
+      }
+    ],
+    "tamaño_estampa": {
+      "hasta_15cm": 42000,
+      "hasta_20x30cm": 45000,
+      "hasta_30x40cm": 48000,
+      "hasta_40x50cm": 51000
+    },
+    "envio": {
+      "metodo": "Correo Argentino",
+      "codigo_postal": "1406"
+    },
+    "stock": {
+      "Negro": {
+        "S": 8,
+        "M": 9,
+        "L": 7,
+        "XL": 5,
+        "XXL": 3
+      },
+      "Gris": {
+        "S": 6,
+        "M": 8,
+        "L": 6,
+        "XL": 4,
+        "XXL": 2
+      },
+      "Azul Marino": {
+        "S": 5,
+        "M": 7,
+        "L": 5,
+        "XL": 3,
+        "XXL": 2
+      }
+    }
+  },
+  {
+    "nombre": "Jogger Deportivo Unisex",
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colores": [
+      "Negro",
+      "Gris"
+    ],
+    "descripcion": "Jogger de frisa liviana, tiro medio, cordón y puños elastizados.",
+    "precio": {
+      "normal": 32000,
+      "transferencia": 28800
+    },
+    "metodos_pago": [
+      "Tarjeta de crédito",
+      "Tarjeta de débito",
+      "Transferencia"
+    ],
+    "imagenes": [
+      {
+        "color": "Negro",
+        "url": "https://tuweb.com/imagenes/jogger-negro.jpg"
+      },
+      {
+        "color": "Gris",
+        "url": "https://tuweb.com/imagenes/jogger-gris.jpg"
+      }
+    ],
+    "tamaño_estampa": {
+      "hasta_15cm": 32000,
+      "hasta_20x30cm": 34000,
+      "hasta_30x40cm": 36000,
+      "hasta_40x50cm": 38000
+    },
+    "envio": {
+      "metodo": "Correo Argentino",
+      "codigo_postal": "1406"
+    },
+    "stock": {
+      "Negro": {
+        "S": 10,
+        "M": 12,
+        "L": 9,
+        "XL": 6,
+        "XXL": 4
+      },
+      "Gris": {
+        "S": 7,
+        "M": 9,
+        "L": 8,
+        "XL": 5,
+        "XXL": 3
+      }
     }
   }
 ]
