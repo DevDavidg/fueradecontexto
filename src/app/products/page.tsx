@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/organisms/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
 import { getSectionsContent } from "@/lib/sections-server";
-import type { SectionsContent } from "@/lib/sections-server";
 
 export default async function ProductsPage() {
   const sections = await getSectionsContent();
@@ -107,30 +106,21 @@ export default async function ProductsPage() {
                 </tr>
               </thead>
               <tbody>
-                {(productos?.tablaTalles?.medidas ?? []).map(
-                  (
-                    r: SectionsContent["productos"]["tablaTalles"]["medidas"][number]
-                  ) => (
-                    <tr key={r.talle} className="odd:bg-[#0b0b0b]">
-                      <td className="p-3">{r.talle}</td>
-                      <td className="p-3">{r.ancho}</td>
-                      <td className="p-3">{r.largo}</td>
-                      <td className="p-3">{r.equivalencia}</td>
-                    </tr>
-                  )
-                )}
+                {(productos?.tablaTalles?.medidas ?? []).map((r) => (
+                  <tr key={r.talle} className="odd:bg-[#0b0b0b]">
+                    <td className="p-3">{r.talle}</td>
+                    <td className="p-3">{r.ancho}</td>
+                    <td className="p-3">{r.largo}</td>
+                    <td className="p-3">{r.equivalencia}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
           <ul className="mt-4 text-sm text-neutral-400 list-disc pl-6 space-y-1">
-            {(productos?.tablaTalles?.notas ?? []).map(
-              (
-                n: SectionsContent["productos"]["tablaTalles"]["notas"][number],
-                i: number
-              ) => (
-                <li key={i}>{n}</li>
-              )
-            )}
+            {(productos?.tablaTalles?.notas ?? []).map((n, i: number) => (
+              <li key={i}>{n}</li>
+            ))}
           </ul>
         </section>
       </main>

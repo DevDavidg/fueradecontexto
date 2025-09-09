@@ -1,6 +1,5 @@
 import { Navbar } from "@/components/organisms/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
-// LoadMoreCTA ahora lo usa ProductGrid internamente
 import { getSectionsContent } from "@/lib/sections-server";
 import { HomeHeroSection } from "@/components/organisms/home-hero-section";
 

@@ -4,8 +4,6 @@ import rawProducts from "../../products.json" assert { type: "json" };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// RawProduct type moved to zod schema (lib/schemas)
-
 const COLOR_HEX_BY_NAME: Record<string, string> = {
   Negro: "#000000",
   Blanco: "#FFFFFF",

@@ -53,7 +53,6 @@ export default function Contactanos() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí puedes agregar la lógica para enviar el formulario
     console.log("Datos del formulario:", formData);
     alert("¡Formulario enviado correctamente!");
   };
@@ -66,7 +65,6 @@ export default function Contactanos() {
       mensaje: "",
       imagen: null,
     });
-    // Limpiar el input de archivo
     const fileInput = document.getElementById("imagen") as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";

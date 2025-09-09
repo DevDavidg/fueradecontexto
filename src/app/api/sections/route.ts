@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
+import { fetchAllSections } from "@/lib/sections";
 
 export async function GET() {
   try {
-    const projectRoot = process.cwd();
-    const filePath = path.join(projectRoot, "sections-content.json");
-    const fileContents = await fs.readFile(filePath, "utf-8");
-    const json = JSON.parse(fileContents);
-    return NextResponse.json(json, { status: 200 });
-  } catch {
+    const sections = await fetchAllSections();
+    return NextResponse.json(sections, { status: 200 });
+  } catch (err) {
     return NextResponse.json(
-      { message: "Failed to load sections content" },
+      { message: "Failed to load sections content", error: `${err}` },
       { status: 500 }
     );
   }

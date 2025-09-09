@@ -83,7 +83,6 @@ const useCartStore = create<CartStore>()(
 const CartContext = createContext<CartContextValue | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  // Mantener Provider para evitar cambios de uso; delega en Zustand
   const value: CartContextValue = {
     cart: { items: useCartStore.getState().items },
     addItem: useCartStore.getState().addItem,
@@ -94,7 +93,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useCart = () => {
-  // Seleccionar estado reactivo desde Zustand para re-render mínimos
   const items = useCartStore((s) => s.items);
   const addItem = useCartStore((s) => s.addItem);
   const removeItem = useCartStore((s) => s.removeItem);

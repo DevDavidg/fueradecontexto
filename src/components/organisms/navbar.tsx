@@ -60,6 +60,14 @@ export const Navbar = () => {
               Contacto
             </Link>
           </li>
+          <li>
+            <Link
+              href="/mi-cuenta"
+              className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
+            >
+              Mi Cuenta
+            </Link>
+          </li>
         </ul>
 
         {/* Right: Icons */}

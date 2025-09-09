@@ -76,7 +76,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         highlight &&
           "hover:border-[color:var(--accent)]/60 hover:shadow-[0_0_30px_var(--accent-shadow)] hover:scale-[1.02]",
         "transition-all duration-300 ease-out focus-within:ring-2 focus-within:ring-[color:var(--accent)]/50",
-        // fade-in on mount to smooth skeleton → content transition
         isVisible ? "opacity-100" : "opacity-0",
         "transition-opacity",
         isDisabled && "opacity-75",
@@ -163,7 +162,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             })}
           </fieldset>
         ) : (
-          // Reserve space to avoid height jump when some cards have colors and others do not
           <div className="h-5" aria-hidden />
         )}
 

@@ -39,7 +39,6 @@ export type ProductPlaceholderSvgProps = {
   product: ProductLike;
   className?: string;
   kindOverride?: PlaceholderKind;
-  // Toggle the footer label "<Kind> Img by Fueradecontexto"
   showAttribution?: boolean;
 };
 

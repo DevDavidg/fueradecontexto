@@ -11,7 +11,6 @@ export const CartSidebar = () => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Close on outside click or Escape
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (!open) return;
