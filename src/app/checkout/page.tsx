@@ -119,7 +119,6 @@ export default function CheckoutPage() {
               <p className="text-xs text-neutral-400 mt-2">
                 {content?.resumen?.descripcionPago ??
                   "Tras pagar se abrirá tu correo para enviar el diseño a"}{" "}
-                {SUPPORT_EMAIL}.
               </p>
             </>
           )}
