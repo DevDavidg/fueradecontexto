@@ -62,7 +62,7 @@ export default function AdminSectionsPage() {
   useEffect(() => {
     if (!selectedRow) return;
     setJsonText(formatJson(selectedRow.content));
-  }, [selectedRow?.id]);
+  }, [selectedRow]);
 
   const handleSelect = (slug: string) => {
     setSelectedSlug(slug);
@@ -86,8 +86,9 @@ export default function AdminSectionsPage() {
       setSelectedSlug(slugInput.trim());
       setSlugInput("");
       await loadRows();
-    } catch (e: any) {
-      setStatus(`Error creando sección: ${e.message ?? e}`);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      setStatus(`Error creando sección: ${message}`);
     }
   };
 
@@ -107,8 +108,9 @@ export default function AdminSectionsPage() {
       if (error) throw error;
       setStatus("Cambios guardados");
       await loadRows();
-    } catch (e: any) {
-      setStatus(`JSON inválido o error guardando: ${e.message ?? e}`);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      setStatus(`JSON inválido o error guardando: ${message}`);
     }
   };
 

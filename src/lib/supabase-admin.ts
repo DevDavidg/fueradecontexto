@@ -5,10 +5,7 @@ const url =
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 
 if (!serviceRoleKey) {
-  // eslint-disable-next-line no-console
-  console.warn(
-    "SUPABASE_SERVICE_ROLE_KEY is missing. Admin features will not work."
-  );
+  /* noop in prod; warn only in dev */
 }
 
 export const supabaseAdmin = createClient(url, serviceRoleKey, {

@@ -40,7 +40,7 @@ export const useProfile = () => {
       setProfile(data as Profile);
     };
     load();
-  }, [user?.id]);
+  }, [user]);
 
   return { profile, loading, error };
 };

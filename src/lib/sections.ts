@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { supabaseServer } from "@/lib/supabase-server";
 import { SectionsSchema, type Sections } from "@/lib/schemas";
 
@@ -13,7 +12,7 @@ export type SectionsRow = {
 
 export const fetchAllSections = async (): Promise<Sections> => {
   const { data, error } = await supabaseServer
-    .from<SectionsRow>(tableName)
+    .from(tableName)
     .select("slug, content");
   if (error) throw new Error(error.message);
 
@@ -33,7 +32,7 @@ export const fetchAllSections = async (): Promise<Sections> => {
 
 export const fetchSectionBySlug = async <T = unknown>(slug: string) => {
   const { data, error } = await supabaseServer
-    .from<SectionsRow>(tableName)
+    .from(tableName)
     .select("content")
     .eq("slug", slug)
     .single();

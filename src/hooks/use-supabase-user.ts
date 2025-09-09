@@ -10,6 +10,11 @@ export type SupabaseUser = {
   phone?: string | null;
 };
 
+type UserMetadata = {
+  fullName?: string | null;
+  phone?: string | null;
+};
+
 export const useSupabaseUser = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,8 +31,10 @@ export const useSupabaseUser = () => {
           ? {
               id: session.user.id,
               email: session.user.email ?? null,
-              fullName: (session.user.user_metadata as any)?.fullName ?? null,
-              phone: (session.user.user_metadata as any)?.phone ?? null,
+              fullName:
+                (session.user.user_metadata as UserMetadata)?.fullName ?? null,
+              phone:
+                (session.user.user_metadata as UserMetadata)?.phone ?? null,
             }
           : null
       );
@@ -41,8 +48,10 @@ export const useSupabaseUser = () => {
           ? {
               id: session.user.id,
               email: session.user.email ?? null,
-              fullName: (session.user.user_metadata as any)?.fullName ?? null,
-              phone: (session.user.user_metadata as any)?.phone ?? null,
+              fullName:
+                (session.user.user_metadata as UserMetadata)?.fullName ?? null,
+              phone:
+                (session.user.user_metadata as UserMetadata)?.phone ?? null,
             }
           : null
       );
