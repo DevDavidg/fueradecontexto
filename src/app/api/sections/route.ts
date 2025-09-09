@@ -9,7 +9,7 @@ export async function GET() {
     const fileContents = await fs.readFile(filePath, "utf-8");
     const json = JSON.parse(fileContents);
     return NextResponse.json(json, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Failed to load sections content" },
       { status: 500 }

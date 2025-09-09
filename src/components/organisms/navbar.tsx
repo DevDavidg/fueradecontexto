@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { CartSidebar } from "@/components/ecommerce/cart-sidebar";
-import { CartIcon, HeartIcon } from "@/components/ui/icons";
+import { CartSidebar } from "@/components/organisms/cart-sidebar";
+import { HeartIcon } from "@/components/ui/icons";
 
 export const Navbar = () => {
   return (

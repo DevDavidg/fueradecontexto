@@ -1,8 +1,8 @@
-import { Navbar } from "@/components/molecules/navbar";
+import { Navbar } from "@/components/organisms/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
-import { LoadMoreCTA } from "@/components/molecules/load-more-cta";
+// LoadMoreCTA ahora lo usa ProductGrid internamente
 import { getSectionsContent } from "@/lib/sections-server";
-import { HomeHero } from "@/components/molecules/home-hero";
+import { HomeHeroSection } from "@/components/organisms/home-hero-section";
 
 export default async function Home() {
   const sections = await getSectionsContent();
@@ -12,7 +12,7 @@ export default async function Home() {
       <Navbar />
       <main className="mx-auto max-w-6xl px-4 md:px-6 py-6">
         {/* Hero */}
-        <HomeHero />
+        <HomeHeroSection />
 
         {/* Productos */}
         <section>
@@ -25,9 +25,7 @@ export default async function Home() {
             </h1>
           </div>
           <ProductGrid />
-          <div className="mt-6 flex items-center justify-center">
-            <LoadMoreCTA />
-          </div>
+          {/* LoadMoreCTA se renderiza dentro de ProductGrid */}
         </section>
         {/* (Secciones de categorías y tabla de talles se muestran en /products) */}
       </main>

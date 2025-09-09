@@ -1,20 +1,10 @@
 import { type PrintOption, type Product } from "@/lib/types";
+import { RawProductSchema, type RawProduct } from "@/lib/schemas";
 import rawProducts from "../../products.json" assert { type: "json" };
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-type RawProduct = {
-  nombre: string;
-  talles: Array<"XS" | "S" | "M" | "L" | "XL" | "XXL">;
-  colores: string[];
-  descripcion: string;
-  precio: { normal: number; transferencia: number };
-  metodos_pago: string[];
-  imagenes: Array<{ color: string; url: string }>;
-  tamaño_estampa: Record<string, number>;
-  envio: { metodo: string; codigo_postal: string };
-  stock: Record<string, Record<string, number>>;
-};
+// RawProduct type moved to zod schema (lib/schemas)
 
 const COLOR_HEX_BY_NAME: Record<string, string> = {
   Negro: "#000000",
@@ -74,7 +64,14 @@ const buildPrintOptions = (raw: RawProduct): PrintOption[] => {
   return options;
 };
 
-const RAW: RawProduct[] = rawProducts as unknown as RawProduct[];
+const RAW: RawProduct[] = (() => {
+  const parsed = RawProductSchema.array().safeParse(rawProducts);
+  if (!parsed.success) {
+    console.error("products.json validation failed", parsed.error.flatten());
+    return rawProducts as unknown[] as RawProduct[];
+  }
+  return parsed.data;
+})();
 
 const ALL_PRODUCTS: Product[] = RAW.map((item, index): Product => {
   const slug = toSlug(item.nombre);

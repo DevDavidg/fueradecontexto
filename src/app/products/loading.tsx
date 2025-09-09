@@ -1,4 +1,5 @@
 import { ProductCardSkeleton } from "@/components/molecules/product-card-skeleton";
+import { GRID_SKELETON_COUNT } from "@/lib/constants";
 
 export default function Loading() {
   return (
@@ -12,8 +13,8 @@ export default function Loading() {
         <section>
           <div className="h-6 w-28 bg-neutral-800 rounded animate-pulse" />
           <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {[...Array(8)].map((_, i) => (
-              <ProductCardSkeleton key={i} />
+            {Array.from({ length: GRID_SKELETON_COUNT }).map((_, i) => (
+              <ProductCardSkeleton key={`sk-${i}`} />
             ))}
           </div>
         </section>

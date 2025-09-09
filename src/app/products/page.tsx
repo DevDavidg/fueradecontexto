@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/molecules/navbar";
+import { Navbar } from "@/components/organisms/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
 import { getSectionsContent } from "@/lib/sections-server";
 import type { SectionsContent } from "@/lib/sections-server";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Navbar } from "@/components/molecules/navbar";
+import { Navbar } from "@/components/organisms/navbar";
 import { useEffect, useState } from "react";
 import type { SectionsContent } from "@/lib/sections-server";
 import {

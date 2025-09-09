@@ -5,7 +5,7 @@ import Link from "next/link";
 import * as React from "react";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/button";
-import { ProductPlaceholderSvg } from "@/lib/placeholder-svg";
+import { ProductPlaceholderSvg } from "@/components/ui/placeholder-svg";
 import { formatCurrency } from "@/lib/format-currency";
 import { type Product, type ColorOption } from "@/lib/types";
 

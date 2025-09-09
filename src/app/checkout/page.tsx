@@ -1,6 +1,6 @@
 "use client";
 
-import { Navbar } from "@/components/molecules/navbar";
+import { Navbar } from "@/components/organisms/navbar";
 import { useCart } from "@/hooks/use-cart";
 import { calculateCartTotals } from "@/lib/types";
 import { formatCurrency } from "@/lib/format-currency";

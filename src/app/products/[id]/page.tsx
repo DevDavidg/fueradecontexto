@@ -1,16 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { Navbar } from "@/components/molecules/navbar";
+import { Navbar } from "@/components/organisms/navbar";
 import { Button } from "@/components/ui/button";
 import { useProduct } from "@/hooks/use-products";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
 import { type PrintOption, type Product } from "@/lib/types";
-
-const getProductById = (product: Product | undefined) => product;
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
