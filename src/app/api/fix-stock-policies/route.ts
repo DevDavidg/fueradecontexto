@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     // and return success - the "Allow stock updates" policy should already work
 
     // Test if we can actually update a product to verify permissions
-    const testUpdate = await supabaseAdmin
+    await supabaseAdmin
       .from("products")
       .update({ updated_at: new Date().toISOString() })
       .eq("id", "test")
@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       message: "Stock update policies fixed successfully",
     });
   } catch (error) {
+    console.error("Error in fix-stock-policies route:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

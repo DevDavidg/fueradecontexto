@@ -42,7 +42,7 @@ const ProductsManagement = () => {
       if (error) throw error;
       setProducts(data || []);
     } catch (error) {
-      // Error fetching products
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ const ProductsManagement = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      // Error fetching categories
+      console.error("Error fetching categories:", error);
     }
   };
 
@@ -77,6 +77,7 @@ const ProductsManagement = () => {
       setProducts(products.filter((p) => p.id !== productId));
       alert("Producto eliminado exitosamente");
     } catch (error) {
+      console.error("Error deleting product:", error);
       alert("Error al eliminar el producto");
     }
   };
@@ -111,10 +112,10 @@ const ProductsManagement = () => {
         });
 
         if (testResponse.ok) {
-          const testResult = await testResponse.json();
+          await testResponse.json();
         }
       } catch (testError) {
-        // Could not test RLS, proceeding anyway
+        console.warn("Could not test RLS, proceeding anyway:", testError);
       }
 
       const response = await fetch(`/api/products/${productId}/stock`, {

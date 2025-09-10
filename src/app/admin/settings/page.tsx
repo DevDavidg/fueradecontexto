@@ -6,7 +6,6 @@ import { supabase } from "@/lib/supabase-browser";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Save,
   Database,
   Image,
   Users,
@@ -51,7 +50,7 @@ const AdminSettings = () => {
         totalCategories: categoriesResult.count || 0,
       });
     } catch (error) {
-      // Error fetching stats
+      console.error("Error fetching stats:", error);
     }
   };
 
@@ -69,6 +68,7 @@ const AdminSettings = () => {
         throw new Error("Error al cargar productos");
       }
     } catch (error) {
+      console.error("Error loading products:", error);
       alert("Error al cargar los productos");
     } finally {
       setLoading(false);
@@ -89,6 +89,7 @@ const AdminSettings = () => {
         throw new Error("Error al crear usuario admin");
       }
     } catch (error) {
+      console.error("Error creating admin user:", error);
       alert("Error al crear el usuario admin");
     } finally {
       setLoading(false);

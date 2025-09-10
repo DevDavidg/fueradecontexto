@@ -1,11 +1,12 @@
 "use client";
 
 import { ProfileAdminGuard } from "@/components/providers/profile-admin-guard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabase-browser";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, Upload, X, Plus } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft, Save, X, Plus } from "lucide-react";
 
 interface Category {
   id: string;
@@ -96,14 +97,7 @@ const EditProduct = () => {
     { key: "hasta_30x40cm", label: "Hasta 30x40cm", price: 1000 },
   ];
 
-  useEffect(() => {
-    if (productId) {
-      fetchProductData();
-      fetchCategories();
-    }
-  }, [productId]);
-
-  const fetchProductData = async () => {
+  const fetchProductData = useCallback(async () => {
     try {
       // Fetch product
       const { data: productData, error: productError } = await supabase
@@ -163,11 +157,19 @@ const EditProduct = () => {
       if (imagesError) throw imagesError;
       setExistingImages(imagesData || []);
     } catch (error) {
+      console.error("Error loading product data:", error);
       alert("Error al cargar los datos del producto");
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId]);
+
+  useEffect(() => {
+    if (productId) {
+      fetchProductData();
+      fetchCategories();
+    }
+  }, [productId, fetchProductData]);
 
   const fetchCategories = async () => {
     try {
@@ -178,7 +180,7 @@ const EditProduct = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      // Error fetching categories
+      console.error("Error fetching categories:", error);
     }
   };
 
@@ -281,6 +283,7 @@ const EditProduct = () => {
 
       setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
     } catch (error) {
+      console.error("Error deleting image:", error);
       alert("Error al eliminar la imagen");
     }
   };
@@ -815,10 +818,13 @@ const EditProduct = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {existingImages.map((image) => (
                       <div key={image.id} className="relative">
-                        <img
+                        <Image
                           src={image.url}
                           alt={`Product image for ${image.color}`}
                           className="w-full h-32 object-cover rounded-md"
+                          width={200}
+                          height={128}
+                          unoptimized
                         />
                         <button
                           type="button"
@@ -867,10 +873,13 @@ const EditProduct = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {images.map((image, index) => (
                       <div key={index} className="relative">
-                        <img
+                        <Image
                           src={image.preview}
                           alt={`Preview ${index}`}
                           className="w-full h-32 object-cover rounded-md"
+                          width={200}
+                          height={128}
+                          unoptimized
                         />
                         <button
                           type="button"

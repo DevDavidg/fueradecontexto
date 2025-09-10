@@ -4,6 +4,7 @@ import { ProfileAdminGuard } from "@/components/providers/profile-admin-guard";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase-browser";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowLeft,
   Upload,
@@ -55,7 +56,7 @@ const ImagesManagement = () => {
       const uniqueColors = [...new Set(data?.map((img) => img.color) || [])];
       setColors(uniqueColors);
     } catch (error) {
-      // Error fetching images
+      console.error("Error fetching images:", error);
     } finally {
       setLoading(false);
     }
@@ -77,6 +78,7 @@ const ImagesManagement = () => {
       setImages(images.filter((img) => img.id !== imageId));
       alert("Imagen eliminada exitosamente");
     } catch (error) {
+      console.error("Error deleting image:", error);
       alert("Error al eliminar la imagen");
     }
   };
@@ -171,15 +173,18 @@ const ImagesManagement = () => {
                 {filteredImages.map((image) => (
                   <div key={image.id} className="relative group">
                     <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                      <img
+                      <Image
                         src={image.url}
                         alt={`${image.product?.nombre} - ${image.color}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        width={300}
+                        height={300}
+                        unoptimized
                       />
                     </div>
 
                     {/* Overlay */}
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center">
+                    <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center">
                       <button
                         onClick={() => handleDeleteImage(image.id)}
                         className="opacity-0 group-hover:opacity-100 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-all duration-200"

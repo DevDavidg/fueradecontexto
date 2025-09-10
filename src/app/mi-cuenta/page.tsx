@@ -147,6 +147,7 @@ export default function AccountPage() {
                         alert(`Error: ${result.error}`);
                       }
                     } catch (error) {
+                      console.error("Error creating admin profile:", error);
                       alert("Error al crear perfil de admin");
                     }
                   }}

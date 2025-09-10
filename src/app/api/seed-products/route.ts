@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import rawProducts from "../../../../products.json";
+import { RawProduct } from "@/lib/types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -63,9 +64,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Process each product
-    for (const product of rawProducts) {
+    for (const product of rawProducts as unknown as RawProduct[]) {
       // Insert main product
-      const { data: productData, error: productError } = await supabase
+      const { error: productError } = await supabase
         .from("products")
         .insert({
           id: product.id,
@@ -78,8 +79,7 @@ export async function POST(request: NextRequest) {
           envio_metodo: product.envio.metodo,
           envio_codigo_postal: product.envio.codigo_postal,
         })
-        .select()
-        .single();
+        .select();
 
       if (productError) {
         continue;
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 
       // Insert colors
       if (product.colores && product.colores.length > 0) {
-        const colors = product.colores.map((color: any) => ({
+        const colors = product.colores.map((color) => ({
           product_id: product.id,
           nombre: color.nombre,
           hex: color.hex,
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
 
       // Insert images
       if (product.imagenes && product.imagenes.length > 0) {
-        const images = product.imagenes.map((image: any) => ({
+        const images = product.imagenes.map((image) => ({
           product_id: product.id,
           color: image.color,
           url: image.url,
@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
       if (product.stock) {
         const stockEntries = [];
         for (const [color, sizes] of Object.entries(product.stock)) {
-          for (const [size, quantity] of Object.entries(sizes as any)) {
+          for (const [size, quantity] of Object.entries(sizes)) {
             stockEntries.push({
               product_id: product.id,
               color: color,
@@ -185,6 +185,7 @@ export async function POST(request: NextRequest) {
       count: rawProducts.length,
     });
   } catch (error) {
+    console.error("Error seeding products:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

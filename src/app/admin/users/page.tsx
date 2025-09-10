@@ -4,7 +4,7 @@ import { ProfileAdminGuard } from "@/components/providers/profile-admin-guard";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase-browser";
 import Link from "next/link";
-import { ArrowLeft, Search, Users, UserCheck, UserX, Edit } from "lucide-react";
+import { ArrowLeft, Search, Users, UserCheck, UserX } from "lucide-react";
 
 interface User {
   id: string;
@@ -36,7 +36,7 @@ const UsersManagement = () => {
       if (error) throw error;
       setUsers(data || []);
     } catch (error) {
-      // Error fetching users
+      console.error("Error fetching users:", error);
     } finally {
       setLoading(false);
     }
@@ -59,6 +59,7 @@ const UsersManagement = () => {
 
       alert("Rol actualizado exitosamente");
     } catch (error) {
+      console.error("Error updating role:", error);
       alert("Error al actualizar el rol");
     }
   };

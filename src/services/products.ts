@@ -154,7 +154,7 @@ export const productsService = {
   async updateStock(productId: string, newStock: number): Promise<boolean> {
     try {
       // Use the browser client since we're in a client-side context
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("products")
         .update({ stock: newStock })
         .eq("id", productId)
@@ -165,6 +165,7 @@ export const productsService = {
       }
       return true;
     } catch (error) {
+      console.error("Error updating stock:", error);
       return false;
     }
   },
@@ -184,7 +185,7 @@ export const productsService = {
 
       const newStock = Math.max(0, product.stock - quantity);
 
-      const { data, error: updateError } = await supabase
+      const { error: updateError } = await supabase
         .from("products")
         .update({ stock: newStock })
         .eq("id", productId)
@@ -195,6 +196,7 @@ export const productsService = {
       }
       return true;
     } catch (error) {
+      console.error("Error updating stock:", error);
       return false;
     }
   },
@@ -233,6 +235,7 @@ export const productsService = {
         )
       );
     } catch (error) {
+      console.error("Error fetching products:", error);
       return [];
     }
   },
@@ -304,6 +307,7 @@ export const productsService = {
 
       return { items, hasMore, nextPage };
     } catch (error) {
+      console.error("Error fetching products page:", error);
       return { items: [], hasMore: false, nextPage: null };
     }
   },
@@ -339,6 +343,7 @@ export const productsService = {
         product.product_print_sizes || []
       );
     } catch (error) {
+      console.error("Error fetching product by ID:", error);
       return undefined;
     }
   },

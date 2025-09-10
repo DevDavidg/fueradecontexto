@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
       testUpdate,
     });
   } catch (error) {
+    console.error("Error in disable-rls route:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

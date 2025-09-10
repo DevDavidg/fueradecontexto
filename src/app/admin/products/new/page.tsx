@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase-browser";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, Upload, X, Plus } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft, Save, X, Plus } from "lucide-react";
 
 interface Category {
   id: string;
@@ -33,7 +34,7 @@ const NewProduct = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [uploadingImages, setUploadingImages] = useState(false);
+  // const [uploadingImages] = useState(false); // TODO: Implement image upload functionality
 
   // Form data
   const [formData, setFormData] = useState({
@@ -90,7 +91,7 @@ const NewProduct = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      // Error fetching categories
+      console.error("Error fetching categories:", error);
     }
   };
 
@@ -695,10 +696,13 @@ const NewProduct = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {images.map((image, index) => (
                       <div key={index} className="relative">
-                        <img
+                        <Image
                           src={image.preview}
                           alt={`Preview ${index}`}
                           className="w-full h-32 object-cover rounded-md"
+                          width={200}
+                          height={128}
+                          unoptimized
                         />
                         <button
                           type="button"

@@ -59,6 +59,7 @@ export default function CheckoutPage() {
       );
       window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
     } catch (error) {
+      console.error("Error processing payment:", error);
       alert("Error al procesar el pago. Por favor, inténtalo de nuevo.");
     }
   };

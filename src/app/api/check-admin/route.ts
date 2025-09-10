@@ -13,10 +13,10 @@ export async function GET() {
           get(name: string) {
             return cookieStore.get(name)?.value;
           },
-          set(name: string, value: string, options: any) {
+          set() {
             // No-op for server-side
           },
-          remove(name: string, options: any) {
+          remove() {
             // No-op for server-side
           },
         },

@@ -13,7 +13,7 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Get the authorization header
@@ -44,6 +44,7 @@ export async function PUT(
     // Since this route is protected by admin guard, we trust the user is admin
 
     const { stock } = await request.json();
+    const { id } = await params;
 
     if (typeof stock !== "number" || stock < 0) {
       return NextResponse.json(
@@ -57,7 +58,7 @@ export async function PUT(
     const { data, error } = await supabaseAdmin
       .from("products")
       .update({ stock: stock })
-      .eq("id", params.id)
+      .eq("id", id)
       .select("stock");
 
     if (error) {
@@ -68,6 +69,7 @@ export async function PUT(
     }
     return NextResponse.json({ success: true, stock, data });
   } catch (error) {
+    console.error("Error updating stock:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

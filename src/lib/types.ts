@@ -15,6 +15,59 @@ export type ColorOption = {
   hex: string;
 };
 
+// Types for product data from JSON
+export type ProductColor = {
+  nombre: string;
+  hex: string;
+};
+
+export type ProductImageData = {
+  color: string;
+  url: string;
+};
+
+export type ProductStock = {
+  [color: string]: {
+    [size: string]: number;
+  };
+};
+
+export type ProductPrintSizes = {
+  [key: string]: number;
+};
+
+export type RawProduct = {
+  id: string;
+  nombre: string;
+  categoria: string;
+  descripcion: string;
+  precio: {
+    normal: number;
+    transferencia: number;
+  };
+  metodos_pago: string[];
+  envio: {
+    metodo: string;
+    codigo_postal: string;
+  };
+  talles?: string[];
+  colores?: ProductColor[];
+  imagenes?: ProductImageData[];
+  tamaño_estampa?: ProductPrintSizes;
+  stock?: ProductStock;
+};
+
+// Cookie options type for Supabase
+export type CookieOptions = {
+  maxAge?: number;
+  expires?: Date;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  httpOnly?: boolean;
+  sameSite?: "strict" | "lax" | "none";
+};
+
 export type ProductImage = {
   id: string;
   url: string;
