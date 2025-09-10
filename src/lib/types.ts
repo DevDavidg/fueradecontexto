@@ -23,7 +23,7 @@ export type Product = {
   price: number;
   currency: CurrencyCode;
   imageUrl: string;
-  availableSizes: Array<"XS" | "S" | "M" | "L" | "XL" | "XXL">;
+  availableSizes: Array<"XS" | "S" | "M" | "L" | "XL" | "XXL" | "Único">;
   inStock: boolean;
   tags: string[];
   customizable?: {
@@ -39,7 +39,7 @@ export type CartItem = {
   currency: CurrencyCode;
   quantity: number;
   imageUrl: string;
-  selectedSize?: "XS" | "S" | "M" | "L" | "XL" | "XXL";
+  selectedSize?: "XS" | "S" | "M" | "L" | "XL" | "XXL" | "Único";
   customization?: {
     printSizeId: PrintSizeId;
     colorName: string;

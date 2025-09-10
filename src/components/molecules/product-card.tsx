@@ -40,8 +40,7 @@ const getCompoundColors = (
 const CompoundColorBadge: React.FC<{
   colorName: string;
   selected: boolean;
-  accentHex: string;
-}> = ({ colorName, selected, accentHex }) => {
+}> = ({ colorName, selected }) => {
   const { color1, color2 } = getCompoundColors(colorName);
 
   return (
@@ -257,11 +256,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
               aria-label={`Color ${color.name}`}
             />
             {isCompound ? (
-              <CompoundColorBadge
-                colorName={color.name}
-                selected={selected}
-                accentHex={accentHex}
-              />
+              <CompoundColorBadge colorName={color.name} selected={selected} />
             ) : (
               <span
                 className={clsx(
@@ -277,7 +272,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
           </label>
         );
       },
-      [product, accentHex, handleColorChange]
+      [product, handleColorChange]
     );
 
     const renderImage = React.useCallback(() => {
@@ -298,6 +293,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
           width={800}
           height={1000}
           className="h-full w-full object-contain"
+          alt={product.name}
         />
       ) : (
         <Image
@@ -305,6 +301,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="object-contain"
+          alt={product.name}
         />
       );
     }, [imageUrl, imageError, product]);
