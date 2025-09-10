@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase-browser";
 import { useProfile } from "@/hooks/use-profile";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ProfileAdminGuard } from "@/components/providers/profile-admin-guard";
 
 type SectionRow = {
   id: string;
@@ -135,121 +136,123 @@ export default function AdminSectionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-[#ededed]">
-      <Navbar />
-      <main className="mx-auto max-w-6xl px-4 md:px-6 py-6">
-        <nav aria-label="Breadcrumb" className="text-xs text-neutral-400">
-          <ol className="flex items-center gap-1">
-            <li>
-              <Link href="/" className="hover:underline">
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <span className="px-1">›</span>
-            </li>
-            <li className="text-neutral-300">Admin · Sections</li>
-          </ol>
-        </nav>
+    <ProfileAdminGuard>
+      <div className="min-h-screen bg-black text-[#ededed]">
+        <Navbar />
+        <main className="mx-auto max-w-6xl px-4 md:px-6 py-6">
+          <nav aria-label="Breadcrumb" className="text-xs text-neutral-400">
+            <ol className="flex items-center gap-1">
+              <li>
+                <Link href="/" className="hover:underline">
+                  Inicio
+                </Link>
+              </li>
+              <li>
+                <span className="px-1">›</span>
+              </li>
+              <li className="text-neutral-300">Admin · Sections</li>
+            </ol>
+          </nav>
 
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight">
-          Editor de Sections
-        </h1>
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight">
+            Editor de Sections
+          </h1>
 
-        {loading ? (
-          <p className="mt-6 text-sm text-neutral-400">Cargando…</p>
-        ) : !isAdmin ? (
-          <p className="mt-6 text-sm text-red-400">
-            Acceso restringido. Necesitás rol admin.
-          </p>
-        ) : (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            {/* Listado */}
-            <aside className="md:col-span-1 border border-[#333333] rounded-lg p-3 bg-[#0b0b0b]">
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Nuevo slug (p.ej. productos)"
-                  value={slugInput}
-                  onChange={(e) => setSlugInput(e.target.value)}
-                  fullWidth
-                />
-                <Button onClick={handleCreate}>Crear</Button>
-              </div>
-              <div className="mt-3 h-px bg-[#222]" />
-              <ul className="mt-3 space-y-1 text-sm max-h-[360px] md:max-h-[480px] overflow-y-auto">
-                {loadingRows ? (
-                  <li className="text-neutral-500">Cargando…</li>
-                ) : rows.length === 0 ? (
-                  <li className="text-neutral-500">Sin secciones</li>
-                ) : (
-                  rows.map((r) => (
-                    <li key={r.id}>
-                      <button
-                        className={`w-full text-left px-2 py-1 rounded hover:bg-[#141414] ${
-                          selectedSlug === r.slug ? "bg-[#151515]" : ""
-                        }`}
-                        onClick={() => handleSelect(r.slug)}
-                        aria-label={`Seleccionar ${r.slug}`}
-                      >
-                        <span className="font-medium">{r.slug}</span>
-                        <span className="ml-2 text-xs text-neutral-500">
-                          {r.updated_at
-                            ? new Date(r.updated_at).toLocaleString()
-                            : ""}
-                        </span>
-                      </button>
-                    </li>
-                  ))
-                )}
-              </ul>
-              <div className="mt-3 flex items-center gap-2">
-                <Button variant="secondary" onClick={loadRows}>
-                  Refrescar
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={handleDelete}
-                  disabled={!selectedSlug}
-                >
-                  Eliminar
-                </Button>
-              </div>
-            </aside>
-
-            {/* Editor */}
-            <section className="md:col-span-2 border border-[#333333] rounded-lg p-3 bg-[#0b0b0b]">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-neutral-400">
-                  {selectedSlug
-                    ? `Editando: ${selectedSlug}`
-                    : "Seleccioná una sección"}
-                </p>
+          {loading ? (
+            <p className="mt-6 text-sm text-neutral-400">Cargando…</p>
+          ) : !isAdmin ? (
+            <p className="mt-6 text-sm text-red-400">
+              Acceso restringido. Necesitás rol admin.
+            </p>
+          ) : (
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              {/* Listado */}
+              <aside className="md:col-span-1 border border-[#333333] rounded-lg p-3 bg-[#0b0b0b]">
                 <div className="flex items-center gap-2">
+                  <Input
+                    placeholder="Nuevo slug (p.ej. productos)"
+                    value={slugInput}
+                    onChange={(e) => setSlugInput(e.target.value)}
+                    fullWidth
+                  />
+                  <Button onClick={handleCreate}>Crear</Button>
+                </div>
+                <div className="mt-3 h-px bg-[#222]" />
+                <ul className="mt-3 space-y-1 text-sm max-h-[360px] md:max-h-[480px] overflow-y-auto">
+                  {loadingRows ? (
+                    <li className="text-neutral-500">Cargando…</li>
+                  ) : rows.length === 0 ? (
+                    <li className="text-neutral-500">Sin secciones</li>
+                  ) : (
+                    rows.map((r) => (
+                      <li key={r.id}>
+                        <button
+                          className={`w-full text-left px-2 py-1 rounded hover:bg-[#141414] ${
+                            selectedSlug === r.slug ? "bg-[#151515]" : ""
+                          }`}
+                          onClick={() => handleSelect(r.slug)}
+                          aria-label={`Seleccionar ${r.slug}`}
+                        >
+                          <span className="font-medium">{r.slug}</span>
+                          <span className="ml-2 text-xs text-neutral-500">
+                            {r.updated_at
+                              ? new Date(r.updated_at).toLocaleString()
+                              : ""}
+                          </span>
+                        </button>
+                      </li>
+                    ))
+                  )}
+                </ul>
+                <div className="mt-3 flex items-center gap-2">
+                  <Button variant="secondary" onClick={loadRows}>
+                    Refrescar
+                  </Button>
                   <Button
-                    variant="secondary"
-                    onClick={handleSave}
+                    variant="ghost"
+                    onClick={handleDelete}
                     disabled={!selectedSlug}
                   >
-                    Guardar cambios
+                    Eliminar
                   </Button>
                 </div>
-              </div>
-              <div className="mt-3">
-                <textarea
-                  className="w-full h-[420px] md:h-[520px] bg-[#0a0a0a] border border-[#333333] rounded-md p-3 text-sm font-mono text-[#ededed] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#333333]"
-                  value={jsonText}
-                  onChange={(e) => setJsonText(e.target.value)}
-                  spellCheck={false}
-                  aria-label="Editor JSON de sección"
-                />
-              </div>
-              {status && (
-                <p className="mt-2 text-xs text-neutral-400">{status}</p>
-              )}
-            </section>
-          </div>
-        )}
-      </main>
-    </div>
+              </aside>
+
+              {/* Editor */}
+              <section className="md:col-span-2 border border-[#333333] rounded-lg p-3 bg-[#0b0b0b]">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-neutral-400">
+                    {selectedSlug
+                      ? `Editando: ${selectedSlug}`
+                      : "Seleccioná una sección"}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={handleSave}
+                      disabled={!selectedSlug}
+                    >
+                      Guardar cambios
+                    </Button>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <textarea
+                    className="w-full h-[420px] md:h-[520px] bg-[#0a0a0a] border border-[#333333] rounded-md p-3 text-sm font-mono text-[#ededed] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#333333]"
+                    value={jsonText}
+                    onChange={(e) => setJsonText(e.target.value)}
+                    spellCheck={false}
+                    aria-label="Editor JSON de sección"
+                  />
+                </div>
+                {status && (
+                  <p className="mt-2 text-xs text-neutral-400">{status}</p>
+                )}
+              </section>
+            </div>
+          )}
+        </main>
+      </div>
+    </ProfileAdminGuard>
   );
 }

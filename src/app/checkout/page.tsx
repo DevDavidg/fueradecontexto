@@ -24,17 +24,43 @@ export default function CheckoutPage() {
     load();
   }, []);
 
-  const handlePay = () => {
-    clearCart();
-    const subject = encodeURIComponent(
-      content?.procesoPago?.asuntoEmail ??
-        "Pedido Fueradecontexto - Envío de estampa"
-    );
-    const body = encodeURIComponent(
-      content?.procesoPago?.cuerpoEmail ??
-        "Hola! Adjunto mi estampa para personalizar el pedido."
-    );
-    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+  const handlePay = async () => {
+    try {
+      // Reduce stock for each item in cart
+      for (const item of cart.items) {
+        const response = await fetch("/api/products/reduce-stock", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: item.productId,
+            quantity: item.quantity,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to reduce stock for product ${item.productId}`
+          );
+        }
+      }
+
+      // Clear cart after successful stock reduction
+      clearCart();
+
+      const subject = encodeURIComponent(
+        content?.procesoPago?.asuntoEmail ??
+          "Pedido Fueradecontexto - Envío de estampa"
+      );
+      const body = encodeURIComponent(
+        content?.procesoPago?.cuerpoEmail ??
+          "Hola! Adjunto mi estampa para personalizar el pedido."
+      );
+      window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+    } catch (error) {
+      alert("Error al procesar el pago. Por favor, inténtalo de nuevo.");
+    }
   };
 
   return (

@@ -20,15 +20,6 @@ const COMPOUND_COLOR_MAP: Record<string, { color1: string; color2: string }> = {
   "Violeta Blanca": { color1: "#7C3AED", color2: "#FFFFFF" },
 };
 
-const SPECIAL_COLOR_MAPPINGS: Record<string, string> = {
-  "Azul Roja Blanca": "azul_roja_blanca",
-  "Azul Beige Roja": "azul_beige_roja",
-  "Verde Militar Blanca": "verde_militar_blanca",
-  "Violeta Blanca": "violeta_blanca",
-  "Negro Blanca": "negra_blanca",
-  "Gris Blanco": "gris_blanco",
-};
-
 const getCompoundColors = (
   colorName: string
 ): { color1: string; color2: string } => {
@@ -100,76 +91,26 @@ export type ProductCardProps = {
   highlight?: boolean;
 };
 
-const normalizeColorName = (colorName: string): string => {
+const getImageForColor = (product: Product, colorName?: string): string => {
+  if (!product.product_images || product.product_images.length === 0) {
+    return "/placeholder-product.png";
+  }
+
+  // If no color is specified, return the first image
+  if (!colorName) {
+    return product.product_images[0]?.url || "/placeholder-product.png";
+  }
+
+  // Find image for the specific color
+  const colorImage = product.product_images.find(
+    (img) => img.color.toLowerCase() === colorName.toLowerCase()
+  );
+
   return (
-    SPECIAL_COLOR_MAPPINGS[colorName] ||
-    colorName
-      .toLowerCase()
-      .replace(/\s+/g, "_")
-      .replace(/á/g, "a")
-      .replace(/é/g, "e")
-      .replace(/í/g, "i")
-      .replace(/ó/g, "o")
-      .replace(/ú/g, "u")
-      .replace(/ñ/g, "n")
+    colorImage?.url ||
+    product.product_images[0]?.url ||
+    "/placeholder-product.png"
   );
-};
-
-const fixGenderSpecificNaming = (
-  normalizedColor: string,
-  categoria: string
-): string => {
-  if (categoria === "gorras") {
-    return normalizedColor.replace(/negro$/, "negra").replace(/rojo$/, "roja");
-  }
-  return normalizedColor;
-};
-
-const getImagePathForProduct = (
-  product: Product,
-  colorName: string
-): string => {
-  const categoria = product.categoria?.toLowerCase();
-  const productType = product.name.toLowerCase();
-
-  const normalizedColor = normalizeColorName(colorName);
-  const genderFixedColor = fixGenderSpecificNaming(
-    normalizedColor,
-    categoria || ""
-  );
-
-  if (categoria === "buzos") {
-    if (productType.includes("cuello redondo")) {
-      return `/img/buzo_cuello_redondo_${genderFixedColor}.png`;
-    }
-    if (productType.includes("canguro")) {
-      return `/img/buzo_canguro_${genderFixedColor}.png`;
-    }
-  } else if (categoria === "camperas") {
-    if (colorName.toLowerCase() === "gris") {
-      return "/img/campera_gris.png";
-    }
-    return "/img/campera_negra_global.png";
-  } else if (categoria === "totebags") {
-    return "/img/tote_bag_global.png";
-  } else if (categoria === "gorras") {
-    if (productType.includes("gabardina")) {
-      return `/img/gorra_gabardina_${genderFixedColor}.png`;
-    }
-    if (productType.includes("trucker")) {
-      return `/img/gorra_trucker_${genderFixedColor}.png`;
-    }
-  }
-  return "";
-};
-
-const validateImageExists = async (imagePath: string): Promise<boolean> => {
-  try {
-    const response = await fetch(imagePath, { method: "HEAD" });
-    return response.ok;
-  } catch {
-    return false;
-  }
 };
 
 const isCompoundColor = (product: Product, colorName: string): boolean => {
@@ -194,34 +135,26 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       );
 
     React.useEffect(() => {
-      const validateColors = async () => {
-        if (!product.customizable?.colors) return;
-
-        const validColorPromises = product.customizable.colors.map(
-          async (color) => {
-            const imagePath = getImagePathForProduct(product, color.name);
-            if (!imagePath) return null;
-
-            const exists = await validateImageExists(imagePath);
-            return exists ? color : null;
-          }
+      // Set valid colors based on available product images
+      if (product.customizable?.colors && product.product_images) {
+        const validColorsResult = product.customizable.colors.filter((color) =>
+          product.product_images?.some(
+            (img) => img.color.toLowerCase() === color.name.toLowerCase()
+          )
         );
-
-        const validColorsResult = (
-          await Promise.all(validColorPromises)
-        ).filter((color): color is ColorOption => color !== null);
 
         setValidColors(validColorsResult);
 
+        // If current selected color is not valid, select the first valid color
         if (
           selectedColor &&
           !validColorsResult.find((c) => c.name === selectedColor.name)
         ) {
           setSelectedColor(validColorsResult[0] || null);
         }
-      };
-
-      validateColors();
+      } else {
+        setValidColors(product.customizable?.colors || []);
+      }
     }, [product, selectedColor]);
 
     React.useEffect(() => setImageError(false), [selectedColor]);
@@ -232,18 +165,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     const discounted = Math.round(product.price * 0.9);
 
     const imageUrl = React.useMemo(() => {
-      if (!selectedColor?.name) return product.imageUrl;
-
-      const colorImagePath = getImagePathForProduct(
-        product,
-        selectedColor.name
-      );
-      if (validColors.find((c) => c.name === selectedColor.name)) {
-        return colorImagePath || product.imageUrl;
-      }
-
-      return product.imageUrl;
-    }, [product, selectedColor, validColors]);
+      return getImageForColor(product, selectedColor?.name);
+    }, [product, selectedColor]);
 
     const toggleFavorite = React.useCallback(
       (e: React.MouseEvent) => {
@@ -287,12 +210,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
 
       // Si hay un color seleccionado, usar su hex como fondo
       if (selectedColor?.hex) {
-        console.log(
-          "Botón con color:",
-          selectedColor.hex,
-          "Texto:",
-          getTextColorForBackground(selectedColor.hex)
-        );
         return {
           backgroundColor: selectedColor.hex,
         };
@@ -410,15 +327,11 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
               "backdrop-blur-sm shadow-lg cursor-pointer",
               "transition-all duration-300 ease-in-out",
               "hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50",
-              isFav
-                ? "bg-red-500/90 hover:bg-red-500 hover:scale-110"
-                : "bg-black/80 hover:bg-black/90 hover:scale-105"
+              "bg-black/80 hover:bg-black/90 hover:scale-105"
             )}
             style={{
               top: "5px",
-              outline: isFav
-                ? "2px solid var(--accent)"
-                : "1px solid rgba(255, 255, 255, 0.4)",
+              outline: "1px solid rgba(255, 255, 255, 0.4)",
               outlineOffset: "-1px",
             }}
           >

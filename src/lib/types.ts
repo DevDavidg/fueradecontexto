@@ -15,6 +15,14 @@ export type ColorOption = {
   hex: string;
 };
 
+export type ProductImage = {
+  id: string;
+  url: string;
+  color: string;
+  created_at: string;
+  product_id: string;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -25,7 +33,9 @@ export type Product = {
   imageUrl: string;
   availableSizes: Array<"XS" | "S" | "M" | "L" | "XL" | "XXL" | "Único">;
   inStock: boolean;
+  stock: number;
   tags: string[];
+  product_images?: ProductImage[];
   customizable?: {
     printOptions: PrintOption[];
     colors: ColorOption[];

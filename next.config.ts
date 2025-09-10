@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "tuweb.com",
       },
+      {
+        protocol: "https",
+        hostname: "glbwyjwetgqxsjncpyhe.supabase.co",
+      },
     ],
   },
 };

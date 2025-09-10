@@ -53,7 +53,6 @@ export default function Contactanos() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
     alert("¡Formulario enviado correctamente!");
   };
 

@@ -3,7 +3,13 @@
     "id": "buzo-cuello-redondo-1",
     "nombre": "Buzo Cuello Redondo Premium",
     "categoria": "buzos",
-    "talles": ["S", "M", "L", "XL", "XXL"],
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "colores": [
       {
         "nombre": "Negro",
@@ -59,43 +65,43 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "/img/buzo_cuello_redondo_negro.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_negro.png"
       },
       {
         "color": "Blanco",
-        "url": "/img/buzo_cuello_redondo_blanco.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_blanco.png"
       },
       {
         "color": "Gris",
-        "url": "/img/buzo_cuello_redondo_gris.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_gris.png"
       },
       {
         "color": "Azul Francia",
-        "url": "/img/buzo_cuello_redondo_azul_francia.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_azul_francia.png"
       },
       {
         "color": "Azul Marino",
-        "url": "/img/buzo_cuello_redondo_azul_marino.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_azul_marino.png"
       },
       {
         "color": "Rojo",
-        "url": "/img/buzo_cuello_redondo_rojo.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_rojo.png"
       },
       {
         "color": "Rosa",
-        "url": "/img/buzo_cuello_redondo_rosa.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_rosa.png"
       },
       {
         "color": "Amarillo",
-        "url": "/img/buzo_cuello_redondo_amarillo.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_amarillo.png"
       },
       {
         "color": "Bordo",
-        "url": "/img/buzo_cuello_redondo_bordo.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_bordo.png"
       },
       {
         "color": "Verde Botella",
-        "url": "/img/buzo_cuello_redondo_verde_botella.png"
+        "url": "/placeholder-product.pngbuzo_cuello_redondo_verde_botella.png"
       }
     ],
     "tamaño_estampa": {
@@ -185,7 +191,13 @@
     "id": "buzo-canguro-1",
     "nombre": "Buzo Canguro Premium",
     "categoria": "buzos",
-    "talles": ["S", "M", "L", "XL", "XXL"],
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "colores": [
       {
         "nombre": "Negro",
@@ -241,43 +253,43 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "/img/buzo_canguro_negro.png"
+        "url": "/placeholder-product.pngbuzo_canguro_negro.png"
       },
       {
         "color": "Blanco",
-        "url": "/img/buzo_canguro_blanco.png"
+        "url": "/placeholder-product.pngbuzo_canguro_blanco.png"
       },
       {
         "color": "Azul",
-        "url": "/img/buzo_canguro_azul.png"
+        "url": "/placeholder-product.pngbuzo_canguro_azul.png"
       },
       {
         "color": "Azul Marino",
-        "url": "/img/buzo_canguro_azul_marino.png"
+        "url": "/placeholder-product.pngbuzo_canguro_azul_marino.png"
       },
       {
         "color": "Gris",
-        "url": "/img/buzo_canguro_gris.png"
+        "url": "/placeholder-product.pngbuzo_canguro_gris.png"
       },
       {
         "color": "Rojo",
-        "url": "/img/buzo_canguro_rojo.png"
+        "url": "/placeholder-product.pngbuzo_canguro_rojo.png"
       },
       {
         "color": "Rosa",
-        "url": "/img/buzo_canguro_rosa.png"
+        "url": "/placeholder-product.pngbuzo_canguro_rosa.png"
       },
       {
         "color": "Violeta",
-        "url": "/img/buzo_canguro_violeta.png"
+        "url": "/placeholder-product.pngbuzo_canguro_violeta.png"
       },
       {
         "color": "Amarillo",
-        "url": "/img/buzo_canguro_amarillo.png"
+        "url": "/placeholder-product.pngbuzo_canguro_amarillo.png"
       },
       {
         "color": "Bordo",
-        "url": "/img/buzo_canguro_bordo.png"
+        "url": "/placeholder-product.pngbuzo_canguro_bordo.png"
       }
     ],
     "tamaño_estampa": {
@@ -367,7 +379,13 @@
     "id": "campera-global-1",
     "nombre": "Campera Global Premium",
     "categoria": "camperas",
-    "talles": ["S", "M", "L", "XL", "XXL"],
+    "talles": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "colores": [
       {
         "nombre": "Negro",
@@ -391,11 +409,11 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "/img/campera_negra_global.png"
+        "url": "/placeholder-product.pngcampera_negra_global.png"
       },
       {
         "color": "Gris",
-        "url": "/img/campera_gris.png"
+        "url": "/placeholder-product.pngcampera_gris.png"
       }
     ],
     "tamaño_estampa": {
@@ -429,7 +447,9 @@
     "id": "gorra-gabardina-1",
     "nombre": "Gorra Gabardina Premium",
     "categoria": "gorras",
-    "talles": ["Único"],
+    "talles": [
+      "Único"
+    ],
     "colores": [
       {
         "nombre": "Negro",
@@ -473,31 +493,31 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "/img/gorra_gabardina_negra.png"
+        "url": "/placeholder-product.pnggorra_gabardina_negra.png"
       },
       {
         "color": "Gris",
-        "url": "/img/gorra_gabardina_gris.png"
+        "url": "/placeholder-product.pnggorra_gabardina_gris.png"
       },
       {
         "color": "Azul Marino",
-        "url": "/img/gorra_gabardina_azul_marino.png"
+        "url": "/placeholder-product.pnggorra_gabardina_azul_marino.png"
       },
       {
         "color": "Marrón",
-        "url": "/img/gorra_gabardina_marron.png"
+        "url": "/placeholder-product.pnggorra_gabardina_marron.png"
       },
       {
         "color": "Rojo",
-        "url": "/img/gorra_gabardina_roja.png"
+        "url": "/placeholder-product.pnggorra_gabardina_roja.png"
       },
       {
         "color": "Rosa",
-        "url": "/img/gorra_gabardina_rosa.png"
+        "url": "/placeholder-product.pnggorra_gabardina_rosa.png"
       },
       {
         "color": "Verde Botella",
-        "url": "/img/gorra_gabardina_verde_botella.png"
+        "url": "/placeholder-product.pnggorra_gabardina_verde_botella.png"
       }
     ],
     "tamaño_estampa": {
@@ -538,7 +558,9 @@
     "id": "gorra-trucker-1",
     "nombre": "Gorra Trucker Premium",
     "categoria": "gorras",
-    "talles": ["Único"],
+    "talles": [
+      "Único"
+    ],
     "colores": [
       {
         "nombre": "Negro",
@@ -594,43 +616,43 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "/img/gorra_trucker_negra.png"
+        "url": "/placeholder-product.pnggorra_trucker_negra.png"
       },
       {
         "color": "Negro Blanca",
-        "url": "/img/gorra_trucker_negra_blanca.png"
+        "url": "/placeholder-product.pnggorra_trucker_negra_blanca.png"
       },
       {
         "color": "Gris Blanco",
-        "url": "/img/gorra_trucker_gris_blanco.png"
+        "url": "/placeholder-product.pnggorra_trucker_gris_blanco.png"
       },
       {
         "color": "Azul Roja Blanca",
-        "url": "/img/gorra_trucker_azul_roja_blanca.png"
+        "url": "/placeholder-product.pnggorra_trucker_azul_roja_blanca.png"
       },
       {
         "color": "Azul Beige Roja",
-        "url": "/img/gorra_trucker_azul_beige_roja.png"
+        "url": "/placeholder-product.pnggorra_trucker_azul_beige_roja.png"
       },
       {
         "color": "Rojo",
-        "url": "/img/gorra_trucker_roja.png"
+        "url": "/placeholder-product.pnggorra_trucker_roja.png"
       },
       {
         "color": "Verde Lima",
-        "url": "/img/gorra_trucker_verde_lima.png"
+        "url": "/placeholder-product.pnggorra_trucker_verde_lima.png"
       },
       {
         "color": "Verde Militar Blanca",
-        "url": "/img/gorra_trucker_verde_militar_blanca.png"
+        "url": "/placeholder-product.pnggorra_trucker_verde_militar_blanca.png"
       },
       {
         "color": "Violeta",
-        "url": "/img/gorra_trucker_violeta.png"
+        "url": "/placeholder-product.pnggorra_trucker_violeta.png"
       },
       {
         "color": "Violeta Blanca",
-        "url": "/img/gorra_trucker_violeta_blanca.png"
+        "url": "/placeholder-product.pnggorra_trucker_violeta_blanca.png"
       }
     ],
     "tamaño_estampa": {
@@ -680,7 +702,9 @@
     "id": "tote-bag-global-1",
     "nombre": "Tote Bag Global Premium",
     "categoria": "totebags",
-    "talles": ["Único"],
+    "talles": [
+      "Único"
+    ],
     "colores": [
       {
         "nombre": "Natural",
@@ -700,7 +724,7 @@
     "imagenes": [
       {
         "color": "Natural",
-        "url": "/img/tote_bag_global.png"
+        "url": "/placeholder-product.pngtote_bag_global.png"
       }
     ],
     "tamaño_estampa": {

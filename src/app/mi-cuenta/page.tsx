@@ -97,14 +97,63 @@ export default function AccountPage() {
             >
               Cerrar sesión
             </button>
-            {profile?.role === "admin" && (
+            {profile?.role === "admin" ? (
+              <div className="mt-4">
+                <h3 className="text-sm font-medium text-neutral-300 mb-3">
+                  Panel de Administración
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center justify-center rounded-md bg-blue-600 text-white text-sm h-9 px-3 hover:bg-blue-700"
+                  >
+                    Dashboard Admin
+                  </Link>
+                  <Link
+                    href="/admin/products"
+                    className="inline-flex items-center justify-center rounded-md bg-green-600 text-white text-sm h-9 px-3 hover:bg-green-700"
+                  >
+                    Gestión de Productos
+                  </Link>
+                  <Link
+                    href="/admin/sections"
+                    className="inline-flex items-center justify-center rounded-md bg-[#C2187A] text-white text-sm h-9 px-3 hover:bg-pink-700"
+                  >
+                    Editor de Sections
+                  </Link>
+                  <Link
+                    href="/admin/users"
+                    className="inline-flex items-center justify-center rounded-md bg-purple-600 text-white text-sm h-9 px-3 hover:bg-purple-700"
+                  >
+                    Gestión de Usuarios
+                  </Link>
+                </div>
+              </div>
+            ) : (
               <div className="mt-3">
-                <Link
-                  href="/admin/sections"
-                  className="inline-flex items-center justify-center rounded-md bg-[#C2187A] text-white text-sm h-9 px-3 hover:bg-pink-700"
+                <button
+                  onClick={async () => {
+                    try {
+                      const response = await fetch("/api/create-admin", {
+                        method: "POST",
+                      });
+                      const result = await response.json();
+                      if (response.ok) {
+                        alert(
+                          "Perfil de admin creado exitosamente. Recarga la página."
+                        );
+                        window.location.reload();
+                      } else {
+                        alert(`Error: ${result.error}`);
+                      }
+                    } catch (error) {
+                      alert("Error al crear perfil de admin");
+                    }
+                  }}
+                  className="inline-flex items-center justify-center rounded-md bg-green-600 text-white text-sm h-9 px-3 hover:bg-green-700"
                 >
-                  Abrir editor de Sections
-                </Link>
+                  Crear perfil de Admin
+                </button>
               </div>
             )}
           </section>

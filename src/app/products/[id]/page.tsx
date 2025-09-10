@@ -71,34 +71,17 @@ export default function ProductDetailPage() {
     }
 
     // Find the image URL for the selected color from the product's images array
-    const colorImage = product.customizable?.colors?.find(
-      (color) => color.name === colorName
-    );
+    if (product.product_images && product.product_images.length > 0) {
+      const colorImage = product.product_images.find(
+        (img) => img.color.toLowerCase() === colorName.toLowerCase()
+      );
 
-    if (colorImage) {
-      // Generate the image URL based on product type and color
-      const categoria = product.categoria?.toLowerCase();
-      const productType = product.name.toLowerCase();
-
-      let imagePath = "";
-
-      if (categoria === "buzos") {
-        if (productType.includes("cuello redondo")) {
-          imagePath = `/img/buzo_cuello_redondo_${colorName
-            .toLowerCase()
-            .replace(/\s+/g, "_")}.png`;
-        } else if (productType.includes("canguro")) {
-          imagePath = `/img/buzo_canguro_${colorName
-            .toLowerCase()
-            .replace(/\s+/g, "_")}.png`;
-        }
-      } else if (categoria === "camperas") {
-        imagePath = "/img/campera_negra_global.png";
-      } else if (categoria === "totebags") {
-        imagePath = "/img/tote_bag_global.png";
+      if (colorImage) {
+        return colorImage.url;
       }
 
-      return imagePath;
+      // If no specific color image found, return the first available image
+      return product.product_images[0]?.url || product.imageUrl;
     }
 
     return product.imageUrl;
