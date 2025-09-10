@@ -12,35 +12,38 @@ export const ProductCardSkeleton = ({
   return (
     <div
       className={clsx(
-        "group relative flex flex-col overflow-hidden rounded-2xl border border-[#333333]/60 bg-gradient-to-b from-[#0f0f0f] to-[#0b0b0b] backdrop-blur-sm",
-        "transition-all duration-300 ease-out opacity-100",
+        "group relative flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950",
+        "transition-colors",
         className
       )}
       aria-hidden
     >
-      <div className="relative w-full overflow-hidden rounded-t-2xl bg-gradient-to-b from-[#1a1a1a] to-[#111111] p-4">
-        <div className="aspect-[4/5] relative">
-          <div className="absolute inset-0 rounded-xl bg-[#151515] animate-pulse" />
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-t-xl bg-neutral-900">
+        {/* Favorites Button Skeleton */}
+        <div className="absolute right-2 top-2 z-50 grid h-8 w-8 place-items-center rounded-full border-2 border-white/50 bg-black/90 backdrop-blur-sm shadow-xl animate-pulse">
+          <div className="h-4 w-4 bg-white rounded-sm drop-shadow-sm" />
         </div>
+
+        <div className="absolute inset-0 bg-neutral-800 animate-pulse" />
       </div>
 
-      <div className="flex flex-col flex-1 p-5 space-y-4">
+      <div className="flex flex-1 flex-col gap-3 p-3 sm:p-4">
         <div className="flex items-center gap-2">
           {[0, 1, 2].map((i) => (
             <span
               key={i}
-              className="h-5 w-5 rounded-full border-2 border-[#333333] bg-[#1a1a1a] animate-pulse"
+              className="h-5 w-5 rounded-full border border-neutral-600 bg-neutral-800 animate-pulse"
             />
           ))}
         </div>
 
-        <div className="flex-1 min-h-0">
-          <div className="h-4 w-3/4 bg-[#1a1a1a] rounded mb-2 animate-pulse" />
-          <div className="h-4 w-1/2 bg-[#1a1a1a] rounded animate-pulse" />
-          <div className="mt-3 h-10 w-2/3 bg-[#1a1a1a] rounded animate-pulse" />
+        <div className="flex-1">
+          <div className="mb-1 h-4 w-3/4 bg-neutral-800 rounded animate-pulse" />
+          <div className="h-4 w-1/2 bg-neutral-800 rounded animate-pulse" />
+          <div className="mt-1 h-3 w-2/3 bg-neutral-800 rounded animate-pulse" />
         </div>
 
-        <div className="h-12 w-full rounded-xl bg-[#1a1a1a] animate-pulse" />
+        <div className="h-10 w-full rounded-lg bg-neutral-800 animate-pulse" />
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export default async function Home() {
               {inicio?.secciones?.productos?.titulo ?? "Productos"}
             </p>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-              {inicio?.secciones?.productos?.subtitulo ?? "Remeras"}
+              {inicio?.secciones?.productos?.subtitulo ?? "Catálogo"}
             </h1>
           </div>
           <ProductGrid />

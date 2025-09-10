@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CartSidebar } from "@/components/organisms/cart-sidebar";
 import { HeartIcon } from "@/components/ui/icons";
+import { useFavorites } from "@/hooks/use-favorites";
 
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { favorites } = useFavorites();
 
   useEffect(() => {
     const handleDocClick = (e: MouseEvent) => {
@@ -90,6 +92,14 @@ export const Navbar = () => {
           </li>
           <li>
             <Link
+              href="/favoritos"
+              className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
+            >
+              Favoritos
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/mi-cuenta"
               className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
             >
@@ -133,13 +143,19 @@ export const Navbar = () => {
           </button>
 
           <CartSidebar />
-          <button
-            className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-fuchsia-500 hover:text-fuchsia-400 hover:border-fuchsia-400 transition-colors"
+          <Link
+            href="/favoritos"
+            className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-fuchsia-500 hover:text-fuchsia-400 hover:border-fuchsia-400 transition-colors relative"
             aria-label="Productos favoritos"
             title="Productos favoritos"
           >
             <HeartIcon className="w-4 h-4" />
-          </button>
+            {favorites.items.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {favorites.items.length}
+              </span>
+            )}
+          </Link>
         </div>
       </nav>
 
@@ -204,6 +220,22 @@ export const Navbar = () => {
               role="menuitem"
             >
               Contacto
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/favoritos"
+              className="block px-2 py-2 rounded text-sm text-neutral-200 hover:bg-[#151515] flex items-center gap-2"
+              onClick={() => setOpen(false)}
+              role="menuitem"
+            >
+              <HeartIcon className="w-4 h-4" />
+              Favoritos
+              {favorites.items.length > 0 && (
+                <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center ml-auto">
+                  {favorites.items.length}
+                </span>
+              )}
             </Link>
           </li>
           <li>

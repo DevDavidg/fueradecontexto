@@ -1,91 +1,52 @@
 [
   {
-    "nombre": "Remera Oversize Negra",
-    "talles": [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
+    "id": "buzo-cuello-redondo-1",
+    "nombre": "Buzo Cuello Redondo Premium",
+    "categoria": "buzos",
+    "talles": ["S", "M", "L", "XL", "XXL"],
     "colores": [
-      "Negro",
-      "Blanco",
-      "Gris"
-    ],
-    "descripcion": "Remera oversize 100% algodón, costuras reforzadas, cómoda y versátil.",
-    "precio": {
-      "normal": 15000,
-      "transferencia": 13500
-    },
-    "metodos_pago": [
-      "Tarjeta de crédito",
-      "Tarjeta de débito",
-      "Transferencia"
-    ],
-    "imagenes": [
       {
-        "color": "Negro",
-        "url": "https://tuweb.com/imagenes/remera-oversize-negra.jpg"
+        "nombre": "Negro",
+        "hex": "#000000"
       },
       {
-        "color": "Blanco",
-        "url": "https://tuweb.com/imagenes/remera-oversize-blanca.jpg"
+        "nombre": "Blanco",
+        "hex": "#FFFFFF"
       },
       {
-        "color": "Gris",
-        "url": "https://tuweb.com/imagenes/remera-oversize-gris.jpg"
+        "nombre": "Gris",
+        "hex": "#808080"
+      },
+      {
+        "nombre": "Azul Francia",
+        "hex": "#0072BB"
+      },
+      {
+        "nombre": "Azul Marino",
+        "hex": "#1E3A8A"
+      },
+      {
+        "nombre": "Rojo",
+        "hex": "#DC2626"
+      },
+      {
+        "nombre": "Rosa",
+        "hex": "#EC4899"
+      },
+      {
+        "nombre": "Amarillo",
+        "hex": "#F59E0B"
+      },
+      {
+        "nombre": "Bordo",
+        "hex": "#7C2D12"
+      },
+      {
+        "nombre": "Verde Botella",
+        "hex": "#166534"
       }
     ],
-    "tamaño_estampa": {
-      "hasta_15cm": 15000,
-      "hasta_20x30cm": 17000,
-      "hasta_30x40cm": 19000,
-      "hasta_40x50cm": 21000
-    },
-    "envio": {
-      "metodo": "Correo Argentino",
-      "codigo_postal": "1406"
-    },
-    "stock": {
-      "Negro": {
-        "S": 10,
-        "M": 8,
-        "L": 12,
-        "XL": 7,
-        "XXL": 5
-      },
-      "Blanco": {
-        "S": 6,
-        "M": 9,
-        "L": 11,
-        "XL": 4,
-        "XXL": 3
-      },
-      "Gris": {
-        "S": 5,
-        "M": 7,
-        "L": 10,
-        "XL": 6,
-        "XXL": 2
-      }
-    }
-  },
-  {
-    "nombre": "Buzo Canguro Bordado",
-    "talles": [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
-    "colores": [
-      "Negro",
-      "Azul Marino",
-      "Verde"
-    ],
-    "descripcion": "Buzo canguro con bordado frontal, interior frisa para mayor abrigo.",
+    "descripcion": "Buzo de cuello redondo premium 100% algodón peinado. Corte oversize, costuras reforzadas y acabado premium. Perfecto para el día a día con máximo confort.",
     "precio": {
       "normal": 25000,
       "transferencia": 22500
@@ -98,15 +59,43 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "https://tuweb.com/imagenes/buzo-canguro-negro.jpg"
+        "url": "/img/buzo_cuello_redondo_negro.png"
+      },
+      {
+        "color": "Blanco",
+        "url": "/img/buzo_cuello_redondo_blanco.png"
+      },
+      {
+        "color": "Gris",
+        "url": "/img/buzo_cuello_redondo_gris.png"
+      },
+      {
+        "color": "Azul Francia",
+        "url": "/img/buzo_cuello_redondo_azul_francia.png"
       },
       {
         "color": "Azul Marino",
-        "url": "https://tuweb.com/imagenes/buzo-canguro-azul.jpg"
+        "url": "/img/buzo_cuello_redondo_azul_marino.png"
       },
       {
-        "color": "Verde",
-        "url": "https://tuweb.com/imagenes/buzo-canguro-verde.jpg"
+        "color": "Rojo",
+        "url": "/img/buzo_cuello_redondo_rojo.png"
+      },
+      {
+        "color": "Rosa",
+        "url": "/img/buzo_cuello_redondo_rosa.png"
+      },
+      {
+        "color": "Amarillo",
+        "url": "/img/buzo_cuello_redondo_amarillo.png"
+      },
+      {
+        "color": "Bordo",
+        "url": "/img/buzo_cuello_redondo_bordo.png"
+      },
+      {
+        "color": "Verde Botella",
+        "url": "/img/buzo_cuello_redondo_verde_botella.png"
       }
     ],
     "tamaño_estampa": {
@@ -121,46 +110,128 @@
     },
     "stock": {
       "Negro": {
-        "S": 7,
-        "M": 10,
+        "S": 8,
+        "M": 12,
+        "L": 10,
+        "XL": 6,
+        "XXL": 4
+      },
+      "Blanco": {
+        "S": 6,
+        "M": 9,
         "L": 8,
         "XL": 5,
         "XXL": 3
       },
-      "Azul Marino": {
-        "S": 6,
-        "M": 9,
+      "Gris": {
+        "S": 7,
+        "M": 10,
+        "L": 9,
+        "XL": 6,
+        "XXL": 4
+      },
+      "Azul Francia": {
+        "S": 5,
+        "M": 8,
         "L": 7,
         "XL": 4,
         "XXL": 2
       },
-      "Verde": {
-        "S": 5,
-        "M": 8,
+      "Azul Marino": {
+        "S": 6,
+        "M": 9,
+        "L": 8,
+        "XL": 5,
+        "XXL": 3
+      },
+      "Rojo": {
+        "S": 4,
+        "M": 7,
         "L": 6,
         "XL": 3,
+        "XXL": 2
+      },
+      "Rosa": {
+        "S": 5,
+        "M": 8,
+        "L": 7,
+        "XL": 4,
+        "XXL": 2
+      },
+      "Amarillo": {
+        "S": 3,
+        "M": 6,
+        "L": 5,
+        "XL": 3,
         "XXL": 1
+      },
+      "Bordo": {
+        "S": 4,
+        "M": 7,
+        "L": 6,
+        "XL": 3,
+        "XXL": 2
+      },
+      "Verde Botella": {
+        "S": 5,
+        "M": 8,
+        "L": 7,
+        "XL": 4,
+        "XXL": 2
       }
     }
   },
   {
-    "nombre": "Totebag Lona Premium",
-    "talles": [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
+    "id": "buzo-canguro-1",
+    "nombre": "Buzo Canguro Premium",
+    "categoria": "buzos",
+    "talles": ["S", "M", "L", "XL", "XXL"],
     "colores": [
-      "Negro",
-      "Blanco",
-      "Natural"
+      {
+        "nombre": "Negro",
+        "hex": "#000000"
+      },
+      {
+        "nombre": "Blanco",
+        "hex": "#FFFFFF"
+      },
+      {
+        "nombre": "Azul",
+        "hex": "#2563EB"
+      },
+      {
+        "nombre": "Azul Marino",
+        "hex": "#1E3A8A"
+      },
+      {
+        "nombre": "Gris",
+        "hex": "#808080"
+      },
+      {
+        "nombre": "Rojo",
+        "hex": "#DC2626"
+      },
+      {
+        "nombre": "Rosa",
+        "hex": "#EC4899"
+      },
+      {
+        "nombre": "Violeta",
+        "hex": "#7C3AED"
+      },
+      {
+        "nombre": "Amarillo",
+        "hex": "#F59E0B"
+      },
+      {
+        "nombre": "Bordo",
+        "hex": "#7C2D12"
+      }
     ],
-    "descripcion": "Totebag resistente de lona 12oz, costuras reforzadas y manijas largas.",
+    "descripcion": "Buzo canguro premium con capucha y bolsillo canguro. Interior frisa para máximo abrigo y confort. Corte oversize y costuras reforzadas.",
     "precio": {
-      "normal": 12000,
-      "transferencia": 10800
+      "normal": 28000,
+      "transferencia": 25200
     },
     "metodos_pago": [
       "Tarjeta de crédito",
@@ -169,67 +240,227 @@
     ],
     "imagenes": [
       {
-        "color": "Natural",
-        "url": "https://tuweb.com/imagenes/totebag-lona-natural.jpg"
-      },
-      {
         "color": "Negro",
-        "url": "https://tuweb.com/imagenes/totebag-lona-negra.jpg"
+        "url": "/img/buzo_canguro_negro.png"
       },
       {
         "color": "Blanco",
-        "url": "https://tuweb.com/imagenes/totebag-lona-blanca.jpg"
+        "url": "/img/buzo_canguro_blanco.png"
+      },
+      {
+        "color": "Azul",
+        "url": "/img/buzo_canguro_azul.png"
+      },
+      {
+        "color": "Azul Marino",
+        "url": "/img/buzo_canguro_azul_marino.png"
+      },
+      {
+        "color": "Gris",
+        "url": "/img/buzo_canguro_gris.png"
+      },
+      {
+        "color": "Rojo",
+        "url": "/img/buzo_canguro_rojo.png"
+      },
+      {
+        "color": "Rosa",
+        "url": "/img/buzo_canguro_rosa.png"
+      },
+      {
+        "color": "Violeta",
+        "url": "/img/buzo_canguro_violeta.png"
+      },
+      {
+        "color": "Amarillo",
+        "url": "/img/buzo_canguro_amarillo.png"
+      },
+      {
+        "color": "Bordo",
+        "url": "/img/buzo_canguro_bordo.png"
       }
     ],
     "tamaño_estampa": {
-      "hasta_15cm": 12000,
-      "hasta_20x30cm": 13500,
-      "hasta_30x40cm": 15000,
-      "hasta_40x50cm": 16500
+      "hasta_15cm": 28000,
+      "hasta_20x30cm": 30000,
+      "hasta_30x40cm": 32000,
+      "hasta_40x50cm": 34000
     },
     "envio": {
       "metodo": "Correo Argentino",
       "codigo_postal": "1406"
     },
     "stock": {
-      "Natural": {
-        "S": 12,
-        "M": 14,
-        "L": 10,
-        "XL": 8,
-        "XXL": 6
-      },
       "Negro": {
-        "S": 9,
-        "M": 11,
-        "L": 8,
-        "XL": 6,
-        "XXL": 4
-      },
-      "Blanco": {
         "S": 7,
-        "M": 9,
-        "L": 7,
+        "M": 10,
+        "L": 8,
         "XL": 5,
         "XXL": 3
+      },
+      "Blanco": {
+        "S": 6,
+        "M": 9,
+        "L": 7,
+        "XL": 4,
+        "XXL": 2
+      },
+      "Azul": {
+        "S": 6,
+        "M": 9,
+        "L": 7,
+        "XL": 4,
+        "XXL": 2
+      },
+      "Azul Marino": {
+        "S": 5,
+        "M": 8,
+        "L": 6,
+        "XL": 3,
+        "XXL": 2
+      },
+      "Gris": {
+        "S": 7,
+        "M": 10,
+        "L": 8,
+        "XL": 5,
+        "XXL": 3
+      },
+      "Rojo": {
+        "S": 5,
+        "M": 8,
+        "L": 6,
+        "XL": 3,
+        "XXL": 2
+      },
+      "Rosa": {
+        "S": 4,
+        "M": 7,
+        "L": 5,
+        "XL": 3,
+        "XXL": 1
+      },
+      "Violeta": {
+        "S": 3,
+        "M": 6,
+        "L": 4,
+        "XL": 2,
+        "XXL": 1
+      },
+      "Amarillo": {
+        "S": 3,
+        "M": 6,
+        "L": 4,
+        "XL": 2,
+        "XXL": 1
+      },
+      "Bordo": {
+        "S": 4,
+        "M": 7,
+        "L": 5,
+        "XL": 3,
+        "XXL": 1
       }
     }
   },
   {
-    "nombre": "Gorra Trucker Bordada",
-    "talles": [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
+    "id": "campera-global-1",
+    "nombre": "Campera Global Premium",
+    "categoria": "camperas",
+    "talles": ["S", "M", "L", "XL", "XXL"],
     "colores": [
-      "Negro",
-      "Azul Marino",
-      "Rojo"
+      {
+        "nombre": "Negro",
+        "hex": "#000000"
+      },
+      {
+        "nombre": "Gris",
+        "hex": "#808080"
+      }
     ],
-    "descripcion": "Gorra trucker ajustable con red trasera y bordado frontal.",
+    "descripcion": "Campera premium de alta calidad con diseño minimalista. Perfecta para todas las estaciones, con corte moderno y materiales premium.",
+    "precio": {
+      "normal": 45000,
+      "transferencia": 40500
+    },
+    "metodos_pago": [
+      "Tarjeta de crédito",
+      "Tarjeta de débito",
+      "Transferencia"
+    ],
+    "imagenes": [
+      {
+        "color": "Negro",
+        "url": "/img/campera_negra_global.png"
+      },
+      {
+        "color": "Gris",
+        "url": "/img/campera_gris.png"
+      }
+    ],
+    "tamaño_estampa": {
+      "hasta_15cm": 45000,
+      "hasta_20x30cm": 48000,
+      "hasta_30x40cm": 51000,
+      "hasta_40x50cm": 54000
+    },
+    "envio": {
+      "metodo": "Correo Argentino",
+      "codigo_postal": "1406"
+    },
+    "stock": {
+      "Negro": {
+        "S": 6,
+        "M": 8,
+        "L": 7,
+        "XL": 4,
+        "XXL": 2
+      },
+      "Gris": {
+        "S": 5,
+        "M": 7,
+        "L": 6,
+        "XL": 3,
+        "XXL": 2
+      }
+    }
+  },
+  {
+    "id": "gorra-gabardina-1",
+    "nombre": "Gorra Gabardina Premium",
+    "categoria": "gorras",
+    "talles": ["Único"],
+    "colores": [
+      {
+        "nombre": "Negro",
+        "hex": "#000000"
+      },
+      {
+        "nombre": "Gris",
+        "hex": "#808080"
+      },
+      {
+        "nombre": "Azul Marino",
+        "hex": "#1E3A8A"
+      },
+      {
+        "nombre": "Marrón",
+        "hex": "#8B4513"
+      },
+      {
+        "nombre": "Rojo",
+        "hex": "#DC2626"
+      },
+      {
+        "nombre": "Rosa",
+        "hex": "#EC4899"
+      },
+      {
+        "nombre": "Verde Botella",
+        "hex": "#166534"
+      }
+    ],
+    "descripcion": "Gorra gabardina premium con diseño clásico y moderno. Material resistente al agua, ajuste cómodo y estilo atemporal. Perfecta para cualquier ocasión.",
     "precio": {
       "normal": 18000,
       "transferencia": 16200
@@ -242,22 +473,38 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "https://tuweb.com/imagenes/gorra-trucker-negra.jpg"
+        "url": "/img/gorra_gabardina_negra.png"
+      },
+      {
+        "color": "Gris",
+        "url": "/img/gorra_gabardina_gris.png"
       },
       {
         "color": "Azul Marino",
-        "url": "https://tuweb.com/imagenes/gorra-trucker-azul.jpg"
+        "url": "/img/gorra_gabardina_azul_marino.png"
+      },
+      {
+        "color": "Marrón",
+        "url": "/img/gorra_gabardina_marron.png"
       },
       {
         "color": "Rojo",
-        "url": "https://tuweb.com/imagenes/gorra-trucker-roja.jpg"
+        "url": "/img/gorra_gabardina_roja.png"
+      },
+      {
+        "color": "Rosa",
+        "url": "/img/gorra_gabardina_rosa.png"
+      },
+      {
+        "color": "Verde Botella",
+        "url": "/img/gorra_gabardina_verde_botella.png"
       }
     ],
     "tamaño_estampa": {
       "hasta_15cm": 18000,
-      "hasta_20x30cm": 19500,
-      "hasta_30x40cm": 21000,
-      "hasta_40x50cm": 22500
+      "hasta_20x30cm": 20000,
+      "hasta_30x40cm": 22000,
+      "hasta_40x50cm": 24000
     },
     "envio": {
       "metodo": "Correo Argentino",
@@ -265,46 +512,79 @@
     },
     "stock": {
       "Negro": {
-        "S": 6,
-        "M": 8,
-        "L": 7,
-        "XL": 5,
-        "XXL": 3
+        "Único": 15
+      },
+      "Gris": {
+        "Único": 12
       },
       "Azul Marino": {
-        "S": 5,
-        "M": 7,
-        "L": 6,
-        "XL": 4,
-        "XXL": 2
+        "Único": 10
+      },
+      "Marrón": {
+        "Único": 8
       },
       "Rojo": {
-        "S": 4,
-        "M": 6,
-        "L": 5,
-        "XL": 3,
-        "XXL": 1
+        "Único": 9
+      },
+      "Rosa": {
+        "Único": 7
+      },
+      "Verde Botella": {
+        "Único": 8
       }
     }
   },
   {
-    "nombre": "Campera Rompeviento Ligera",
-    "talles": [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
+    "id": "gorra-trucker-1",
+    "nombre": "Gorra Trucker Premium",
+    "categoria": "gorras",
+    "talles": ["Único"],
     "colores": [
-      "Negro",
-      "Gris",
-      "Azul Marino"
+      {
+        "nombre": "Negro",
+        "hex": "#000000"
+      },
+      {
+        "nombre": "Negro Blanca",
+        "hex": "#000000"
+      },
+      {
+        "nombre": "Gris Blanco",
+        "hex": "#808080"
+      },
+      {
+        "nombre": "Azul Roja Blanca",
+        "hex": "#2563EB"
+      },
+      {
+        "nombre": "Azul Beige Roja",
+        "hex": "#2563EB"
+      },
+      {
+        "nombre": "Rojo",
+        "hex": "#DC2626"
+      },
+      {
+        "nombre": "Verde Lima",
+        "hex": "#84CC16"
+      },
+      {
+        "nombre": "Verde Militar Blanca",
+        "hex": "#166534"
+      },
+      {
+        "nombre": "Violeta",
+        "hex": "#7C3AED"
+      },
+      {
+        "nombre": "Violeta Blanca",
+        "hex": "#7C3AED"
+      }
     ],
-    "descripcion": "Campera rompeviento repelente al agua, capucha ajustable y bolsillos.",
+    "descripcion": "Gorra trucker premium con diseño clásico americano. Panel frontal de algodón y panel trasero de malla para máxima ventilación. Ajuste cómodo y estilo urbano.",
     "precio": {
-      "normal": 42000,
-      "transferencia": 37800
+      "normal": 20000,
+      "transferencia": 18000
     },
     "metodos_pago": [
       "Tarjeta de crédito",
@@ -314,22 +594,50 @@
     "imagenes": [
       {
         "color": "Negro",
-        "url": "https://tuweb.com/imagenes/rompeviento-negro.jpg"
+        "url": "/img/gorra_trucker_negra.png"
       },
       {
-        "color": "Gris",
-        "url": "https://tuweb.com/imagenes/rompeviento-gris.jpg"
+        "color": "Negro Blanca",
+        "url": "/img/gorra_trucker_negra_blanca.png"
       },
       {
-        "color": "Azul Marino",
-        "url": "https://tuweb.com/imagenes/rompeviento-azul.jpg"
+        "color": "Gris Blanco",
+        "url": "/img/gorra_trucker_gris_blanco.png"
+      },
+      {
+        "color": "Azul Roja Blanca",
+        "url": "/img/gorra_trucker_azul_roja_blanca.png"
+      },
+      {
+        "color": "Azul Beige Roja",
+        "url": "/img/gorra_trucker_azul_beige_roja.png"
+      },
+      {
+        "color": "Rojo",
+        "url": "/img/gorra_trucker_roja.png"
+      },
+      {
+        "color": "Verde Lima",
+        "url": "/img/gorra_trucker_verde_lima.png"
+      },
+      {
+        "color": "Verde Militar Blanca",
+        "url": "/img/gorra_trucker_verde_militar_blanca.png"
+      },
+      {
+        "color": "Violeta",
+        "url": "/img/gorra_trucker_violeta.png"
+      },
+      {
+        "color": "Violeta Blanca",
+        "url": "/img/gorra_trucker_violeta_blanca.png"
       }
     ],
     "tamaño_estampa": {
-      "hasta_15cm": 42000,
-      "hasta_20x30cm": 45000,
-      "hasta_30x40cm": 48000,
-      "hasta_40x50cm": 51000
+      "hasta_15cm": 20000,
+      "hasta_20x30cm": 22000,
+      "hasta_30x40cm": 24000,
+      "hasta_40x50cm": 26000
     },
     "envio": {
       "metodo": "Correo Argentino",
@@ -337,45 +645,52 @@
     },
     "stock": {
       "Negro": {
-        "S": 8,
-        "M": 9,
-        "L": 7,
-        "XL": 5,
-        "XXL": 3
+        "Único": 12
       },
-      "Gris": {
-        "S": 6,
-        "M": 8,
-        "L": 6,
-        "XL": 4,
-        "XXL": 2
+      "Negro Blanca": {
+        "Único": 10
       },
-      "Azul Marino": {
-        "S": 5,
-        "M": 7,
-        "L": 5,
-        "XL": 3,
-        "XXL": 2
+      "Gris Blanco": {
+        "Único": 9
+      },
+      "Azul Roja Blanca": {
+        "Único": 8
+      },
+      "Azul Beige Roja": {
+        "Único": 7
+      },
+      "Rojo": {
+        "Único": 11
+      },
+      "Verde Lima": {
+        "Único": 6
+      },
+      "Verde Militar Blanca": {
+        "Único": 8
+      },
+      "Violeta": {
+        "Único": 5
+      },
+      "Violeta Blanca": {
+        "Único": 6
       }
     }
   },
   {
-    "nombre": "Jogger Deportivo Unisex",
-    "talles": [
-      "S",
-      "M",
-      "L",
-      "XL",
-      "XXL"
-    ],
+    "id": "tote-bag-global-1",
+    "nombre": "Tote Bag Global Premium",
+    "categoria": "totebags",
+    "talles": ["Único"],
     "colores": [
-      "Negro",
-      "Gris"
+      {
+        "nombre": "Natural",
+        "hex": "#F5F5DC"
+      }
     ],
-    "descripcion": "Jogger de frisa liviana, tiro medio, cordón y puños elastizados.",
+    "descripcion": "Tote bag premium de lona resistente. Diseño minimalista y funcional, perfecto para el día a día. Costuras reforzadas y manijas cómodas.",
     "precio": {
-      "normal": 32000,
-      "transferencia": 28800
+      "normal": 15000,
+      "transferencia": 13500
     },
     "metodos_pago": [
       "Tarjeta de crédito",
@@ -384,38 +699,23 @@
     ],
     "imagenes": [
       {
-        "color": "Negro",
-        "url": "https://tuweb.com/imagenes/jogger-negro.jpg"
-      },
-      {
-        "color": "Gris",
-        "url": "https://tuweb.com/imagenes/jogger-gris.jpg"
+        "color": "Natural",
+        "url": "/img/tote_bag_global.png"
       }
     ],
     "tamaño_estampa": {
-      "hasta_15cm": 32000,
-      "hasta_20x30cm": 34000,
-      "hasta_30x40cm": 36000,
-      "hasta_40x50cm": 38000
+      "hasta_15cm": 15000,
+      "hasta_20x30cm": 17000,
+      "hasta_30x40cm": 19000,
+      "hasta_40x50cm": 21000
     },
     "envio": {
       "metodo": "Correo Argentino",
       "codigo_postal": "1406"
     },
     "stock": {
-      "Negro": {
-        "S": 10,
-        "M": 12,
-        "L": 9,
-        "XL": 6,
-        "XXL": 4
-      },
-      "Gris": {
-        "S": 7,
-        "M": 9,
-        "L": 8,
-        "XL": 5,
-        "XXL": 3
+      "Natural": {
+        "Único": 25
       }
     }
   }

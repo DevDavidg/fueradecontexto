@@ -17,34 +17,31 @@ export default async function ProductsPage() {
             {productos?.titles?.subtitulo ?? "Catálogo de Fueradecontexto"}
           </p>
         </div>
-        {/* Remeras */}
-        <section>
-          <h2 className="text-xl font-semibold tracking-tight">
-            {productos?.categorias?.remeras?.titulo ?? "Remeras"}
-          </h2>
-          <div className="mt-4">
-            <ProductGrid />
-          </div>
-        </section>
-
         {/* Buzos */}
-        <section className="mt-10">
+        <section>
           <h2 className="text-xl font-semibold tracking-tight">
             {productos?.categorias?.buzos?.titulo ?? "Buzos"}
           </h2>
           <p className="text-sm text-neutral-400">
             {productos?.categorias?.buzos?.descripcion ??
-              "Próximamente · Placeholder"}
+              "Buzos premium con capucha y cuello redondo"}
           </p>
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-[#333333] p-3 h-[220px] md:h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
-              >
-                Placeholder
-              </div>
-            ))}
+          <div className="mt-4">
+            <ProductGrid categoria="buzos" />
+          </div>
+        </section>
+
+        {/* Camperas */}
+        <section className="mt-10">
+          <h2 className="text-xl font-semibold tracking-tight">
+            {productos?.categorias?.camperas?.titulo ?? "Camperas"}
+          </h2>
+          <p className="text-sm text-neutral-400">
+            {productos?.categorias?.camperas?.descripcion ??
+              "Camperas premium de alta calidad"}
+          </p>
+          <div className="mt-4">
+            <ProductGrid categoria="camperas" />
           </div>
         </section>
 
@@ -55,17 +52,10 @@ export default async function ProductsPage() {
           </h2>
           <p className="text-sm text-neutral-400">
             {productos?.categorias?.gorras?.descripcion ??
-              "Próximamente · Placeholder"}
+              "Gorras premium de alta calidad"}
           </p>
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-[#333333] p-3 h-[220px] md:h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
-              >
-                Placeholder
-              </div>
-            ))}
+          <div className="mt-4">
+            <ProductGrid categoria="gorras" />
           </div>
         </section>
 
@@ -76,17 +66,10 @@ export default async function ProductsPage() {
           </h2>
           <p className="text-sm text-neutral-400">
             {productos?.categorias?.totebags?.descripcion ??
-              "Próximamente · Placeholder"}
+              "Tote bags premium de lona resistente"}
           </p>
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-[#333333] p-3 h-[220px] md:h-[320px] bg-[#111111] grid place-items-center text-neutral-500"
-              >
-                Placeholder
-              </div>
-            ))}
+          <div className="mt-4">
+            <ProductGrid categoria="totebags" />
           </div>
         </section>
 
@@ -118,8 +101,8 @@ export default async function ProductsPage() {
             </table>
           </div>
           <ul className="mt-4 text-sm text-neutral-400 list-disc pl-6 space-y-1">
-            {(productos?.tablaTalles?.notas ?? []).map((n, i: number) => (
-              <li key={i}>{n}</li>
+            {(productos?.tablaTalles?.notas ?? []).map((n) => (
+              <li key={n}>{n}</li>
             ))}
           </ul>
         </section>

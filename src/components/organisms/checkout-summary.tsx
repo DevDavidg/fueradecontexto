@@ -3,12 +3,15 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
-import { calculateCartTotals } from "@/lib/types";
+import { calculateCartTotals, type CartItem } from "@/lib/types";
 
 export const CheckoutSummary = () => {
   const { cart, clearCart } = useCart();
   const { subtotal } = useMemo(() => calculateCartTotals(cart), [cart]);
-  const itemCount = cart.items.reduce((acc, item) => acc + item.quantity, 0);
+  const itemCount = cart.items.reduce(
+    (acc: number, item: CartItem) => acc + item.quantity,
+    0
+  );
 
   return (
     <aside

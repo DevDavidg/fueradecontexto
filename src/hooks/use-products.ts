@@ -12,14 +12,15 @@ export type ProductsPage = {
 
 const PAGE_SIZE = 8;
 
-export const useProducts = () => {
+export const useProducts = (categoria?: string) => {
   const query = useInfiniteQuery<ProductsPage>({
-    queryKey: ["products", "infinite", PAGE_SIZE],
+    queryKey: ["products", "infinite", PAGE_SIZE, categoria],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
       productsService.getPage({
         page: pageParam as number,
         pageSize: PAGE_SIZE,
+        categoria,
       }),
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime: 1000 * 60,

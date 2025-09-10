@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { Navbar } from "@/components/organisms/navbar";
@@ -25,6 +25,12 @@ export default function ProductDetailPage() {
   const [selectedColor, setSelectedColor] = useState<
     { name: string; hex: string } | undefined
   >(product?.customizable?.colors[0]);
+  const [imageError, setImageError] = useState(false);
+
+  // Reset image error when color changes
+  useEffect(() => {
+    setImageError(false);
+  }, [selectedColor]);
 
   if (!product) {
     return (
@@ -59,17 +65,63 @@ export default function ProductDetailPage() {
 
   const isCustomizable = Boolean(product.customizable);
 
+  const getImageUrlForColor = (colorName: string) => {
+    if (!colorName) {
+      return product.imageUrl;
+    }
+
+    // Find the image URL for the selected color from the product's images array
+    const colorImage = product.customizable?.colors?.find(
+      (color) => color.name === colorName
+    );
+
+    if (colorImage) {
+      // Generate the image URL based on product type and color
+      const categoria = product.categoria?.toLowerCase();
+      const productType = product.name.toLowerCase();
+
+      let imagePath = "";
+
+      if (categoria === "buzos") {
+        if (productType.includes("cuello redondo")) {
+          imagePath = `/img/buzo_cuello_redondo_${colorName
+            .toLowerCase()
+            .replace(/\s+/g, "_")}.png`;
+        } else if (productType.includes("canguro")) {
+          imagePath = `/img/buzo_canguro_${colorName
+            .toLowerCase()
+            .replace(/\s+/g, "_")}.png`;
+        }
+      } else if (categoria === "camperas") {
+        imagePath = "/img/campera_negra_global.png";
+      } else if (categoria === "totebags") {
+        imagePath = "/img/tote_bag_global.png";
+      }
+
+      return imagePath;
+    }
+
+    return product.imageUrl;
+  };
+
+  const getCurrentImageUrl = () => {
+    return selectedColor?.name
+      ? getImageUrlForColor(selectedColor.name)
+      : product.imageUrl;
+  };
+
   return (
     <div className="min-h-screen bg-black text-[#ededed]">
       <Navbar />
       <main className="mx-auto max-w-6xl px-4 md:px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div className="relative w-full aspect-square overflow-hidden rounded-md bg-[#111111] grid place-items-center">
-          {product.imageUrl ? (
+          {!imageError && getCurrentImageUrl() ? (
             <Image
-              src={product.imageUrl}
+              src={getCurrentImageUrl()}
               alt={product.name}
               fill
-              className="object-contain md:object-cover"
+              className="object-contain md:object-cover transition-all duration-300"
+              onError={() => setImageError(true)}
             />
           ) : (
             <div className="text-neutral-500 text-sm">Imagen no disponible</div>
@@ -135,9 +187,9 @@ export default function ProductDetailPage() {
                 <div>
                   <p className="text-sm font-medium mb-2">Color</p>
                   <div className="flex flex-wrap gap-2">
-                    {product.customizable!.colors.map((color) => (
+                    {product.customizable!.colors.map((color, index) => (
                       <button
-                        key={color.name}
+                        key={`${product.id}-detail-color-${index}-${color.name}`}
                         onClick={() => setSelectedColor(color)}
                         aria-label={`Seleccionar color ${color.name}`}
                         className={

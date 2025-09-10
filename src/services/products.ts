@@ -7,13 +7,27 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const COLOR_HEX_BY_NAME: Record<string, string> = {
   Negro: "#000000",
   Blanco: "#FFFFFF",
-  Gris: "#9CA3AF",
-  Azul: "#3B82F6",
+  Gris: "#808080",
+  Azul: "#2563EB",
+  "Azul Francia": "#0072BB",
   "Azul Marino": "#1E3A8A",
   Verde: "#22C55E",
-  Rojo: "#EF4444",
+  "Verde Botella": "#166534",
+  "Verde Lima": "#84CC16",
+  "Verde Militar Blanca": "#166534",
+  Rojo: "#DC2626",
+  Rosa: "#EC4899",
   Amarillo: "#F59E0B",
-  Natural: "#E5E7EB",
+  Bordo: "#7C2D12",
+  Violeta: "#7C3AED",
+  "Violeta Blanca": "#7C3AED",
+  Marrón: "#8B4513",
+  Natural: "#F5F5DC",
+  // Special trucker colors
+  "Negro Blanca": "#000000",
+  "Gris Blanco": "#808080",
+  "Azul Roja Blanca": "#2563EB",
+  "Azul Beige Roja": "#2563EB",
 };
 
 const toSlug = (value: string) =>
@@ -65,7 +79,7 @@ const buildPrintOptions = (raw: RawProduct): PrintOption[] => {
 const RAW: RawProduct[] = (() => {
   const parsed = RawProductSchema.array().safeParse(rawProducts);
   if (!parsed.success) {
-    console.error("products.json validation failed", parsed.error.flatten());
+    console.error("products.json validation failed", parsed.error.issues);
     return rawProducts as unknown[] as RawProduct[];
   }
   return parsed.data;
@@ -75,10 +89,24 @@ const ALL_PRODUCTS: Product[] = RAW.map((item, index): Product => {
   const slug = toSlug(item.nombre);
   const id = `${slug}-${index + 1}`;
   const firstImage = item.imagenes?.[0]?.url ?? "";
-  const colors = (item.colores ?? []).map((name) => ({
-    name,
-    hex: COLOR_HEX_BY_NAME[name] ?? "#111111",
-  }));
+
+  // Handle both old string array and new object array for colors
+  const colors = Array.isArray(item.colores)
+    ? item.colores.map((color) => {
+        if (typeof color === "string") {
+          return {
+            name: color,
+            hex: COLOR_HEX_BY_NAME[color] ?? "#111111",
+          };
+        }
+        // Map Spanish property names to English
+        return {
+          name: color.nombre,
+          hex: color.hex,
+        };
+      })
+    : [];
+
   const totalStock = Object.values(item.stock ?? {})
     .flatMap((sizes) => Object.values(sizes))
     .reduce((acc, n) => acc + (n ?? 0), 0);
@@ -86,6 +114,7 @@ const ALL_PRODUCTS: Product[] = RAW.map((item, index): Product => {
   return {
     id,
     name: item.nombre,
+    categoria: item.categoria ?? "general",
     description: item.descripcion,
     price: item.precio.normal,
     currency: "ARS",
@@ -100,7 +129,7 @@ const ALL_PRODUCTS: Product[] = RAW.map((item, index): Product => {
   };
 });
 
-type PageParams = { page: number; pageSize: number };
+type PageParams = { page: number; pageSize: number; categoria?: string };
 type PageResult = {
   items: Product[];
   hasMore: boolean;
@@ -108,16 +137,27 @@ type PageResult = {
 };
 
 export const productsService = {
-  async getAll(): Promise<Product[]> {
+  async getAll(categoria?: string): Promise<Product[]> {
     await sleep(300);
+    if (categoria) {
+      return ALL_PRODUCTS.filter((p) => p.categoria === categoria);
+    }
     return ALL_PRODUCTS;
   },
-  async getPage({ page, pageSize }: PageParams): Promise<PageResult> {
+  async getPage({
+    page,
+    pageSize,
+    categoria,
+  }: PageParams): Promise<PageResult> {
     await sleep(300);
+    let filteredProducts = ALL_PRODUCTS;
+    if (categoria) {
+      filteredProducts = ALL_PRODUCTS.filter((p) => p.categoria === categoria);
+    }
     const start = page * pageSize;
     const end = start + pageSize;
-    const items = ALL_PRODUCTS.slice(start, end);
-    const hasMore = end < ALL_PRODUCTS.length;
+    const items = filteredProducts.slice(start, end);
+    const hasMore = end < filteredProducts.length;
     return { items, hasMore, nextPage: hasMore ? page + 1 : null };
   },
   async getById(id: string): Promise<Product | undefined> {

@@ -18,6 +18,7 @@ export type ColorOption = {
 export type Product = {
   id: string;
   name: string;
+  categoria: string;
   description: string;
   price: number;
   currency: CurrencyCode;

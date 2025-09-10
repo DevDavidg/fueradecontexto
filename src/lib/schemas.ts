@@ -33,20 +33,18 @@ export const SectionsSchema = z
           .optional(),
         categorias: z
           .object({
-            remeras: z
-              .object({ titulo: z.string().optional().nullable() })
-              .partial()
-              .optional(),
             buzos: z
               .object({
                 titulo: z.string().optional().nullable(),
+                estado: z.string().optional().nullable(),
                 descripcion: z.string().optional().nullable(),
               })
               .partial()
               .optional(),
-            gorras: z
+            camperas: z
               .object({
                 titulo: z.string().optional().nullable(),
+                estado: z.string().optional().nullable(),
                 descripcion: z.string().optional().nullable(),
               })
               .partial()
@@ -54,6 +52,15 @@ export const SectionsSchema = z
             totebags: z
               .object({
                 titulo: z.string().optional().nullable(),
+                estado: z.string().optional().nullable(),
+                descripcion: z.string().optional().nullable(),
+              })
+              .partial()
+              .optional(),
+            gorras: z
+              .object({
+                titulo: z.string().optional().nullable(),
+                estado: z.string().optional().nullable(),
                 descripcion: z.string().optional().nullable(),
               })
               .partial()
@@ -210,9 +217,19 @@ export const SectionsSchema = z
 export type Sections = z.infer<typeof SectionsSchema>;
 
 export const RawProductSchema = z.object({
+  id: z.string().optional(),
   nombre: z.string(),
-  talles: z.array(z.enum(["XS", "S", "M", "L", "XL", "XXL"])).default([]),
-  colores: z.array(z.string()).default([]),
+  categoria: z.string().optional(),
+  talles: z
+    .array(
+      z.union([z.enum(["XS", "S", "M", "L", "XL", "XXL"]), z.literal("Único")])
+    )
+    .default([]),
+  colores: z
+    .array(
+      z.union([z.string(), z.object({ nombre: z.string(), hex: z.string() })])
+    )
+    .default([]),
   descripcion: z.string().default(""),
   precio: z.object({
     normal: z.number(),
@@ -220,7 +237,7 @@ export const RawProductSchema = z.object({
   }),
   metodos_pago: z.array(z.string()).optional().default([]),
   imagenes: z
-    .array(z.object({ color: z.string(), url: z.string().url() }))
+    .array(z.object({ color: z.string(), url: z.string() }))
     .default([]),
   tamaño_estampa: z.record(z.string(), z.number()).default({}),
   envio: z.object({ metodo: z.string(), codigo_postal: z.string() }).optional(),
@@ -237,7 +254,7 @@ export const RegisterSchema = z
       .string()
       .min(2, { message: "Ingresá tu nombre y apellido" })
       .max(120),
-    email: z.string().email({ message: "Email inválido" }).toLowerCase().trim(),
+    email: z.string().email("Email inválido").toLowerCase().trim(),
     phone: z
       .string()
       .optional()
@@ -255,7 +272,7 @@ export const RegisterSchema = z
   });
 
 export const LoginSchema = z.object({
-  email: z.string().email({ message: "Email inválido" }).toLowerCase().trim(),
+  email: z.string().email("Email inválido").toLowerCase().trim(),
   password: z.string().min(1, { message: "Ingresá tu contraseña" }),
 });
 

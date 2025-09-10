@@ -28,25 +28,25 @@
       "subtitulo": "Catálogo de Fueradecontexto"
     },
     "categorias": {
-      "remeras": {
-        "titulo": "Remeras",
-        "estado": "disponible",
-        "descripcion": "Remeras personalizadas con estampas únicas"
-      },
       "buzos": {
         "titulo": "Buzos",
-        "estado": "proximamente",
-        "descripcion": "Próximamente · Placeholder"
+        "estado": "disponible",
+        "descripcion": "Buzos premium con capucha y cuello redondo. Disponibles en múltiples colores y talles."
       },
-      "gorras": {
-        "titulo": "Gorras",
-        "estado": "proximamente",
-        "descripcion": "Próximamente · Placeholder"
+      "camperas": {
+        "titulo": "Camperas",
+        "estado": "disponible",
+        "descripcion": "Camperas premium de alta calidad con diseño minimalista y materiales premium."
       },
       "totebags": {
         "titulo": "Totebags",
-        "estado": "proximamente",
-        "descripcion": "Próximamente · Placeholder"
+        "estado": "disponible",
+        "descripcion": "Tote bags premium de lona resistente. Diseño minimalista y funcional."
+      },
+      "gorras": {
+        "titulo": "Gorras",
+        "estado": "disponible",
+        "descripcion": "Gorras premium gabardina y trucker. Diseño clásico y moderno con materiales de alta calidad."
       }
     },
     "tablaTalles": {
