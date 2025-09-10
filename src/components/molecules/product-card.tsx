@@ -37,6 +37,36 @@ const getCompoundColors = (
   );
 };
 
+// Función para detectar si un color es claro u oscuro
+const isLightColor = (hexColor: string): boolean => {
+  // Remover el # si está presente
+  const hex = hexColor.replace("#", "");
+
+  // Convertir a RGB
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+
+  // Calcular la luminancia usando la fórmula estándar
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Usar un umbral más conservador para mejor contraste
+  return luminance > 0.6;
+};
+
+// Función para obtener el color de texto apropiado basado en el color de fondo
+const getTextColorForBackground = (backgroundColor: string): string => {
+  const isLight = isLightColor(backgroundColor);
+
+  if (isLight) {
+    // Para fondos claros, usar texto oscuro con sombra para mejor contraste
+    return "text-gray-900 font-semibold drop-shadow-sm";
+  } else {
+    // Para fondos oscuros, usar texto claro con sombra
+    return "text-white font-semibold drop-shadow-sm";
+  }
+};
+
 const CompoundColorBadge: React.FC<{
   colorName: string;
   selected: boolean;
@@ -234,6 +264,44 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       }
     }, [isDisabled, onAdd, product, selectedColor]);
 
+    // Obtener el color de fondo del producto para determinar el color del texto del botón
+    const getButtonTextColor = React.useCallback((): string => {
+      if (isDisabled) {
+        return "text-neutral-500";
+      }
+
+      // Si hay un color seleccionado, usar su hex
+      if (selectedColor?.hex) {
+        return getTextColorForBackground(selectedColor.hex);
+      }
+
+      // Si no hay color seleccionado, usar el color por defecto
+      return "text-white";
+    }, [isDisabled, selectedColor]);
+
+    // Obtener el color de fondo del botón basado en el color seleccionado
+    const getButtonStyle = React.useCallback((): React.CSSProperties => {
+      if (isDisabled) {
+        return {};
+      }
+
+      // Si hay un color seleccionado, usar su hex como fondo
+      if (selectedColor?.hex) {
+        console.log(
+          "Botón con color:",
+          selectedColor.hex,
+          "Texto:",
+          getTextColorForBackground(selectedColor.hex)
+        );
+        return {
+          backgroundColor: selectedColor.hex,
+        };
+      }
+
+      // Si no hay color seleccionado, usar el color por defecto
+      return {};
+    }, [isDisabled, selectedColor]);
+
     const handleColorChange = React.useCallback((color: ColorOption) => {
       setSelectedColor(color);
     }, []);
@@ -339,7 +407,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
             aria-pressed={isFav}
             className={clsx(
               "absolute right-2 top-0 z-30 grid h-9 w-9 place-items-center rounded-full",
-              "backdrop-blur-sm shadow-lg",
+              "backdrop-blur-sm shadow-lg cursor-pointer",
               "transition-all duration-300 ease-in-out",
               "hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50",
               isFav
@@ -412,11 +480,15 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
             onClick={addToCart}
             disabled={isDisabled}
             aria-label={isDisabled ? "Producto agotado" : "Agregar al carrito"}
+            style={getButtonStyle()}
             className={clsx(
-              "h-10 w-full rounded-lg",
+              "h-10 w-full rounded-lg hover:opacity-95 cursor-pointer",
               isDisabled
-                ? "bg-neutral-800 text-neutral-500"
-                : "bg-[color:var(--accent)] text-white hover:opacity-95"
+                ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
+                : clsx(
+                    selectedColor?.hex ? "" : "bg-[color:var(--accent)]",
+                    getButtonTextColor()
+                  )
             )}
           >
             {isDisabled ? "Agotado" : "Agregar al carrito"}
