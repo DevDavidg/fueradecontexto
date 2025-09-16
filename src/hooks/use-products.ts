@@ -2,7 +2,11 @@
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { productsService } from "@/services/products";
+import { productsServiceFallback } from "@/services/products-fallback";
 import { type Product } from "@/lib/types";
+
+// Use fallback service temporarily to avoid stamp options issues
+const service = productsServiceFallback;
 
 export type ProductsPage = {
   items: Product[];
@@ -17,7 +21,7 @@ export const useProducts = (categoria?: string) => {
     queryKey: ["products", "infinite", PAGE_SIZE, categoria],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
-      productsService.getPage({
+      service.getPage({
         page: pageParam as number,
         pageSize: PAGE_SIZE,
         categoria,
@@ -32,7 +36,7 @@ export const useProduct = (id: string | undefined) => {
   return useQuery<Product | undefined>({
     queryKey: ["product", id],
     enabled: Boolean(id),
-    queryFn: () => productsService.getById(id as string),
+    queryFn: () => service.getById(id as string),
     staleTime: 1000 * 60,
   });
 };

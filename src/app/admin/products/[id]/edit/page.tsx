@@ -588,7 +588,7 @@ const EditProduct = () => {
                 <button
                   type="button"
                   onClick={addColor}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Agregar Color</span>
@@ -616,7 +616,7 @@ const EditProduct = () => {
                       onChange={(e) =>
                         updateColor(index, "nombre", e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 bg-black text-[#ededed] border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] placeholder-neutral-400"
                     />
                     <button
                       type="button"
@@ -639,7 +639,7 @@ const EditProduct = () => {
                 <button
                   type="button"
                   onClick={addSize}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Agregar Tamaño</span>
@@ -655,7 +655,7 @@ const EditProduct = () => {
                     <select
                       value={size.size}
                       onChange={(e) => updateSize(index, e.target.value)}
-                      className="flex-1 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 bg-black text-[#ededed] border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] placeholder-neutral-400"
                     >
                       <option value="">Selecciona un tamaño</option>
                       {availableSizes.map((s) => (
@@ -685,7 +685,7 @@ const EditProduct = () => {
                 <button
                   type="button"
                   onClick={addPrintSize}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Agregar Tamaño</span>
@@ -703,7 +703,7 @@ const EditProduct = () => {
                       onChange={(e) =>
                         updatePrintSize(index, "size_key", e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 bg-black text-[#ededed] border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] placeholder-neutral-400"
                     >
                       <option value="">Selecciona un tamaño</option>
                       {printSizeOptions.map((option) => (

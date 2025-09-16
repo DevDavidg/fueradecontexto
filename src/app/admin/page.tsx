@@ -70,7 +70,7 @@ const AdminDashboard = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/admin/products/new"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2 transition-colors"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Nuevo Producto</span>
@@ -162,7 +162,7 @@ const AdminDashboard = () => {
                       <IconComponent className="h-6 w-6 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-[#ededed] group-hover:text-blue-400 transition-colors">
+                      <h3 className="text-lg font-semibold text-[#ededed] group-hover:text-[var(--accent)] transition-colors">
                         {item.title}
                       </h3>
                       <p className="text-neutral-400 mt-1">

@@ -1,6 +1,8 @@
 export type CurrencyCode = "USD" | "EUR" | "MXN" | "COP" | "ARS" | "CLP";
 
-export type PrintSizeId = "20x30" | "30x40" | "40x50";
+export type PrintSizeId = "hasta_15cm" | "hasta_20x30cm" | "hasta_30x40cm";
+
+export type PrintPlacement = "front" | "back" | "front_back";
 
 export type PrintOption = {
   id: PrintSizeId;
@@ -8,6 +10,14 @@ export type PrintOption = {
   extraCost: number;
   maxWidthCm: number;
   maxHeightCm: number;
+};
+
+export type StampOption = {
+  id?: string;
+  placement: PrintPlacement;
+  size: PrintSizeId;
+  label: string;
+  extraCost: number;
 };
 
 export type ColorOption = {
@@ -89,6 +99,7 @@ export type Product = {
   stock: number;
   tags: string[];
   product_images?: ProductImage[];
+  stampOptions?: StampOption[];
   customizable?: {
     printOptions: PrintOption[];
     colors: ColorOption[];
@@ -105,6 +116,7 @@ export type CartItem = {
   selectedSize?: "XS" | "S" | "M" | "L" | "XL" | "XXL" | "Único";
   customization?: {
     printSizeId: PrintSizeId;
+    printPlacement?: PrintPlacement;
     colorName: string;
     colorHex: string;
     extraCost: number;

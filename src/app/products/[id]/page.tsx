@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useProduct } from "@/hooks/use-products";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
-import { type PrintOption, type Product } from "@/lib/types";
+import { type PrintOption, type Product, type StampOption } from "@/lib/types";
+import { StampSelector } from "@/components/molecules/stamp-selector";
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
@@ -22,6 +23,7 @@ export default function ProductDetailPage() {
   const [selectedPrint, setSelectedPrint] = useState<PrintOption | undefined>(
     product?.customizable?.printOptions[0]
   );
+  const [selectedStampOption, setSelectedStampOption] = useState<StampOption | undefined>();
   const [selectedColor, setSelectedColor] = useState<
     { name: string; hex: string } | undefined
   >(product?.customizable?.colors[0]);
@@ -43,7 +45,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const extra = selectedPrint?.extraCost ?? 0;
+  const extra = selectedPrint?.extraCost ?? selectedStampOption?.extraCost ?? 0;
   const total = product.price + extra;
 
   const handleAddToCart = () => {
@@ -51,12 +53,13 @@ export default function ProductDetailPage() {
       product,
       selectedSize,
       1,
-      selectedPrint && selectedColor
+      (selectedPrint || selectedStampOption) && selectedColor
         ? {
-            printSizeId: selectedPrint.id,
+            printSizeId: selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
+            printPlacement: selectedStampOption?.placement,
             colorName: selectedColor.name,
             colorHex: selectedColor.hex,
-            extraCost: selectedPrint.extraCost,
+            extraCost: selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
           }
         : undefined
     );
@@ -133,7 +136,7 @@ export default function ProductDetailPage() {
                     className={
                       "px-3 py-2 rounded-md text-sm border text-[#ededed] " +
                       (selectedSize === size
-                        ? "border-[#C2187A]"
+                        ? "border-[var(--accent)]"
                         : "border-[#333333]")
                     }
                   >
@@ -145,27 +148,12 @@ export default function ProductDetailPage() {
 
             {isCustomizable && (
               <div className="space-y-4">
-                <div>
-                  <p className="text-sm font-medium mb-2">Tamaño de estampa</p>
-                  <div className="flex flex-wrap gap-2">
-                    {product.customizable!.printOptions.map((option) => (
-                      <button
-                        key={option.id}
-                        onClick={() => setSelectedPrint(option)}
-                        aria-label={`Seleccionar estampa ${option.label}`}
-                        className={
-                          "px-3 py-2 rounded-md text-sm border text-[#ededed] " +
-                          (selectedPrint?.id === option.id
-                            ? "border-[#C2187A]"
-                            : "border-[#333333]")
-                        }
-                      >
-                        {option.label} (+
-                        {formatCurrency(option.extraCost, product.currency)})
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <StampSelector
+                  selectedOption={selectedStampOption}
+                  onOptionChange={setSelectedStampOption}
+                  productId={product.id}
+                  compact={false}
+                />
 
                 <div>
                   <p className="text-sm font-medium mb-2">Color</p>
@@ -178,7 +166,7 @@ export default function ProductDetailPage() {
                         className={
                           "px-3 py-2 rounded-md text-sm border flex items-center gap-2 text-[#ededed] " +
                           (selectedColor?.name === color.name
-                            ? "border-[#C2187A]"
+                            ? "border-[var(--accent)]"
                             : "border-[#333333]")
                         }
                       >

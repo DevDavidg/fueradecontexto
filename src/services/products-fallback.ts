@@ -53,22 +53,6 @@ type DatabasePrintSize = {
   created_at: string;
 };
 
-type DatabaseStampOption = {
-  id: string;
-  placement: string;
-  size_id: string;
-  label: string;
-  extra_cost: number;
-  created_at: string;
-};
-
-type DatabaseProductStampOption = {
-  id: string;
-  product_id: string;
-  stamp_option_id: string;
-  stamp_options: DatabaseStampOption;
-};
-
 const toSlug = (value: string) =>
   value
     .toLowerCase()
@@ -116,13 +100,70 @@ const buildPrintOptions = (
   return options;
 };
 
+// Default stamp options (fallback)
+const DEFAULT_STAMP_OPTIONS: StampOption[] = [
+  {
+    placement: "front",
+    size: "hasta_15cm",
+    label: "Adelante - Hasta 15cm",
+    extraCost: 0,
+  },
+  {
+    placement: "front",
+    size: "hasta_20x30cm",
+    label: "Adelante - Hasta 20x30cm",
+    extraCost: 500,
+  },
+  {
+    placement: "front",
+    size: "hasta_30x40cm",
+    label: "Adelante - Hasta 30x40cm",
+    extraCost: 1000,
+  },
+  {
+    placement: "back",
+    size: "hasta_15cm",
+    label: "Atrás - Hasta 15cm",
+    extraCost: 0,
+  },
+  {
+    placement: "back",
+    size: "hasta_20x30cm",
+    label: "Atrás - Hasta 20x30cm",
+    extraCost: 500,
+  },
+  {
+    placement: "back",
+    size: "hasta_30x40cm",
+    label: "Atrás - Hasta 30x40cm",
+    extraCost: 1000,
+  },
+  {
+    placement: "front_back",
+    size: "hasta_15cm",
+    label: "Adelante + Atrás - Hasta 15cm",
+    extraCost: 0,
+  },
+  {
+    placement: "front_back",
+    size: "hasta_20x30cm",
+    label: "Adelante + Atrás - Hasta 20x30cm",
+    extraCost: 1000,
+  },
+  {
+    placement: "front_back",
+    size: "hasta_30x40cm",
+    label: "Adelante + Atrás - Hasta 30x40cm",
+    extraCost: 2000,
+  },
+];
+
 const transformToProduct = (
   product: DatabaseProduct,
   colors: DatabaseColor[],
   sizes: DatabaseSize[],
   images: DatabaseImage[],
-  printSizes: DatabasePrintSize[],
-  stampOptions: DatabaseProductStampOption[] = []
+  printSizes: DatabasePrintSize[]
 ): Product => {
   const firstImage = images[0]?.url ?? "";
 
@@ -140,20 +181,6 @@ const transformToProduct = (
 
   const tags = toSlug(product.nombre).split("-").filter(Boolean);
 
-  // Transform stamp options from database (with safe access)
-  const availableStampOptions: StampOption[] = stampOptions
-    .filter((pso) => pso && pso.stamp_options) // Filter out null/undefined
-    .map((pso) => ({
-      id: pso.stamp_options.id,
-      placement: pso.stamp_options.placement as "front" | "back" | "front_back",
-      size: pso.stamp_options.size_id as
-        | "hasta_15cm"
-        | "hasta_20x30cm"
-        | "hasta_30x40cm",
-      label: pso.stamp_options.label,
-      extraCost: pso.stamp_options.extra_cost,
-    }));
-
   return {
     id: product.id,
     name: product.nombre,
@@ -167,7 +194,7 @@ const transformToProduct = (
     stock: productStock,
     tags,
     product_images: images,
-    stampOptions: availableStampOptions,
+    // No incluir stampOptions por defecto - solo si realmente están disponibles
     customizable: {
       printOptions: buildPrintOptions(printSizes, product.precio_normal),
       colors: colorOptions,
@@ -182,7 +209,7 @@ type PageResult = {
   nextPage: number | null;
 };
 
-export const productsService = {
+export const productsServiceFallback = {
   async updateStock(productId: string, newStock: number): Promise<boolean> {
     try {
       // Use the browser client since we're in a client-side context
@@ -193,6 +220,7 @@ export const productsService = {
         .select("stock");
 
       if (error) {
+        console.error("Error updating stock:", error);
         return false;
       }
       return true;
@@ -212,6 +240,10 @@ export const productsService = {
         .single();
 
       if (fetchError || !product) {
+        console.error(
+          "Error fetching product for stock reduction:",
+          fetchError
+        );
         return false;
       }
 
@@ -224,6 +256,7 @@ export const productsService = {
         .select("stock");
 
       if (updateError) {
+        console.error("Error updating stock:", updateError);
         return false;
       }
       return true;
@@ -235,15 +268,14 @@ export const productsService = {
 
   async getAll(categoria?: string): Promise<Product[]> {
     try {
-      // Get products with optional category filter
+      // Get products with optional category filter - without stamp options
       let query = supabase.from("products").select(`
           *,
           product_colors(*),
           product_sizes(*),
           product_images(*),
           product_print_sizes(*),
-          product_stock(*),
-          product_stamp_options!left(*, stamp_options(*))
+          product_stock(*)
         `);
 
       if (categoria) {
@@ -265,8 +297,7 @@ export const productsService = {
           product.product_colors || [],
           product.product_sizes || [],
           product.product_images || [],
-          product.product_print_sizes || [],
-          product.product_stamp_options || []
+          product.product_print_sizes || []
         )
       );
     } catch (error) {
@@ -295,10 +326,11 @@ export const productsService = {
       const { count, error: countError } = await countQuery;
 
       if (countError) {
+        console.error("Error fetching products count:", countError);
         return { items: [], hasMore: false, nextPage: null };
       }
 
-      // Get paginated products
+      // Get paginated products - without stamp options
       let query = supabase
         .from("products")
         .select(
@@ -308,8 +340,7 @@ export const productsService = {
           product_sizes(*),
           product_images(*),
           product_print_sizes(*),
-          product_stock(*),
-          product_stamp_options!left(*, stamp_options(*))
+          product_stock(*)
         `
         )
         .range(offset, offset + pageSize - 1);
@@ -335,8 +366,7 @@ export const productsService = {
           product.product_colors || [],
           product.product_sizes || [],
           product.product_images || [],
-          product.product_print_sizes || [],
-          product.product_stamp_options || []
+          product.product_print_sizes || []
         )
       );
 
@@ -361,8 +391,7 @@ export const productsService = {
           product_sizes(*),
           product_images(*),
           product_print_sizes(*),
-          product_stock(*),
-          product_stamp_options!left(*, stamp_options(*))
+          product_stock(*)
         `
         )
         .eq("id", id)
@@ -380,8 +409,7 @@ export const productsService = {
         product.product_colors || [],
         product.product_sizes || [],
         product.product_images || [],
-        product.product_print_sizes || [],
-        product.product_stamp_options || []
+        product.product_print_sizes || []
       );
     } catch (error) {
       console.error("Error fetching product by ID:", error);

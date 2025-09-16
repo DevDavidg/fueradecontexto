@@ -92,14 +92,6 @@ export const Navbar = () => {
           </li>
           <li>
             <Link
-              href="/favoritos"
-              className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
-            >
-              Favoritos
-            </Link>
-          </li>
-          <li>
-            <Link
               href="/mi-cuenta"
               className="text-sm text-neutral-300 hover:text-[#e12afb] hover:underline"
             >
@@ -145,7 +137,7 @@ export const Navbar = () => {
           <CartSidebar />
           <Link
             href="/favoritos"
-            className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-fuchsia-500 hover:text-fuchsia-400 hover:border-fuchsia-400 transition-colors relative"
+            className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#333333] text-[var(--accent)] hover:text-[var(--accent-hover)] hover:border-[var(--accent-hover)] transition-colors relative"
             aria-label="Productos favoritos"
             title="Productos favoritos"
           >

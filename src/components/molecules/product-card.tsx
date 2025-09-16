@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { ProductPlaceholderSvg } from "@/components/ui/placeholder-svg";
 import { HeartIcon } from "@/components/ui/icons";
 import { formatCurrency } from "@/lib/format-currency";
-import { type Product, type ColorOption } from "@/lib/types";
+import { type Product, type ColorOption, type StampOption } from "@/lib/types";
 import { useFavorites } from "@/hooks/use-favorites";
+import { StampSelector } from "@/components/molecules/stamp-selector";
 
 const COMPOUND_COLOR_MAP: Record<string, { color1: string; color2: string }> = {
   "Negro Blanca": { color1: "#000000", color2: "#FFFFFF" },
@@ -28,36 +29,6 @@ const getCompoundColors = (
   );
 };
 
-// Función para detectar si un color es claro u oscuro
-const isLightColor = (hexColor: string): boolean => {
-  // Remover el # si está presente
-  const hex = hexColor.replace("#", "");
-
-  // Convertir a RGB
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
-
-  // Calcular la luminancia usando la fórmula estándar
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-  // Usar un umbral más conservador para mejor contraste
-  return luminance > 0.6;
-};
-
-// Función para obtener el color de texto apropiado basado en el color de fondo
-const getTextColorForBackground = (backgroundColor: string): string => {
-  const isLight = isLightColor(backgroundColor);
-
-  if (isLight) {
-    // Para fondos claros, usar texto oscuro con sombra para mejor contraste
-    return "text-gray-900 font-semibold drop-shadow-sm";
-  } else {
-    // Para fondos oscuros, usar texto claro con sombra
-    return "text-white font-semibold drop-shadow-sm";
-  }
-};
-
 const CompoundColorBadge: React.FC<{
   colorName: string;
   selected: boolean;
@@ -69,8 +40,8 @@ const CompoundColorBadge: React.FC<{
       className={clsx(
         "h-5 w-5 rounded-full border transition relative overflow-hidden",
         selected
-          ? "border-[color:var(--accent)] ring-2 ring-[color:var(--accent)]/30"
-          : "border-neutral-600 hover:border-neutral-500"
+          ? "border-[color:var(--accent)] ring-2 ring-[color:var(--accent)]/20"
+          : "border-neutral-700 hover:border-neutral-600"
       )}
       title={colorName}
     >
@@ -86,7 +57,10 @@ const CompoundColorBadge: React.FC<{
 
 export type ProductCardProps = {
   product: Product;
-  onAdd?: (product: Product, options?: { color?: ColorOption }) => void;
+  onAdd?: (
+    product: Product,
+    options?: { color?: ColorOption; stampOption?: StampOption }
+  ) => void;
   className?: string;
   highlight?: boolean;
 };
@@ -133,6 +107,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       React.useState<ColorOption | null>(
         product.customizable?.colors?.[0] || null
       );
+    const [selectedStampOption, setSelectedStampOption] =
+      React.useState<StampOption | null>(null);
 
     React.useEffect(() => {
       // Set valid colors based on available product images
@@ -161,8 +137,10 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
 
     const isDisabled = !product.inStock;
     const isFav = isFavorite(product.id);
-    const accentHex = selectedColor?.hex || "#C2187A";
-    const discounted = Math.round(product.price * 0.9);
+    const accentHex = "#e12afb"; // Always use fixed pink color
+    const stampExtraCost = selectedStampOption?.extraCost || 0;
+    const totalPrice = product.price + stampExtraCost;
+    const discounted = Math.round(totalPrice * 0.9);
 
     const imageUrl = React.useMemo(() => {
       return getImageForColor(product, selectedColor?.name);
@@ -183,9 +161,12 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
 
     const addToCart = React.useCallback(() => {
       if (!isDisabled) {
-        onAdd?.(product, { color: selectedColor || undefined });
+        onAdd?.(product, {
+          color: selectedColor || undefined,
+          stampOption: selectedStampOption || undefined,
+        });
       }
-    }, [isDisabled, onAdd, product, selectedColor]);
+    }, [isDisabled, onAdd, product, selectedColor, selectedStampOption]);
 
     // Obtener el color de fondo del producto para determinar el color del texto del botón
     const getButtonTextColor = React.useCallback((): string => {
@@ -193,14 +174,9 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
         return "text-neutral-500";
       }
 
-      // Si hay un color seleccionado, usar su hex
-      if (selectedColor?.hex) {
-        return getTextColorForBackground(selectedColor.hex);
-      }
-
-      // Si no hay color seleccionado, usar el color por defecto
+      // Always use white text for the fixed pink button
       return "text-white";
-    }, [isDisabled, selectedColor]);
+    }, [isDisabled]);
 
     // Obtener el color de fondo del botón basado en el color seleccionado
     const getButtonStyle = React.useCallback((): React.CSSProperties => {
@@ -208,16 +184,11 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
         return {};
       }
 
-      // Si hay un color seleccionado, usar su hex como fondo
-      if (selectedColor?.hex) {
-        return {
-          backgroundColor: selectedColor.hex,
-        };
-      }
-
-      // Si no hay color seleccionado, usar el color por defecto
-      return {};
-    }, [isDisabled, selectedColor]);
+      // Always use the fixed pink color
+      return {
+        backgroundColor: "#e12afb",
+      };
+    }, [isDisabled]);
 
     const handleColorChange = React.useCallback((color: ColorOption) => {
       setSelectedColor(color);
@@ -247,8 +218,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
                 className={clsx(
                   "h-5 w-5 rounded-full border transition",
                   selected
-                    ? "border-[color:var(--accent)] ring-2 ring-[color:var(--accent)]/30"
-                    : "border-neutral-600 hover:border-neutral-500"
+                    ? "border-[color:var(--accent)] ring-2 ring-[color:var(--accent)]/20"
+                    : "border-neutral-700 hover:border-neutral-600"
                 )}
                 style={{ backgroundColor: color.hex }}
                 title={color.name}
@@ -294,8 +265,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     return (
       <div
         className={clsx(
-          "group relative flex flex-col rounded-xl border bg-neutral-950 overflow-hidden",
-          "transition-colors",
+          "group relative flex flex-col rounded-xl border-2 bg-neutral-950 overflow-hidden",
+          "transition-colors border-neutral-800",
           highlight && "hover:border-neutral-700",
           isDisabled && "opacity-75",
           className
@@ -303,7 +274,6 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
         style={
           {
             "--accent": accentHex,
-            borderColor: selectedColor ? accentHex : "#262626",
           } as React.CSSProperties
         }
         data-disabled={isDisabled || undefined}
@@ -370,6 +340,20 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
             <div className="h-5" aria-hidden="true" />
           )}
 
+          {/* Stamp Options - Solo mostrar si hay opciones disponibles */}
+          {product.stampOptions && product.stampOptions.length > 0 && (
+            <div className="mt-3">
+              <StampSelector
+                selectedOption={selectedStampOption || undefined}
+                onOptionChange={setSelectedStampOption}
+                productId={product.id}
+                stampOptions={product.stampOptions}
+                compact={true}
+                className="w-full"
+              />
+            </div>
+          )}
+
           <div className="flex-1">
             <Link
               href={`/products/${product.id}`}
@@ -381,7 +365,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
               </h3>
             </Link>
             <p className="text-lg font-semibold text-white">
-              {formatCurrency(product.price, product.currency || "ARS")}
+              {formatCurrency(totalPrice, product.currency || "ARS")}
             </p>
             <p className="mt-1 text-xs text-neutral-400">
               {formatCurrency(discounted, product.currency || "ARS")} con
@@ -398,10 +382,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
               "h-10 w-full rounded-lg hover:opacity-95 cursor-pointer",
               isDisabled
                 ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
-                : clsx(
-                    selectedColor?.hex ? "" : "bg-[color:var(--accent)]",
-                    getButtonTextColor()
-                  )
+                : clsx("bg-[var(--color-pink-500)]", getButtonTextColor())
             )}
           >
             {isDisabled ? "Agotado" : "Agregar al carrito"}

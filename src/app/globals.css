@@ -7,6 +7,9 @@
   --color-foreground: var(--foreground);
   --font-inter: var(--font-inter);
   --font-montserrat: var(--font-montserrat);
+  --accent: #e12afb;
+  --accent-hover: #c21f8a;
+  --color-pink-500: #e12afb;
 }
 
 @media (prefers-color-scheme: dark) {

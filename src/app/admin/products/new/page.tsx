@@ -30,10 +30,21 @@ interface PrintSize {
   price: number;
 }
 
+interface StampOption {
+  id: string;
+  placement: string;
+  size_id: string;
+  label: string;
+  extra_cost: number;
+}
+
 const NewProduct = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [availableStampOptions, setAvailableStampOptions] = useState<
+    StampOption[]
+  >([]);
   // const [uploadingImages] = useState(false); // TODO: Implement image upload functionality
 
   // Form data
@@ -51,6 +62,9 @@ const NewProduct = () => {
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [printSizes, setPrintSizes] = useState<PrintSize[]>([]);
+  const [selectedStampOptions, setSelectedStampOptions] = useState<string[]>(
+    []
+  );
   const [images, setImages] = useState<
     { color: string; file: File; preview: string }[]
   >([]);
@@ -80,6 +94,7 @@ const NewProduct = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchStampOptions();
   }, []);
 
   const fetchCategories = async () => {
@@ -92,6 +107,21 @@ const NewProduct = () => {
       setCategories(data || []);
     } catch (error) {
       console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchStampOptions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("stamp_options")
+        .select("*")
+        .order("placement", { ascending: true })
+        .order("size_id", { ascending: true });
+
+      if (error) throw error;
+      setAvailableStampOptions(data || []);
+    } catch (error) {
+      console.error("Error fetching stamp options:", error);
     }
   };
 
@@ -160,6 +190,16 @@ const NewProduct = () => {
 
   const removePrintSize = (index: number) => {
     setPrintSizes((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleStampOptionChange = (optionId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedStampOptions([...selectedStampOptions, optionId]);
+    } else {
+      setSelectedStampOptions(
+        selectedStampOptions.filter((id) => id !== optionId)
+      );
+    }
   };
 
   const handleImageUpload = (
@@ -295,6 +335,20 @@ const NewProduct = () => {
           );
 
         if (printSizesError) throw printSizesError;
+      }
+
+      // Insert stamp options
+      if (selectedStampOptions.length > 0) {
+        const { error: stampOptionsError } = await supabase
+          .from("product_stamp_options")
+          .insert(
+            selectedStampOptions.map((stampOptionId) => ({
+              product_id: productId,
+              stamp_option_id: stampOptionId,
+            }))
+          );
+
+        if (stampOptionsError) throw stampOptionsError;
       }
 
       // Upload images
@@ -446,7 +500,7 @@ const NewProduct = () => {
                 <button
                   type="button"
                   onClick={addColor}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Agregar Color</span>
@@ -474,7 +528,7 @@ const NewProduct = () => {
                       onChange={(e) =>
                         updateColor(index, "nombre", e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 bg-black text-[#ededed] border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] placeholder-neutral-400"
                     />
                     <button
                       type="button"
@@ -497,7 +551,7 @@ const NewProduct = () => {
                 <button
                   type="button"
                   onClick={addSize}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Agregar Tamaño</span>
@@ -513,7 +567,7 @@ const NewProduct = () => {
                     <select
                       value={size.size}
                       onChange={(e) => updateSize(index, e.target.value)}
-                      className="flex-1 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 bg-black text-[#ededed] border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] placeholder-neutral-400"
                     >
                       <option value="">Selecciona un tamaño</option>
                       {availableSizes.map((s) => (
@@ -543,7 +597,7 @@ const NewProduct = () => {
                 <button
                   type="button"
                   onClick={addPrintSize}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Agregar Tamaño</span>
@@ -561,7 +615,7 @@ const NewProduct = () => {
                       onChange={(e) =>
                         updatePrintSize(index, "size_key", e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 bg-black text-[#ededed] border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] placeholder-neutral-400"
                     >
                       <option value="">Selecciona un tamaño</option>
                       {printSizeOptions.map((option) => (
@@ -594,6 +648,53 @@ const NewProduct = () => {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Stamp Options */}
+            <div className="bg-[#0b0b0b] border border-[#333333] rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-[#ededed] mb-6">
+                Opciones de Estampas Disponibles
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {availableStampOptions.map((option) => (
+                  <label
+                    key={option.id}
+                    className="flex items-center space-x-3 p-3 border border-[#333333] rounded-md hover:border-[#444444] transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedStampOptions.includes(option.id)}
+                      onChange={(e) =>
+                        handleStampOptionChange(option.id, e.target.checked)
+                      }
+                      className="rounded border-[#333333] text-blue-600 focus:ring-blue-500"
+                    />
+                    <div className="flex-1">
+                      <span className="text-sm font-medium text-neutral-200">
+                        {option.label}
+                      </span>
+                      {option.extra_cost > 0 && (
+                        <span className="text-xs text-neutral-400 block">
+                          +${option.extra_cost}
+                        </span>
+                      )}
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              {selectedStampOptions.length === 0 && (
+                <div className="text-center py-4">
+                  <p className="text-neutral-400 text-sm">
+                    No se han seleccionado opciones de estampas
+                  </p>
+                  <p className="text-neutral-500 text-xs mt-1">
+                    Selecciona al menos una opción para que aparezcan en el
+                    producto
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Payment Methods */}
