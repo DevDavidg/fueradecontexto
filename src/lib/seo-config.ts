@@ -4,7 +4,8 @@ export const SEO_CONFIG = {
   site: {
     name: "Fueradecontexto",
     url: "https://fueradecontexto.vercel.app",
-    description: "Tu tienda de ropa premium argentina con personalización única. Buzos, remeras, gorras y tote bags de algodón premium.",
+    description:
+      "Tu tienda de ropa premium argentina con personalización única. Buzos, remeras, gorras y tote bags de algodón premium.",
     logo: "https://fueradecontexto.vercel.app/logo.png",
     favicon: "https://fueradecontexto.vercel.app/favicon.ico",
   },
@@ -35,7 +36,7 @@ export const SEO_CONFIG = {
     general: [
       "ropa premium argentina",
       "buzos personalizados",
-      "remeras personalizadas", 
+      "remeras personalizadas",
       "gorras estampadas",
       "tote bags",
       "estampas personalizadas",
@@ -82,34 +83,46 @@ export const SEO_CONFIG = {
   // Configuración de metadatos por página
   pages: {
     home: {
-      title: "Fueradecontexto - Ropa Premium y Personalizada | Buzos, Remeras, Gorras",
-      description: "Fueradecontexto: Tu tienda de ropa premium argentina con personalización única. Buzos, remeras, gorras y tote bags de algodón premium. Estampas originales, serigrafía y bordado personalizado. Envíos a todo el país. Calidad garantizada.",
+      title:
+        "Fueradecontexto - Ropa Premium y Personalizada | Buzos, Remeras, Gorras",
+      description:
+        "Fueradecontexto: Tu tienda de ropa premium argentina con personalización única. Buzos, remeras, gorras y tote bags de algodón premium. Estampas originales, serigrafía y bordado personalizado. Envíos a todo el país. Calidad garantizada.",
     },
     products: {
       title: "Productos Premium Personalizados | Fueradecontexto",
-      description: "Descubre nuestra colección de ropa premium personalizable. Buzos, remeras, gorras y tote bags de alta calidad con estampas originales. Envíos a todo el país.",
+      description:
+        "Descubre nuestra colección de ropa premium personalizable. Buzos, remeras, gorras y tote bags de alta calidad con estampas originales. Envíos a todo el país.",
     },
     contact: {
       title: "Contacto | Fueradecontexto - Ropa Premium Personalizada",
-      description: "Contacta con Fueradecontexto para consultas sobre productos, personalización y envíos. Atención al cliente especializada en ropa premium.",
+      description:
+        "Contacta con Fueradecontexto para consultas sobre productos, personalización y envíos. Atención al cliente especializada en ropa premium.",
     },
     about: {
       title: "Sobre Nosotros | Fueradecontexto - Ropa Premium Personalizada",
-      description: "Conoce la historia de Fueradecontexto, tu tienda de ropa premium argentina. Calidad, diseño y personalización desde Buenos Aires.",
+      description:
+        "Conoce la historia de Fueradecontexto, tu tienda de ropa premium argentina. Calidad, diseño y personalización desde Buenos Aires.",
     },
   },
 
   // Configuración de robots y crawling
   robots: {
     allow: ["/", "/products", "/contactanos", "/sobre-nosotros"],
-    disallow: ["/admin", "/api", "/mi-cuenta", "/checkout", "/_next", "/private"],
+    disallow: [
+      "/admin",
+      "/api",
+      "/mi-cuenta",
+      "/checkout",
+      "/_next",
+      "/private",
+    ],
   },
 
   // Configuración de sitemap
   sitemap: {
     changeFrequency: {
       home: "daily",
-      products: "daily", 
+      products: "daily",
       categories: "weekly",
       static: "monthly",
     },
@@ -124,23 +137,34 @@ export const SEO_CONFIG = {
 } as const;
 
 // Función helper para generar títulos dinámicos
-export const generatePageTitle = (page: string, productName?: string): string => {
-  const baseTitle = SEO_CONFIG.pages[page as keyof typeof SEO_CONFIG.pages]?.title || SEO_CONFIG.pages.home.title;
-  
+export const generatePageTitle = (
+  page: string,
+  productName?: string
+): string => {
+  const baseTitle =
+    SEO_CONFIG.pages[page as keyof typeof SEO_CONFIG.pages]?.title ||
+    SEO_CONFIG.pages.home.title;
+
   if (productName) {
     return `${productName} | ${SEO_CONFIG.site.name}`;
   }
-  
+
   return baseTitle;
 };
 
 // Función helper para generar descripciones dinámicas
-export const generatePageDescription = (page: string, productName?: string, category?: string): string => {
-  const baseDescription = SEO_CONFIG.pages[page as keyof typeof SEO_CONFIG.pages]?.description || SEO_CONFIG.pages.home.description;
-  
+export const generatePageDescription = (
+  page: string,
+  productName?: string,
+  category?: string
+): string => {
+  const baseDescription =
+    SEO_CONFIG.pages[page as keyof typeof SEO_CONFIG.pages]?.description ||
+    SEO_CONFIG.pages.home.description;
+
   if (productName && category) {
     return `Descubre ${productName}, ${category} premium de alta calidad. Personalizable con estampas y colores exclusivos. Envíos a todo el país.`;
   }
-  
+
   return baseDescription;
 };
