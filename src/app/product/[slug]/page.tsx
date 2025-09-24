@@ -1,56 +1,66 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { Navbar } from "@/components/organisms/navbar";
 import { Button } from "@/components/ui/button";
-import { useProduct } from "@/hooks/use-products";
+import { useProducts } from "@/hooks/use-products";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
 import { type PrintOption, type Product, type StampOption } from "@/lib/types";
 import { StampSelector } from "@/components/molecules/stamp-selector";
+import { findProductBySlug } from "@/lib/url-utils";
 
-export default function ProductDetailPage() {
-  const params = useParams<{ id: string }>();
+export default function ProductSlugPage() {
+  const params = useParams<{ slug: string }>();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { data: product } = useProduct(params.id);
+  const { data: allProducts } = useProducts(); // Get all products to search through
   const { addItem } = useCart();
 
+  const [product, setProduct] = useState<Product | null>(null);
+  const [selectedColorName, setSelectedColorName] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<
     Product["availableSizes"][number] | undefined
-  >(product?.availableSizes[0]);
-  const [selectedPrint] = useState<PrintOption | undefined>(
-    product?.customizable?.printOptions[0]
-  );
+  >();
+  const [selectedPrint] = useState<PrintOption | undefined>();
   const [selectedStampOptions, setSelectedStampOptions] = useState<
     StampOption[]
   >([]);
   const [selectedColor, setSelectedColor] = useState<
     { name: string; hex: string } | undefined
-  >(product?.customizable?.colors[0]);
+  >();
   const [imageError, setImageError] = useState(false);
 
-  // Initialize selected color from URL parameter
+  // Find product by slug
   useEffect(() => {
-    if (product?.customizable?.colors) {
-      const colorParam = searchParams.get("color");
-      if (colorParam) {
-        const colorFromUrl = product.customizable.colors.find(
-          (color) =>
-            color.name.toLowerCase() ===
-            decodeURIComponent(colorParam).toLowerCase()
+    if (allProducts && params.slug) {
+      const result = findProductBySlug(
+        allProducts.pages.flatMap((p) => p.items),
+        params.slug
+      );
+      if (result) {
+        setProduct(result.product);
+        setSelectedColorName(result.colorName);
+
+        // Find the color object
+        const color = result.product.customizable?.colors?.find(
+          (c) => c.name === result.colorName
         );
-        if (colorFromUrl) {
-          setSelectedColor(colorFromUrl);
+        if (color) {
+          setSelectedColor(color);
+        }
+
+        // Set default size
+        if (result.product.availableSizes.length > 0) {
+          setSelectedSize(result.product.availableSizes[0]);
         }
       } else {
-        // Default to first color if no URL parameter
-        setSelectedColor(product.customizable.colors[0]);
+        // Product not found, redirect to 404 or products page
+        router.push("/products");
       }
     }
-  }, [product, searchParams]);
+  }, [allProducts, params.slug, router]);
 
   // Reset image error when color changes
   useEffect(() => {

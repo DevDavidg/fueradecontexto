@@ -1,10 +1,39 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/organisms/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
+import { ProductsPageSkeleton } from "@/components/molecules/products-page-skeleton";
 import { getSectionsContent } from "@/lib/sections-server";
 
-export default async function ProductsPage() {
-  const sections = await getSectionsContent();
+export default function ProductsPage() {
+  const [sections, setSections] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadSections = async () => {
+      try {
+        const sectionsData = await getSectionsContent();
+        setSections(sectionsData);
+      } catch (error) {
+        console.error("Error loading sections:", error);
+      } finally {
+        // Simular un delay mínimo para evitar flash
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+      }
+    };
+
+    loadSections();
+  }, []);
+
+  if (isLoading || !sections) {
+    return <ProductsPageSkeleton />;
+  }
+
   const productos = sections?.productos;
+
   return (
     <div className="min-h-screen bg-black text-[#ededed]">
       <Navbar />

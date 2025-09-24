@@ -11,6 +11,7 @@ import { formatCurrency } from "@/lib/format-currency";
 import { type Product, type ColorOption, type StampOption } from "@/lib/types";
 import { useFavorites } from "@/hooks/use-favorites";
 import { StampSelector } from "@/components/molecules/stamp-selector";
+import { generateProductSlug } from "@/lib/url-utils";
 
 const COMPOUND_COLOR_MAP: Record<string, { color1: string; color2: string }> = {
   "Negro Blanca": { color1: "#000000", color2: "#FFFFFF" },
@@ -157,6 +158,17 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       return getImageForColor(product, selectedColor?.name);
     }, [product, selectedColor]);
 
+    const productSlug = React.useMemo(() => {
+      if (selectedColor) {
+        return generateProductSlug(
+          product.name,
+          selectedColor.name,
+          product.id
+        );
+      }
+      return null;
+    }, [product.name, selectedColor, product.id]);
+
     // Pre-load image in background
     React.useEffect(() => {
       if (imageUrl && !imageUrl.includes("placeholder")) {
@@ -301,7 +313,11 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       >
         <div className="relative isolate aspect-[4/5] w-full overflow-hidden rounded-t-2xl bg-gradient-to-br from-neutral-800 to-neutral-900">
           <Link
-            href={`/products/${product.id}`}
+            href={
+              productSlug
+                ? `/product/${productSlug}`
+                : `/products/${product.id}`
+            }
             aria-label={`Ver ${product.name}`}
             className="relative block h-full w-full group/image"
           >
@@ -374,7 +390,11 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
 
           <div className="flex-1 space-y-2">
             <Link
-              href={`/products/${product.id}`}
+              href={
+                productSlug
+                  ? `/product/${productSlug}`
+                  : `/products/${product.id}`
+              }
               className="block group/title"
               title={product.name}
             >
