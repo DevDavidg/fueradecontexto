@@ -156,6 +156,18 @@ const DEFAULT_STAMP_OPTIONS: StampOption[] = [
     label: "Adelante + Atrás - Hasta 30x40cm",
     extraCost: 2000,
   },
+  {
+    placement: "back",
+    size: "hasta_40x50cm",
+    label: "Atrás - Hasta 40x50cm",
+    extraCost: 1500,
+  },
+  {
+    placement: "front_back",
+    size: "hasta_40x50cm",
+    label: "Adelante + Atrás - Hasta 40x50cm",
+    extraCost: 2500,
+  },
 ];
 
 const transformToProduct = (

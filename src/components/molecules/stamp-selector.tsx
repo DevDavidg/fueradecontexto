@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { clsx } from "clsx";
+import { ChevronDown, Check, X } from "lucide-react";
 import {
   type StampOption,
   type PrintSizeId,
@@ -9,8 +10,8 @@ import {
 } from "@/lib/types";
 
 export type StampSelectorProps = {
-  selectedOption?: StampOption;
-  onOptionChange: (option: StampOption) => void;
+  selectedOptions?: StampOption[];
+  onOptionsChange: (options: StampOption[]) => void;
   productId: string;
   stampOptions?: StampOption[];
   compact?: boolean;
@@ -20,13 +21,13 @@ export type StampSelectorProps = {
 const getPlacementIcon = (placement: PrintPlacement) => {
   switch (placement) {
     case "front":
-      return "🔴"; // Front indicator
+      return "F"; // Front indicator
     case "back":
-      return "🔵"; // Back indicator
+      return "B"; // Back indicator
     case "front_back":
-      return "🔴🔵"; // Both indicators
+      return "FB"; // Both indicators
     default:
-      return "⚪";
+      return "?";
   }
 };
 
@@ -44,8 +45,8 @@ const getPlacementText = (placement: PrintPlacement) => {
 };
 
 export const StampSelector: React.FC<StampSelectorProps> = ({
-  selectedOption,
-  onOptionChange,
+  selectedOptions = [],
+  onOptionsChange,
   productId,
   stampOptions = [],
   compact = false,
@@ -53,12 +54,23 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const handleOptionSelect = React.useCallback(
+  const handleOptionToggle = React.useCallback(
     (option: StampOption) => {
-      onOptionChange(option);
-      setIsOpen(false);
+      const isSelected = selectedOptions.some(
+        (selected) => selected.id === option.id
+      );
+
+      if (isSelected) {
+        // Remove option
+        onOptionsChange(
+          selectedOptions.filter((selected) => selected.id !== option.id)
+        );
+      } else {
+        // Add option
+        onOptionsChange([...selectedOptions, option]);
+      }
     },
-    [onOptionChange]
+    [selectedOptions, onOptionsChange]
   );
 
   // If no stamp options are provided, don't render anything
@@ -77,107 +89,144 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
             "hover:border-neutral-600 hover:bg-neutral-800/80 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40 focus:border-[var(--accent)]/60",
             isOpen && "border-[var(--accent)]/60 bg-neutral-800/80"
           )}
-          aria-label="Seleccionar opción de estampa"
+          aria-label="Seleccionar opciones de estampa"
           aria-expanded={isOpen}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {selectedOption ? (
-                <>
-                  <div className="flex items-center justify-center w-6 h-6 bg-neutral-800 rounded-full text-xs">
-                    {getPlacementIcon(selectedOption.placement)}
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-neutral-100 font-medium">
-                      {selectedOption.label}
+              <div className="flex items-center justify-center w-6 h-6 bg-neutral-800 rounded-full text-xs">
+                <Check className="w-3 h-3" />
+              </div>
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-neutral-100 font-medium text-sm truncate">
+                    {selectedOptions.length > 0
+                      ? `${selectedOptions.length} opc.`
+                      : "Personalizar"}
+                  </span>
+                  {selectedOptions.length > 0 && (
+                    <span className="text-xs text-green-400 font-medium ml-2 flex-shrink-0">
+                      +$
+                      {selectedOptions.reduce(
+                        (total, option) => total + option.extraCost,
+                        0
+                      )}
                     </span>
-                    {selectedOption.extraCost > 0 && (
-                      <span className="text-xs text-green-400 font-medium ml-2">
-                        +${selectedOption.extraCost}
-                      </span>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center justify-center w-6 h-6 bg-neutral-800 rounded-full text-xs">
-                    🎨
-                  </div>
-                  <span className="text-neutral-400">Personalizar estampa</span>
-                </>
-              )}
+                  )}
+                </div>
+              </div>
             </div>
-            <svg
+            <ChevronDown
               className={clsx(
                 "w-4 h-4 transition-transform duration-200",
                 isOpen ? "rotate-180" : "rotate-0"
               )}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            />
           </div>
         </button>
 
         {isOpen && (
           <>
+            {/* Overlay */}
             <div
-              className="fixed inset-0 z-10"
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
             />
-            <div className="absolute z-20 w-full mt-2 bg-neutral-900/95 backdrop-blur-md border border-neutral-700/50 rounded-lg shadow-2xl max-h-80 overflow-hidden">
-              <div className="p-2">
-                <div className="text-xs font-medium text-neutral-400 px-3 py-2 border-b border-neutral-800/50">
-                  Opciones de personalización
+
+            {/* Minimodal */}
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <div
+                className="w-full max-w-md bg-neutral-900 border border-neutral-700/50 rounded-xl shadow-2xl max-h-[80vh] overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b border-neutral-800/50">
+                  <h3 className="text-lg font-semibold text-neutral-100">
+                    Opciones de personalización
+                  </h3>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="p-1 hover:bg-neutral-800 rounded-lg transition-colors"
+                    aria-label="Cerrar"
+                  >
+                    <X className="w-5 h-5 text-neutral-400" />
+                  </button>
                 </div>
-                <div className="max-h-64 overflow-y-auto">
-                  {stampOptions.map((option, index) => (
-                    <button
-                      key={`${productId}-stamp-${index}`}
-                      type="button"
-                      onClick={() => handleOptionSelect(option)}
-                      className={clsx(
-                        "w-full px-3 py-3 text-left text-sm transition-all duration-150 flex items-center gap-3 rounded-md mx-1 my-0.5",
-                        selectedOption?.placement === option.placement &&
-                          selectedOption?.size === option.size
-                          ? "bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/30"
-                          : "text-neutral-200 hover:bg-neutral-800/60 hover:text-neutral-100"
-                      )}
-                    >
-                      <div className="flex items-center justify-center w-6 h-6 bg-neutral-800/50 rounded-full text-xs">
-                        {getPlacementIcon(option.placement)}
-                      </div>
-                      <div className="flex-1">
-                        <span className="font-medium block">
-                          {option.label}
-                        </span>
-                        <span className="text-xs text-neutral-500 block">
-                          {option.placement === "front_back"
-                            ? "Ambos lados"
-                            : option.placement === "front"
-                            ? "Solo adelante"
-                            : "Solo atrás"}
-                        </span>
-                      </div>
-                      {option.extraCost > 0 ? (
-                        <span className="text-xs font-semibold text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
-                          +${option.extraCost}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-neutral-500 bg-neutral-800/50 px-2 py-1 rounded-full">
-                          Gratis
-                        </span>
-                      )}
-                    </button>
-                  ))}
+
+                {/* Content */}
+                <div className="p-4 max-h-96 overflow-y-auto">
+                  <div className="space-y-2">
+                    {stampOptions.map((option, index) => {
+                      const isSelected = selectedOptions.some(
+                        (selected) => selected.id === option.id
+                      );
+                      return (
+                        <button
+                          key={`${productId}-stamp-${index}`}
+                          type="button"
+                          onClick={() => handleOptionToggle(option)}
+                          className={clsx(
+                            "w-full px-4 py-3 text-left transition-all duration-150 flex items-center gap-3 rounded-lg border",
+                            isSelected
+                              ? "bg-[var(--accent)]/10 text-[var(--accent)] border-[var(--accent)]/30"
+                              : "text-neutral-200 hover:bg-neutral-800/60 hover:text-neutral-100 border-neutral-700/50"
+                          )}
+                        >
+                          <div className="flex items-center justify-center w-8 h-8 bg-neutral-800/50 rounded-full">
+                            {isSelected ? (
+                              <Check className="w-4 h-4" />
+                            ) : (
+                              <span className="text-sm font-medium">
+                                {getPlacementIcon(option.placement)}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <span className="font-medium block text-sm">
+                              {option.label}
+                            </span>
+                            <span className="text-xs text-neutral-400 block mt-1">
+                              {option.placement === "front_back"
+                                ? "Personalización en ambos lados"
+                                : option.placement === "front"
+                                ? "Solo adelante"
+                                : "Solo atrás"}
+                            </span>
+                          </div>
+                          {option.extraCost > 0 ? (
+                            <span className="text-sm font-semibold text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
+                              +${option.extraCost}
+                            </span>
+                          ) : (
+                            <span className="text-sm text-neutral-400 bg-neutral-800/50 px-3 py-1 rounded-full">
+                              Gratis
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="p-4 border-t border-neutral-800/50 bg-neutral-900/50">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-neutral-400">
+                      {selectedOptions.length} opción
+                      {selectedOptions.length !== 1 ? "es" : ""} seleccionada
+                      {selectedOptions.length !== 1 ? "s" : ""}
+                    </span>
+                    {selectedOptions.length > 0 && (
+                      <span className="text-sm font-semibold text-green-400">
+                        Total: +$
+                        {selectedOptions.reduce(
+                          (total, option) => total + option.extraCost,
+                          0
+                        )}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -191,7 +240,7 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
     <div className={clsx("space-y-4", className)}>
       <div className="flex items-center gap-2">
         <div className="flex items-center justify-center w-6 h-6 bg-neutral-800 rounded-full text-xs">
-          🎨
+          <Check className="w-3 h-3" />
         </div>
         <h3 className="text-sm font-medium text-neutral-200">
           Opciones de personalización
@@ -200,9 +249,9 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
 
       <div className="grid grid-cols-1 gap-3">
         {stampOptions.map((option, index) => {
-          const isSelected =
-            selectedOption?.placement === option.placement &&
-            selectedOption?.size === option.size;
+          const isSelected = selectedOptions.some(
+            (selected) => selected.id === option.id
+          );
           return (
             <label
               key={`${productId}-stamp-${index}`}
@@ -215,29 +264,28 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
               )}
             >
               <input
-                type="radio"
-                name={`stamp-${productId}`}
+                type="checkbox"
                 className="sr-only"
                 checked={isSelected}
-                onChange={() => handleOptionSelect(option)}
+                onChange={() => handleOptionToggle(option)}
                 aria-label={option.label}
               />
 
               <div className="flex items-center justify-center w-8 h-8 bg-neutral-800/50 rounded-full text-sm">
-                {getPlacementIcon(option.placement)}
+                {isSelected ? (
+                  <Check className="w-4 h-4" />
+                ) : (
+                  <span className="text-xs">
+                    {getPlacementIcon(option.placement)}
+                  </span>
+                )}
               </div>
 
               <div className="flex-1">
                 <span className="text-sm font-medium text-neutral-100 block">
-                  {getPlacementText(option.placement)}
+                  {option.label}
                 </span>
                 <span className="text-xs text-neutral-400 block mt-1">
-                  {option.size
-                    .replace("hasta_", "Hasta ")
-                    .replace("cm", " cm")
-                    .replace("x", " × ")}
-                </span>
-                <span className="text-xs text-neutral-500 block">
                   {option.placement === "front_back"
                     ? "Personalización en ambos lados"
                     : option.placement === "front"

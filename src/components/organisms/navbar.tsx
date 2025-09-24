@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { CartSidebar } from "@/components/organisms/cart-sidebar";
 import { HeartIcon } from "@/components/ui/icons";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -110,28 +111,7 @@ export const Navbar = () => {
             aria-expanded={open}
             aria-controls="mobile-menu"
           >
-            <svg
-              className="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {open ? (
-                <path
-                  d="M18 6L6 18M6 6l12 12"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              ) : (
-                <path
-                  d="M3 6h18M3 12h18M3 18h18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              )}
-            </svg>
+            {open ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
 
           <CartSidebar />
@@ -212,22 +192,6 @@ export const Navbar = () => {
               role="menuitem"
             >
               Contacto
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/favoritos"
-              className="block px-2 py-2 rounded text-sm text-neutral-200 hover:bg-[#151515] flex items-center gap-2"
-              onClick={() => setOpen(false)}
-              role="menuitem"
-            >
-              <HeartIcon className="w-4 h-4" />
-              Favoritos
-              {favorites.items.length > 0 && (
-                <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center ml-auto">
-                  {favorites.items.length}
-                </span>
-              )}
             </Link>
           </li>
           <li>

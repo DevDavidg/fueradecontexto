@@ -5,8 +5,8 @@ import { productsService } from "@/services/products";
 import { productsServiceFallback } from "@/services/products-fallback";
 import { type Product } from "@/lib/types";
 
-// Use fallback service temporarily to avoid stamp options issues
-const service = productsServiceFallback;
+// Use main service with stamp options support
+const service = productsService;
 
 export type ProductsPage = {
   items: Product[];

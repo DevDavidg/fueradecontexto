@@ -219,7 +219,7 @@ const ImagesManagement = () => {
                   <div className="mt-6">
                     <Link
                       href="/admin/products/new"
-                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[var(--accent)] hover:bg-[var(--accent-hover)]"
                     >
                       <Upload className="h-4 w-4 mr-2" />
                       Agregar Producto con Imágenes

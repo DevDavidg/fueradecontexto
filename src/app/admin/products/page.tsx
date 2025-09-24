@@ -191,7 +191,7 @@ const ProductsManagement = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/admin/products/new"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2 transition-colors"
+                  className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)] flex items-center space-x-2 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Nuevo Producto</span>
@@ -218,7 +218,7 @@ const ProductsManagement = () => {
                   placeholder="Buscar productos..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                  className="w-full pl-10 pr-4 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                 />
               </div>
 
@@ -227,7 +227,7 @@ const ProductsManagement = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] appearance-none"
+                  className="w-full pl-10 pr-4 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] appearance-none"
                 >
                   <option value="">Todas las categorías</option>
                   {categories.map((category) => (
@@ -291,7 +291,7 @@ const ProductsManagement = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600/20 text-blue-400">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--accent)]/20 text-blue-400">
                           {categories.find((c) => c.id === product.categoria)
                             ?.name || product.categoria}
                         </span>
@@ -324,7 +324,7 @@ const ProductsManagement = () => {
                                 e.currentTarget.blur();
                               }
                             }}
-                            className="w-20 px-2 py-1 text-sm bg-[#1a1a1a] border border-[#333333] rounded text-[#ededed] focus:border-blue-500 focus:outline-none"
+                            className="w-20 px-2 py-1 text-sm bg-[#1a1a1a] border border-[#333333] rounded text-[#ededed] focus:border-[var(--accent)] focus:outline-none"
                           />
                           <span
                             className={`text-xs px-2 py-1 rounded-full ${
@@ -388,7 +388,7 @@ const ProductsManagement = () => {
                   <div className="mt-6">
                     <Link
                       href="/admin/products/new"
-                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-colors"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Nuevo Producto

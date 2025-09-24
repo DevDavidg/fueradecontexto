@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/providers/app-providers";
+import { Banner } from "@/components/molecules/banner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${montserrat.variable} antialiased bg-black text-[#ededed] min-h-dvh`}
       >
+        <Banner />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

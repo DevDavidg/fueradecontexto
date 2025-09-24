@@ -1,6 +1,10 @@
 export type CurrencyCode = "USD" | "EUR" | "MXN" | "COP" | "ARS" | "CLP";
 
-export type PrintSizeId = "hasta_15cm" | "hasta_20x30cm" | "hasta_30x40cm";
+export type PrintSizeId =
+  | "hasta_15cm"
+  | "hasta_20x30cm"
+  | "hasta_30x40cm"
+  | "hasta_40x50cm";
 
 export type PrintPlacement = "front" | "back" | "front_back";
 

@@ -59,7 +59,7 @@ export type ProductCardProps = {
   product: Product;
   onAdd?: (
     product: Product,
-    options?: { color?: ColorOption; stampOption?: StampOption }
+    options?: { color?: ColorOption; stampOptions?: StampOption[] }
   ) => void;
   className?: string;
   highlight?: boolean;
@@ -107,8 +107,9 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       React.useState<ColorOption | null>(
         product.customizable?.colors?.[0] || null
       );
-    const [selectedStampOption, setSelectedStampOption] =
-      React.useState<StampOption | null>(null);
+    const [selectedStampOptions, setSelectedStampOptions] = React.useState<
+      StampOption[]
+    >([]);
 
     React.useEffect(() => {
       // Set valid colors based on available product images
@@ -138,7 +139,10 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     const isDisabled = !product.inStock;
     const isFav = isFavorite(product.id);
     const accentHex = "#e12afb"; // Always use fixed pink color
-    const stampExtraCost = selectedStampOption?.extraCost || 0;
+    const stampExtraCost = selectedStampOptions.reduce(
+      (total, option) => total + option.extraCost,
+      0
+    );
     const totalPrice = product.price + stampExtraCost;
     const discounted = Math.round(totalPrice * 0.9);
 
@@ -163,10 +167,10 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       if (!isDisabled) {
         onAdd?.(product, {
           color: selectedColor || undefined,
-          stampOption: selectedStampOption || undefined,
+          stampOptions: selectedStampOptions,
         });
       }
-    }, [isDisabled, onAdd, product, selectedColor, selectedStampOption]);
+    }, [isDisabled, onAdd, product, selectedColor, selectedStampOptions]);
 
     // Obtener el color de fondo del producto para determinar el color del texto del botón
     const getButtonTextColor = React.useCallback((): string => {
@@ -344,8 +348,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
           {product.stampOptions && product.stampOptions.length > 0 && (
             <div className="mt-3">
               <StampSelector
-                selectedOption={selectedStampOption || undefined}
-                onOptionChange={setSelectedStampOption}
+                selectedOptions={selectedStampOptions}
+                onOptionsChange={setSelectedStampOptions}
                 productId={product.id}
                 stampOptions={product.stampOptions}
                 compact={true}

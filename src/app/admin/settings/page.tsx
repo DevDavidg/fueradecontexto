@@ -208,7 +208,7 @@ const AdminSettings = () => {
                 <button
                   onClick={handleSeedProducts}
                   disabled={loading}
-                  className="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                  className="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[var(--accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50"
                 >
                   <Database className="h-4 w-4 mr-2" />
                   {loading ? "Cargando..." : "Cargar Productos de Ejemplo"}

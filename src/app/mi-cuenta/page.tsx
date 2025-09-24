@@ -105,7 +105,7 @@ export default function AccountPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Link
                     href="/admin"
-                    className="inline-flex items-center justify-center rounded-md bg-blue-600 text-white text-sm h-9 px-3 hover:bg-blue-700"
+                    className="inline-flex items-center justify-center rounded-md bg-[var(--accent)] text-white text-sm h-9 px-3 hover:bg-[var(--accent-hover)]"
                   >
                     Dashboard Admin
                   </Link>

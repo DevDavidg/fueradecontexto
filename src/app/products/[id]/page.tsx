@@ -23,7 +23,9 @@ export default function ProductDetailPage() {
   const [selectedPrint, setSelectedPrint] = useState<PrintOption | undefined>(
     product?.customizable?.printOptions[0]
   );
-  const [selectedStampOption, setSelectedStampOption] = useState<StampOption | undefined>();
+  const [selectedStampOptions, setSelectedStampOptions] = useState<
+    StampOption[]
+  >([]);
   const [selectedColor, setSelectedColor] = useState<
     { name: string; hex: string } | undefined
   >(product?.customizable?.colors[0]);
@@ -45,7 +47,9 @@ export default function ProductDetailPage() {
     );
   }
 
-  const extra = selectedPrint?.extraCost ?? selectedStampOption?.extraCost ?? 0;
+  const extra =
+    selectedPrint?.extraCost ??
+    selectedStampOptions.reduce((total, option) => total + option.extraCost, 0);
   const total = product.price + extra;
 
   const handleAddToCart = () => {
@@ -55,11 +59,13 @@ export default function ProductDetailPage() {
       1,
       (selectedPrint || selectedStampOption) && selectedColor
         ? {
-            printSizeId: selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
+            printSizeId:
+              selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
             printPlacement: selectedStampOption?.placement,
             colorName: selectedColor.name,
             colorHex: selectedColor.hex,
-            extraCost: selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
+            extraCost:
+              selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
           }
         : undefined
     );
@@ -149,9 +155,10 @@ export default function ProductDetailPage() {
             {isCustomizable && (
               <div className="space-y-4">
                 <StampSelector
-                  selectedOption={selectedStampOption}
-                  onOptionChange={setSelectedStampOption}
+                  selectedOptions={selectedStampOptions}
+                  onOptionsChange={setSelectedStampOptions}
                   productId={product.id}
+                  stampOptions={product.stampOptions}
                   compact={false}
                 />
 

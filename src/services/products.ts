@@ -149,7 +149,8 @@ const transformToProduct = (
       size: pso.stamp_options.size_id as
         | "hasta_15cm"
         | "hasta_20x30cm"
-        | "hasta_30x40cm",
+        | "hasta_30x40cm"
+        | "hasta_40x50cm",
       label: pso.stamp_options.label,
       extraCost: pso.stamp_options.extra_cost,
     }));

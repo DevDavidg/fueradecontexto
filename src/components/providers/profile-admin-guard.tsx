@@ -85,7 +85,7 @@ export const ProfileAdminGuard = ({
           </p>
           <button
             onClick={() => router.push("/mi-cuenta/iniciar-sesion")}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)]"
           >
             Iniciar Sesión
           </button>
@@ -107,7 +107,7 @@ export const ProfileAdminGuard = ({
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)]"
           >
             Reintentar
           </button>
@@ -134,7 +134,7 @@ export const ProfileAdminGuard = ({
             </p>
             <button
               onClick={() => router.push("/")}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)]"
             >
               Volver al inicio
             </button>

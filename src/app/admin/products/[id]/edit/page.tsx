@@ -30,6 +30,14 @@ interface PrintSize {
   price: number;
 }
 
+interface StampOption {
+  id: string;
+  placement: string;
+  size_id: string;
+  label: string;
+  extra_cost: number;
+}
+
 interface Product {
   id: string;
   nombre: string;
@@ -67,12 +75,19 @@ const EditProduct = () => {
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [printSizes, setPrintSizes] = useState<PrintSize[]>([]);
+  const [dynamicPrintSizes, setDynamicPrintSizes] = useState<PrintSize[]>([]);
   const [images, setImages] = useState<
     { color: string; file: File; preview: string }[]
   >([]);
   const [existingImages, setExistingImages] = useState<
     { id: string; color: string; url: string }[]
   >([]);
+  const [availableStampOptions, setAvailableStampOptions] = useState<
+    StampOption[]
+  >([]);
+  const [selectedStampOptions, setSelectedStampOptions] = useState<string[]>(
+    []
+  );
 
   const paymentMethods = [
     "Efectivo",
@@ -91,11 +106,12 @@ const EditProduct = () => {
 
   const availableSizes = ["XS", "S", "M", "L", "XL", "XXL", "Único"];
 
-  const printSizeOptions = [
-    { key: "hasta_15cm", label: "Hasta 15cm", price: 0 },
-    { key: "hasta_20x30cm", label: "Hasta 20x30cm", price: 500 },
-    { key: "hasta_30x40cm", label: "Hasta 30x40cm", price: 1000 },
-  ];
+  const sizeLabels: Record<string, string> = {
+    hasta_15cm: "Hasta 15cm",
+    hasta_20x30cm: "Hasta 20x30cm",
+    hasta_30x40cm: "Hasta 30x40cm",
+    hasta_40x50cm: "Hasta 40x50cm",
+  };
 
   const fetchProductData = useCallback(async () => {
     try {
@@ -156,6 +172,18 @@ const EditProduct = () => {
 
       if (imagesError) throw imagesError;
       setExistingImages(imagesData || []);
+
+      // Fetch stamp options
+      const { data: stampOptionsData, error: stampOptionsError } =
+        await supabase
+          .from("product_stamp_options")
+          .select("stamp_option_id")
+          .eq("product_id", productId);
+
+      if (stampOptionsError) throw stampOptionsError;
+      setSelectedStampOptions(
+        stampOptionsData?.map((item) => item.stamp_option_id) || []
+      );
     } catch (error) {
       console.error("Error loading product data:", error);
       alert("Error al cargar los datos del producto");
@@ -168,6 +196,8 @@ const EditProduct = () => {
     if (productId) {
       fetchProductData();
       fetchCategories();
+      fetchStampOptions();
+      fetchDynamicPrintSizes();
     }
   }, [productId, fetchProductData]);
 
@@ -181,6 +211,109 @@ const EditProduct = () => {
       setCategories(data || []);
     } catch (error) {
       console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchStampOptions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("stamp_options")
+        .select("*")
+        .order("placement", { ascending: true })
+        .order("size_id", { ascending: true });
+
+      if (error) throw error;
+      setAvailableStampOptions(data || []);
+    } catch (error) {
+      console.error("Error fetching stamp options:", error);
+    }
+  };
+
+  const fetchDynamicPrintSizes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("print_sizes")
+        .select("*")
+        .order("price", { ascending: true });
+
+      if (error) {
+        console.warn("Print sizes table not found, using fallback data");
+        // Fallback data si la tabla no existe
+        const fallbackSizes = [
+          {
+            id: "1",
+            size_key: "hasta_15cm",
+            price: 0,
+            key: "hasta_15cm",
+            label: "Hasta 15cm",
+          },
+          {
+            id: "2",
+            size_key: "hasta_20x30cm",
+            price: 500,
+            key: "hasta_20x30cm",
+            label: "Hasta 20x30cm",
+          },
+          {
+            id: "3",
+            size_key: "hasta_30x40cm",
+            price: 1000,
+            key: "hasta_30x40cm",
+            label: "Hasta 30x40cm",
+          },
+          {
+            id: "4",
+            size_key: "hasta_40x50cm",
+            price: 1500,
+            key: "hasta_40x50cm",
+            label: "Hasta 40x50cm",
+          },
+        ];
+        setDynamicPrintSizes(fallbackSizes);
+        return;
+      }
+
+      const sizesWithLabels = (data || []).map((size) => ({
+        ...size,
+        key: size.size_key,
+        label: sizeLabels[size.size_key] || size.size_key,
+      }));
+
+      setDynamicPrintSizes(sizesWithLabels);
+    } catch (error) {
+      console.error("Error fetching print sizes:", error);
+      // Fallback data en caso de error
+      const fallbackSizes = [
+        {
+          id: "1",
+          size_key: "hasta_15cm",
+          price: 0,
+          key: "hasta_15cm",
+          label: "Hasta 15cm",
+        },
+        {
+          id: "2",
+          size_key: "hasta_20x30cm",
+          price: 500,
+          key: "hasta_20x30cm",
+          label: "Hasta 20x30cm",
+        },
+        {
+          id: "3",
+          size_key: "hasta_30x40cm",
+          price: 1000,
+          key: "hasta_30x40cm",
+          label: "Hasta 30x40cm",
+        },
+        {
+          id: "4",
+          size_key: "hasta_40x50cm",
+          price: 1500,
+          key: "hasta_40x50cm",
+          label: "Hasta 40x50cm",
+        },
+      ];
+      setDynamicPrintSizes(fallbackSizes);
     }
   };
 
@@ -409,6 +542,24 @@ const EditProduct = () => {
         if (printSizesError) throw printSizesError;
       }
 
+      // Delete existing stamp options and insert new ones
+      await supabase
+        .from("product_stamp_options")
+        .delete()
+        .eq("product_id", productId);
+      if (selectedStampOptions.length > 0) {
+        const { error: stampOptionsError } = await supabase
+          .from("product_stamp_options")
+          .insert(
+            selectedStampOptions.map((stampOptionId) => ({
+              product_id: productId,
+              stamp_option_id: stampOptionId,
+            }))
+          );
+
+        if (stampOptionsError) throw stampOptionsError;
+      }
+
       // Upload new images
       if (images.length > 0) {
         await uploadImagesToSupabase();
@@ -447,7 +598,7 @@ const EditProduct = () => {
             </h1>
             <Link
               href="/admin/products"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-[var(--accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--accent-hover)]"
             >
               Volver a productos
             </Link>
@@ -493,7 +644,7 @@ const EditProduct = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  <label className="block text-sm font-medium text-[#ededed] mb-2">
                     Nombre del Producto *
                   </label>
                   <input
@@ -502,12 +653,12 @@ const EditProduct = () => {
                     value={formData.nombre}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  <label className="block text-sm font-medium text-[#ededed] mb-2">
                     Categoría *
                   </label>
                   <select
@@ -515,7 +666,7 @@ const EditProduct = () => {
                     value={formData.categoria}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                   >
                     <option value="">Selecciona una categoría</option>
                     {categories.map((category) => (
@@ -527,7 +678,7 @@ const EditProduct = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  <label className="block text-sm font-medium text-[#ededed] mb-2">
                     Descripción *
                   </label>
                   <textarea
@@ -536,7 +687,7 @@ const EditProduct = () => {
                     onChange={handleInputChange}
                     required
                     rows={4}
-                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                   />
                 </div>
               </div>
@@ -550,7 +701,7 @@ const EditProduct = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  <label className="block text-sm font-medium text-[#ededed] mb-2">
                     Precio Normal (ARS)
                   </label>
                   <input
@@ -559,12 +710,12 @@ const EditProduct = () => {
                     value={formData.precio_normal}
                     onChange={handleInputChange}
                     min="0"
-                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  <label className="block text-sm font-medium text-[#ededed] mb-2">
                     Precio Transferencia (ARS)
                   </label>
                   <input
@@ -573,7 +724,7 @@ const EditProduct = () => {
                     value={formData.precio_transferencia}
                     onChange={handleInputChange}
                     min="0"
-                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                   />
                 </div>
               </div>
@@ -706,9 +857,9 @@ const EditProduct = () => {
                       className="flex-1 px-3 py-2 bg-black text-[#ededed] border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] placeholder-neutral-400"
                     >
                       <option value="">Selecciona un tamaño</option>
-                      {printSizeOptions.map((option) => (
+                      {dynamicPrintSizes.map((option) => (
                         <option key={option.key} value={option.key}>
-                          {option.label}
+                          {option.label} - ${option.price}
                         </option>
                       ))}
                     </select>
@@ -724,7 +875,7 @@ const EditProduct = () => {
                         )
                       }
                       min="0"
-                      className="w-32 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-32 px-3 py-2 border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
                     />
                     <button
                       type="button"
@@ -753,9 +904,9 @@ const EditProduct = () => {
                       onChange={(e) =>
                         handlePaymentMethodChange(method, e.target.checked)
                       }
-                      className="rounded border-[#333333] text-blue-600 focus:ring-blue-500"
+                      className="rounded border-[#333333] text-[var(--accent)] focus:ring-[var(--accent)]"
                     />
-                    <span className="text-sm text-neutral-300">{method}</span>
+                    <span className="text-sm text-[#ededed]">{method}</span>
                   </label>
                 ))}
               </div>
@@ -769,14 +920,14 @@ const EditProduct = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  <label className="block text-sm font-medium text-[#ededed] mb-2">
                     Método de Envío
                   </label>
                   <select
                     name="envio_metodo"
                     value={formData.envio_metodo}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                   >
                     <option value="">Selecciona un método</option>
                     {shippingMethods.map((method) => (
@@ -788,7 +939,7 @@ const EditProduct = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  <label className="block text-sm font-medium text-[#ededed] mb-2">
                     Código Postal
                   </label>
                   <input
@@ -797,9 +948,64 @@ const EditProduct = () => {
                     value={formData.envio_codigo_postal}
                     onChange={handleInputChange}
                     placeholder="Ej: 1000"
-                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                    className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Stamp Options */}
+            <div className="bg-[#0b0b0b] border border-[#333333] rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-[#ededed] mb-6">
+                Opciones de Estampas
+              </h2>
+              <p className="text-sm text-neutral-400 mb-4">
+                Selecciona qué opciones de estampas estarán disponibles para
+                este producto
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {availableStampOptions.map((option) => (
+                  <label
+                    key={option.id}
+                    className="flex items-center space-x-3 p-4 border border-[#333333] rounded-lg cursor-pointer hover:bg-neutral-900/50 transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedStampOptions.includes(option.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedStampOptions((prev) => [
+                            ...prev,
+                            option.id,
+                          ]);
+                        } else {
+                          setSelectedStampOptions((prev) =>
+                            prev.filter((id) => id !== option.id)
+                          );
+                        }
+                      }}
+                      className="w-4 h-4 text-[var(--accent)] bg-black border-[#333333] rounded focus:ring-[var(--accent)] focus:ring-2"
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-[#ededed]">
+                        {option.label}
+                      </div>
+                      <div className="text-xs text-neutral-400">
+                        {option.placement === "front"
+                          ? "Solo adelante"
+                          : option.placement === "back"
+                          ? "Solo atrás"
+                          : "Adelante + Atrás"}
+                      </div>
+                      {option.extra_cost > 0 && (
+                        <div className="text-xs text-green-400 font-medium">
+                          +${option.extra_cost}
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
 
@@ -858,7 +1064,7 @@ const EditProduct = () => {
                       multiple
                       accept="image/*"
                       onChange={(e) => handleImageUpload(e, color.nombre)}
-                      className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-[#ededed] placeholder-neutral-400"
+                      className="w-full px-3 py-2 bg-black border border-[#333333] rounded-md focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[#ededed] placeholder-neutral-400"
                     />
                   </div>
                 ))}
@@ -902,14 +1108,14 @@ const EditProduct = () => {
             <div className="flex justify-end space-x-4">
               <Link
                 href="/admin/products"
-                className="px-6 py-2 border border-[#333333] rounded-md text-neutral-300 hover:bg-[#1a1a1a]"
+                className="px-6 py-2 border border-[#333333] rounded-md text-[#ededed] hover:bg-[#1a1a1a]"
               >
                 Cancelar
               </Link>
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center space-x-2"
+                className="bg-[var(--accent)] text-white px-6 py-2 rounded-md hover:bg-[var(--accent-hover)] disabled:opacity-50 flex items-center space-x-2"
               >
                 <Save className="h-4 w-4" />
                 <span>{saving ? "Guardando..." : "Guardar Cambios"}</span>
