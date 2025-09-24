@@ -1,9 +1,10 @@
 "use client";
 
 import { ProfileAdminGuard } from "@/components/providers/profile-admin-guard";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabase-browser";
 import { useRouter, useParams } from "next/navigation";
+import { useLogger } from "@/hooks/use-logger";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -25,13 +26,7 @@ import {
 } from "lucide-react";
 import {
   Skeleton,
-  SkeletonText,
   SkeletonFormSection,
-  SkeletonStampOption,
-  SkeletonImageGrid,
-  SkeletonColorItem,
-  SkeletonSizeItem,
-  SkeletonPrintSizeItem,
 } from "@/components/molecules/skeleton-loading";
 
 interface Category {
@@ -54,6 +49,8 @@ interface PrintSize {
   id?: string;
   size_key: string;
   price: number;
+  key?: string;
+  label?: string;
 }
 
 interface StampOption {
@@ -77,6 +74,7 @@ interface Product {
 }
 
 const EditProduct = () => {
+  const logger = useLogger();
   const router = useRouter();
   const params = useParams();
   const productId = params.id as string;
@@ -135,12 +133,22 @@ const EditProduct = () => {
 
   const availableSizes = ["XS", "S", "M", "L", "XL", "XXL", "Único"];
 
-  const sizeLabels: Record<string, string> = {
-    hasta_15cm: "Hasta 15cm",
-    hasta_20x30cm: "Hasta 20x30cm",
-    hasta_30x40cm: "Hasta 30x40cm",
-    hasta_40x50cm: "Hasta 40x50cm",
-  };
+  const sizeLabels = useMemo(
+    () => ({
+      hasta_15cm: "Hasta 15cm",
+      hasta_20x30cm: "Hasta 20x30cm",
+      hasta_30x40cm: "Hasta 30x40cm",
+      hasta_40x50cm: "Hasta 40x50cm",
+    }),
+    []
+  );
+
+  const getSizeLabel = useCallback(
+    (sizeKey: string) => {
+      return sizeLabels[sizeKey as keyof typeof sizeLabels] || sizeKey;
+    },
+    [sizeLabels]
+  );
 
   const fetchProductData = useCallback(async () => {
     try {
@@ -214,23 +222,18 @@ const EditProduct = () => {
         stampOptionsData?.map((item) => item.stamp_option_id) || []
       );
     } catch (error) {
-      console.error("Error loading product data:", error);
+      logger.error("Error loading product data", error, {
+        component: "EditProduct",
+        action: "fetchProductData",
+        metadata: { productId },
+      });
       alert("Error al cargar los datos del producto");
     } finally {
       setLoading(false);
     }
-  }, [productId]);
+  }, [productId, logger]);
 
-  useEffect(() => {
-    if (productId) {
-      fetchProductData();
-      fetchCategories();
-      fetchStampOptions();
-      fetchDynamicPrintSizes();
-    }
-  }, [productId, fetchProductData]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("categories")
@@ -239,11 +242,14 @@ const EditProduct = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      logger.error("Error fetching categories", error, {
+        component: "EditProduct",
+        action: "fetchCategories",
+      });
     }
-  };
+  }, [logger]);
 
-  const fetchStampOptions = async () => {
+  const fetchStampOptions = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("stamp_options")
@@ -254,11 +260,14 @@ const EditProduct = () => {
       if (error) throw error;
       setAvailableStampOptions(data || []);
     } catch (error) {
-      console.error("Error fetching stamp options:", error);
+      logger.error("Error fetching stamp options", error, {
+        component: "EditProduct",
+        action: "fetchStampOptions",
+      });
     }
-  };
+  }, [logger]);
 
-  const fetchDynamicPrintSizes = async () => {
+  const fetchDynamicPrintSizes = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("print_sizes")
@@ -266,7 +275,10 @@ const EditProduct = () => {
         .order("price", { ascending: true });
 
       if (error) {
-        console.warn("Print sizes table not found, using fallback data");
+        logger.warn("Print sizes table not found, using fallback data", {
+          component: "EditProduct",
+          action: "fetchDynamicPrintSizes",
+        });
         // Fallback data si la tabla no existe
         const fallbackSizes = [
           {
@@ -305,12 +317,15 @@ const EditProduct = () => {
       const sizesWithLabels = (data || []).map((size) => ({
         ...size,
         key: size.size_key,
-        label: sizeLabels[size.size_key] || size.size_key,
+        label: getSizeLabel(size.size_key),
       }));
 
       setDynamicPrintSizes(sizesWithLabels);
     } catch (error) {
-      console.error("Error fetching print sizes:", error);
+      logger.error("Error fetching print sizes", error, {
+        component: "EditProduct",
+        action: "fetchDynamicPrintSizes",
+      });
       // Fallback data en caso de error
       const fallbackSizes = [
         {
@@ -344,7 +359,22 @@ const EditProduct = () => {
       ];
       setDynamicPrintSizes(fallbackSizes);
     }
-  };
+  }, [logger, getSizeLabel]);
+
+  useEffect(() => {
+    if (productId) {
+      fetchProductData();
+      fetchCategories();
+      fetchStampOptions();
+      fetchDynamicPrintSizes();
+    }
+  }, [
+    productId,
+    fetchProductData,
+    fetchCategories,
+    fetchStampOptions,
+    fetchDynamicPrintSizes,
+  ]);
 
   const calculateTotalPrice = useCallback(() => {
     const basePrice = parseInt(formData.precio_normal) || 0;
@@ -494,7 +524,11 @@ const EditProduct = () => {
 
       setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
     } catch (error) {
-      console.error("Error deleting image:", error);
+      logger.error("Error deleting image", error, {
+        component: "EditProduct",
+        action: "handleDeleteImage",
+        metadata: { imageId },
+      });
       alert("Error al eliminar la imagen");
     }
   };
@@ -999,7 +1033,7 @@ const EditProduct = () => {
                     <Palette className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No hay colores agregados</p>
                     <p className="text-sm">
-                      Haz clic en "Agregar Color" para comenzar
+                      Haz clic en &quot;Agregar Color&quot; para comenzar
                     </p>
                   </div>
                 )}
@@ -1073,7 +1107,7 @@ const EditProduct = () => {
                     <Ruler className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No hay tamaños agregados</p>
                     <p className="text-sm">
-                      Haz clic en "Agregar Tamaño" para comenzar
+                      Haz clic en &quot;Agregar Tamaño&quot; para comenzar
                     </p>
                   </div>
                 )}
@@ -1121,7 +1155,7 @@ const EditProduct = () => {
               <div className="space-y-4">
                 {printSizes.map((printSize, index) => {
                   const selectedSize = dynamicPrintSizes.find(
-                    (s) => s.key === printSize.size_key
+                    (s) => s.size_key === printSize.size_key
                   );
                   return (
                     <div
@@ -1140,14 +1174,18 @@ const EditProduct = () => {
                             Selecciona un tamaño de estampa
                           </option>
                           {dynamicPrintSizes.map((option) => (
-                            <option key={option.key} value={option.key}>
-                              {option.label} - ${option.price.toLocaleString()}
+                            <option
+                              key={option.size_key}
+                              value={option.size_key}
+                            >
+                              {getSizeLabel(option.size_key)} - $
+                              {option.price.toLocaleString()}
                             </option>
                           ))}
                         </select>
                         {selectedSize && (
                           <p className="text-xs text-neutral-400 mt-1">
-                            Tamaño base: {selectedSize.label}
+                            Tamaño base: {getSizeLabel(selectedSize.size_key)}
                           </p>
                         )}
                       </div>
@@ -1194,7 +1232,7 @@ const EditProduct = () => {
                     <Stamp className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No hay tamaños de estampa configurados</p>
                     <p className="text-sm">
-                      Haz clic en "Agregar Tamaño" para comenzar
+                      Haz clic en &quot;Agregar Tamaño&quot; para comenzar
                     </p>
                   </div>
                 )}

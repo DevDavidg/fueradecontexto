@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLogger } from "@/hooks/use-logger";
 
 interface AdminStats {
   overview: {
@@ -24,6 +25,7 @@ interface AdminStats {
 }
 
 export const useAdminStats = () => {
+  const logger = useLogger();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,10 @@ export const useAdminStats = () => {
       const data = await response.json();
       setStats(data);
     } catch (err) {
-      console.error("Error fetching admin stats:", err);
+      logger.error("Error fetching admin stats", err, {
+        component: "useAdminStats",
+        action: "fetchStats",
+      });
       setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
       setLoading(false);

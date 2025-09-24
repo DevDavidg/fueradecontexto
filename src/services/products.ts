@@ -198,7 +198,10 @@ export const productsService = {
       }
       return true;
     } catch (error) {
-      console.error("Error updating stock:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error updating stock:", error);
+      }
       return false;
     }
   },
@@ -229,7 +232,10 @@ export const productsService = {
       }
       return true;
     } catch (error) {
-      console.error("Error updating stock:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error updating stock:", error);
+      }
       return false;
     }
   },
@@ -254,7 +260,10 @@ export const productsService = {
       const { data: products, error } = await query;
 
       if (error) {
-        console.error("Error fetching products:", error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching products:", error);
+        }
         return [];
       }
 
@@ -271,7 +280,10 @@ export const productsService = {
         )
       );
     } catch (error) {
-      console.error("Error fetching products:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching products:", error);
+      }
       return [];
     }
   },
@@ -322,7 +334,10 @@ export const productsService = {
       const { data: products, error } = await query;
 
       if (error) {
-        console.error("Error fetching products page:", error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching products page:", error);
+        }
         return { items: [], hasMore: false, nextPage: null };
       }
 
@@ -346,7 +361,10 @@ export const productsService = {
 
       return { items, hasMore, nextPage };
     } catch (error) {
-      console.error("Error fetching products page:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching products page:", error);
+      }
       return { items: [], hasMore: false, nextPage: null };
     }
   },
@@ -370,7 +388,10 @@ export const productsService = {
         .single();
 
       if (error) {
-        console.error("Error fetching product by ID:", error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching product by ID:", error);
+        }
         return undefined;
       }
 
@@ -385,7 +406,10 @@ export const productsService = {
         product.product_stamp_options || []
       );
     } catch (error) {
-      console.error("Error fetching product by ID:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching product by ID:", error);
+      }
       return undefined;
     }
   },

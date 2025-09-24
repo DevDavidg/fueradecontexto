@@ -1,10 +1,9 @@
 "use client";
 
 import { ProfileAdminGuard } from "@/components/providers/profile-admin-guard";
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase-browser";
+import { useState, useEffect, useCallback } from "react";
+import { useLogger } from "@/hooks/use-logger";
 import {
-  Save,
   Edit,
   X,
   Plus,
@@ -39,6 +38,7 @@ interface StampOption {
 }
 
 const StampPricingAdmin = () => {
+  const logger = useLogger();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -48,7 +48,6 @@ const StampPricingAdmin = () => {
   const [editingStampOption, setEditingStampOption] = useState<string | null>(
     null
   );
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [needsSetup, setNeedsSetup] = useState(false);
   const [setupMessage, setSetupMessage] = useState("");
 
@@ -65,11 +64,7 @@ const StampPricingAdmin = () => {
     front_back: "Adelante + Atrás",
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -85,12 +80,19 @@ const StampPricingAdmin = () => {
       setNeedsSetup(result.needsSetup || false);
       setSetupMessage(result.message || "");
     } catch (error) {
-      console.error("Error fetching data:", error);
+      logger.error("Error fetching stamp pricing data", error, {
+        component: "StampPricingAdmin",
+        action: "fetchData",
+      });
       alert("Error al cargar los datos");
     } finally {
       setLoading(false);
     }
-  };
+  }, [logger]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const updatePrintSizePrice = async (id: string, newPrice: number) => {
     try {
@@ -128,7 +130,11 @@ const StampPricingAdmin = () => {
         setTimeout(() => setSaveSuccess(false), 3000);
       }
     } catch (error) {
-      console.error("Error updating print size:", error);
+      logger.error("Error updating print size price", error, {
+        component: "StampPricingAdmin",
+        action: "updatePrintSizePrice",
+        metadata: { sizeId: id, newPrice },
+      });
       alert(
         error instanceof Error ? error.message : "Error al actualizar el precio"
       );
@@ -173,7 +179,11 @@ const StampPricingAdmin = () => {
         setTimeout(() => setSaveSuccess(false), 3000);
       }
     } catch (error) {
-      console.error("Error updating stamp option:", error);
+      logger.error("Error updating stamp option price", error, {
+        component: "StampPricingAdmin",
+        action: "updateStampOptionPrice",
+        metadata: { optionId: id, newPrice },
+      });
       alert(
         error instanceof Error ? error.message : "Error al actualizar el precio"
       );
@@ -218,7 +228,10 @@ const StampPricingAdmin = () => {
         setTimeout(() => setSaveSuccess(false), 3000);
       }
     } catch (error) {
-      console.error("Error setting up system:", error);
+      logger.error("Error setting up stamp pricing system", error, {
+        component: "StampPricingAdmin",
+        action: "setupSystem",
+      });
       alert(
         error instanceof Error
           ? error.message

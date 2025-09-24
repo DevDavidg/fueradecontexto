@@ -57,15 +57,19 @@ export default function ProductDetailPage() {
       product,
       selectedSize,
       1,
-      (selectedPrint || selectedStampOption) && selectedColor
+      (selectedPrint || selectedStampOptions) && selectedColor
         ? {
             printSizeId:
-              selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
-            printPlacement: selectedStampOption?.placement,
+              selectedPrint?.id ||
+              selectedStampOptions?.[0]?.size ||
+              "hasta_15cm",
+            printPlacement: selectedStampOptions?.[0]?.placement,
             colorName: selectedColor.name,
             colorHex: selectedColor.hex,
             extraCost:
-              selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
+              selectedPrint?.extraCost ||
+              selectedStampOptions?.[0]?.extraCost ||
+              0,
           }
         : undefined
     );

@@ -50,10 +50,16 @@ export async function POST() {
           const { error } = await supabase.from("print_sizes").insert(size);
 
           if (error) {
-            console.error(`Error inserting size ${size.size_key}:`, error);
+            // Log error in development only
+            if (process.env.NODE_ENV === "development") {
+              console.error(`Error inserting size ${size.size_key}:`, error);
+            }
           }
         } catch (error) {
-          console.error(`Exception with size ${size.size_key}:`, error);
+          // Log error in development only
+          if (process.env.NODE_ENV === "development") {
+            console.error(`Exception with size ${size.size_key}:`, error);
+          }
         }
       }
     }
@@ -81,10 +87,13 @@ export async function POST() {
               .insert(size);
 
             if (insertError) {
-              console.error(
-                `Error inserting size ${size.size_key}:`,
-                insertError
-              );
+              // Log error in development only
+              if (process.env.NODE_ENV === "development") {
+                console.error(
+                  `Error inserting size ${size.size_key}:`,
+                  insertError
+                );
+              }
             }
           }
         }
@@ -184,10 +193,13 @@ export async function POST() {
             .insert(option);
 
           if (insertError) {
-            console.error(
-              `Error inserting option ${option.label}:`,
-              insertError
-            );
+            // Log error in development only
+            if (process.env.NODE_ENV === "development") {
+              console.error(
+                `Error inserting option ${option.label}:`,
+                insertError
+              );
+            }
           }
         }
       }
@@ -198,7 +210,10 @@ export async function POST() {
       message: "Stamp pricing tables setup completed successfully",
     });
   } catch (error) {
-    console.error("Setup error:", error);
+    // Log error in development only
+    if (process.env.NODE_ENV === "development") {
+      console.error("Setup error:", error);
+    }
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

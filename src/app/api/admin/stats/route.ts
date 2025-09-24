@@ -22,7 +22,10 @@ export async function GET(request: NextRequest) {
       .select("id, precio_normal, stock, created_at");
 
     if (productsError) {
-      console.error("Error fetching products:", productsError);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching products:", productsError);
+      }
       return NextResponse.json(
         { error: "Error fetching products" },
         { status: 500 }
@@ -35,7 +38,10 @@ export async function GET(request: NextRequest) {
       .select("id, created_at");
 
     if (usersError) {
-      console.error("Error fetching users:", usersError);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching users:", usersError);
+      }
       return NextResponse.json(
         { error: "Error fetching users" },
         { status: 500 }
@@ -48,7 +54,10 @@ export async function GET(request: NextRequest) {
       .select("id");
 
     if (categoriesError) {
-      console.error("Error fetching categories:", categoriesError);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching categories:", categoriesError);
+      }
     }
 
     // Calcular estadísticas
@@ -108,7 +117,7 @@ export async function GET(request: NextRequest) {
         .select("categoria")
         .not("categoria", "is", null);
 
-    let categoryDistribution: Record<string, number> = {};
+    const categoryDistribution: Record<string, number> = {};
     if (!categoryStatsError && categoryStats) {
       categoryStats.forEach((product) => {
         const category = product.categoria || "Sin categoría";
@@ -141,7 +150,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(stats);
   } catch (error) {
-    console.error("Stats API error:", error);
+    // Log error in development only
+    if (process.env.NODE_ENV === "development") {
+      console.error("Stats API error:", error);
+    }
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

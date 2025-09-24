@@ -39,7 +39,10 @@ export async function GET() {
     }
 
     // If print_sizes table doesn't exist, return fallback data
-    if (printSizesError && printSizesError.code === "PGRST205") {
+    if (
+      printSizesError &&
+      (printSizesError as { code?: string }).code === "PGRST205"
+    ) {
       // Return fallback data with setup flag
       const fallbackPrintSizes = [
         { id: "1", size_key: "hasta_15cm", price: 0 },
@@ -164,7 +167,10 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error fetching stamp pricing:", error);
+    // Log error in development only
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error fetching stamp pricing:", error);
+    }
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -191,7 +197,10 @@ export async function POST() {
         .upsert(size, { onConflict: "size_key" });
 
       if (error) {
-        console.error(`Error inserting size ${size.size_key}:`, error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error(`Error inserting size ${size.size_key}:`, error);
+        }
       }
     }
 
@@ -282,7 +291,10 @@ export async function POST() {
         .upsert(option, { onConflict: "placement,size_id" });
 
       if (error) {
-        console.error(`Error inserting option ${option.label}:`, error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error(`Error inserting option ${option.label}:`, error);
+        }
       }
     }
 
@@ -291,7 +303,10 @@ export async function POST() {
       message: "Sistema de precios de estampas configurado correctamente",
     });
   } catch (error) {
-    console.error("Error setting up stamp pricing:", error);
+    // Log error in development only
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error setting up stamp pricing:", error);
+    }
     return NextResponse.json(
       { error: "Error al configurar el sistema de precios" },
       { status: 500 }
@@ -325,7 +340,7 @@ export async function PUT(request: NextRequest) {
         .from("print_sizes")
         .select("id")
         .limit(1);
-      if (checkError && checkError.code === "PGRST205") {
+      if (checkError && (checkError as { code?: string }).code === "PGRST205") {
         return NextResponse.json({
           success: true,
           message:
@@ -338,7 +353,7 @@ export async function PUT(request: NextRequest) {
         .from("stamp_options")
         .select("id")
         .limit(1);
-      if (checkError && checkError.code === "PGRST205") {
+      if (checkError && (checkError as { code?: string }).code === "PGRST205") {
         return NextResponse.json({
           success: true,
           message:
@@ -373,7 +388,10 @@ export async function PUT(request: NextRequest) {
       message: "Price updated successfully",
     });
   } catch (error) {
-    console.error("Error updating stamp pricing:", error);
+    // Log error in development only
+    if (process.env.NODE_ENV === "development") {
+      console.error("Error updating stamp pricing:", error);
+    }
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

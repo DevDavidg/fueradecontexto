@@ -28,6 +28,7 @@ interface PrintSize {
   id?: string;
   size_key: string;
   price: number;
+  label?: string;
 }
 
 interface StampOption {
@@ -109,7 +110,10 @@ const NewProduct = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching categories:", error);
+      }
     }
   };
 
@@ -124,7 +128,10 @@ const NewProduct = () => {
       if (error) throw error;
       setAvailableStampOptions(data || []);
     } catch (error) {
-      console.error("Error fetching stamp options:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching stamp options:", error);
+      }
     }
   };
 
@@ -136,7 +143,10 @@ const NewProduct = () => {
         .order("price", { ascending: true });
 
       if (error) {
-        console.warn("Print sizes table not found, using fallback data");
+        // Log warning in development only
+        if (process.env.NODE_ENV === "development") {
+          console.warn("Print sizes table not found, using fallback data");
+        }
         // Fallback data si la tabla no existe
         const fallbackSizes = [
           {
@@ -180,7 +190,10 @@ const NewProduct = () => {
 
       setDynamicPrintSizes(sizesWithLabels);
     } catch (error) {
-      console.error("Error fetching print sizes:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching print sizes:", error);
+      }
       // Fallback data en caso de error
       const fallbackSizes = [
         {
@@ -710,7 +723,7 @@ const NewProduct = () => {
                     >
                       <option value="">Selecciona un tamaño</option>
                       {dynamicPrintSizes.map((option) => (
-                        <option key={option.key} value={option.key}>
+                        <option key={option.size_key} value={option.size_key}>
                           {option.label} - ${option.price}
                         </option>
                       ))}

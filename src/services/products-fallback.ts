@@ -1,4 +1,4 @@
-import { type PrintOption, type Product, type StampOption } from "@/lib/types";
+import { type PrintOption, type Product } from "@/lib/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -100,76 +100,6 @@ const buildPrintOptions = (
   return options;
 };
 
-// Default stamp options (fallback)
-const DEFAULT_STAMP_OPTIONS: StampOption[] = [
-  {
-    placement: "front",
-    size: "hasta_15cm",
-    label: "Adelante - Hasta 15cm",
-    extraCost: 0,
-  },
-  {
-    placement: "front",
-    size: "hasta_20x30cm",
-    label: "Adelante - Hasta 20x30cm",
-    extraCost: 500,
-  },
-  {
-    placement: "front",
-    size: "hasta_30x40cm",
-    label: "Adelante - Hasta 30x40cm",
-    extraCost: 1000,
-  },
-  {
-    placement: "back",
-    size: "hasta_15cm",
-    label: "Atrás - Hasta 15cm",
-    extraCost: 0,
-  },
-  {
-    placement: "back",
-    size: "hasta_20x30cm",
-    label: "Atrás - Hasta 20x30cm",
-    extraCost: 500,
-  },
-  {
-    placement: "back",
-    size: "hasta_30x40cm",
-    label: "Atrás - Hasta 30x40cm",
-    extraCost: 1000,
-  },
-  {
-    placement: "front_back",
-    size: "hasta_15cm",
-    label: "Adelante + Atrás - Hasta 15cm",
-    extraCost: 0,
-  },
-  {
-    placement: "front_back",
-    size: "hasta_20x30cm",
-    label: "Adelante + Atrás - Hasta 20x30cm",
-    extraCost: 1000,
-  },
-  {
-    placement: "front_back",
-    size: "hasta_30x40cm",
-    label: "Adelante + Atrás - Hasta 30x40cm",
-    extraCost: 2000,
-  },
-  {
-    placement: "back",
-    size: "hasta_40x50cm",
-    label: "Atrás - Hasta 40x50cm",
-    extraCost: 1500,
-  },
-  {
-    placement: "front_back",
-    size: "hasta_40x50cm",
-    label: "Adelante + Atrás - Hasta 40x50cm",
-    extraCost: 2500,
-  },
-];
-
 const transformToProduct = (
   product: DatabaseProduct,
   colors: DatabaseColor[],
@@ -232,12 +162,18 @@ export const productsServiceFallback = {
         .select("stock");
 
       if (error) {
-        console.error("Error updating stock:", error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error updating stock:", error);
+        }
         return false;
       }
       return true;
     } catch (error) {
-      console.error("Error updating stock:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error updating stock:", error);
+      }
       return false;
     }
   },
@@ -252,10 +188,13 @@ export const productsServiceFallback = {
         .single();
 
       if (fetchError || !product) {
-        console.error(
-          "Error fetching product for stock reduction:",
-          fetchError
-        );
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error(
+            "Error fetching product for stock reduction:",
+            fetchError
+          );
+        }
         return false;
       }
 
@@ -268,12 +207,18 @@ export const productsServiceFallback = {
         .select("stock");
 
       if (updateError) {
-        console.error("Error updating stock:", updateError);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error updating stock:", updateError);
+        }
         return false;
       }
       return true;
     } catch (error) {
-      console.error("Error updating stock:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error updating stock:", error);
+      }
       return false;
     }
   },
@@ -297,7 +242,10 @@ export const productsServiceFallback = {
       const { data: products, error } = await query;
 
       if (error) {
-        console.error("Error fetching products:", error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching products:", error);
+        }
         return [];
       }
 
@@ -313,7 +261,10 @@ export const productsServiceFallback = {
         )
       );
     } catch (error) {
-      console.error("Error fetching products:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching products:", error);
+      }
       return [];
     }
   },
@@ -338,7 +289,10 @@ export const productsServiceFallback = {
       const { count, error: countError } = await countQuery;
 
       if (countError) {
-        console.error("Error fetching products count:", countError);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching products count:", countError);
+        }
         return { items: [], hasMore: false, nextPage: null };
       }
 
@@ -364,7 +318,10 @@ export const productsServiceFallback = {
       const { data: products, error } = await query;
 
       if (error) {
-        console.error("Error fetching products page:", error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching products page:", error);
+        }
         return { items: [], hasMore: false, nextPage: null };
       }
 
@@ -387,7 +344,10 @@ export const productsServiceFallback = {
 
       return { items, hasMore, nextPage };
     } catch (error) {
-      console.error("Error fetching products page:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching products page:", error);
+      }
       return { items: [], hasMore: false, nextPage: null };
     }
   },
@@ -410,7 +370,10 @@ export const productsServiceFallback = {
         .single();
 
       if (error) {
-        console.error("Error fetching product by ID:", error);
+        // Log error in development only
+        if (process.env.NODE_ENV === "development") {
+          console.error("Error fetching product by ID:", error);
+        }
         return undefined;
       }
 
@@ -424,7 +387,10 @@ export const productsServiceFallback = {
         product.product_print_sizes || []
       );
     } catch (error) {
-      console.error("Error fetching product by ID:", error);
+      // Log error in development only
+      if (process.env.NODE_ENV === "development") {
+        console.error("Error fetching product by ID:", error);
+      }
       return undefined;
     }
   },

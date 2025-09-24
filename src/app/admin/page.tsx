@@ -17,7 +17,6 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { useAdminStats } from "@/hooks/use-admin-stats";
-import { formatCurrency } from "@/lib/format-currency";
 
 const formatPeso = (amount: number) => {
   return new Intl.NumberFormat("es-AR", {
@@ -203,7 +202,7 @@ const AdminDashboard = () => {
                     ) : error ? (
                       "Error"
                     ) : (
-                      stats?.overview.totalUnitsInStock || 0
+                      stats?.overview.productsInStock || 0
                     )}
                   </div>
                 </div>
