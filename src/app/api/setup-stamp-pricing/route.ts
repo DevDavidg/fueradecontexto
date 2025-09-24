@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase-server";
+import { NextResponse } from "next/server";
+import { supabaseServer } from "@/lib/supabase-server";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
+    const supabase = supabaseServer;
+
     // Intentar obtener datos de print_sizes para verificar si existe
     let printSizesExist = false;
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("print_sizes")
         .select("id")
         .limit(1);
@@ -14,14 +16,14 @@ export async function POST(request: NextRequest) {
       if (!error) {
         printSizesExist = true;
       }
-    } catch (e) {
+    } catch {
       printSizesExist = false;
     }
 
     // Intentar obtener datos de stamp_options para verificar si existe
     let stampOptionsExist = false;
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("stamp_options")
         .select("id")
         .limit(1);
@@ -29,8 +31,31 @@ export async function POST(request: NextRequest) {
       if (!error) {
         stampOptionsExist = true;
       }
-    } catch (e) {
+    } catch {
       stampOptionsExist = false;
+    }
+
+    // Intentar crear la tabla print_sizes si no existe
+    if (!printSizesExist) {
+      // Intentar insertar datos directamente - esto puede crear la tabla automáticamente
+      const defaultSizes = [
+        { size_key: "hasta_15cm", price: 0 },
+        { size_key: "hasta_20x30cm", price: 500 },
+        { size_key: "hasta_30x40cm", price: 1000 },
+        { size_key: "hasta_40x50cm", price: 1500 },
+      ];
+
+      for (const size of defaultSizes) {
+        try {
+          const { error } = await supabase.from("print_sizes").insert(size);
+
+          if (error) {
+            console.error(`Error inserting size ${size.size_key}:`, error);
+          }
+        } catch (error) {
+          console.error(`Exception with size ${size.size_key}:`, error);
+        }
+      }
     }
 
     // Si las tablas no existen, solo insertar datos en las que sí existen
@@ -40,7 +65,8 @@ export async function POST(request: NextRequest) {
         .select("size_key");
 
       if (!sizesError) {
-        const existingSizeKeys = existingSizes?.map((s) => s.size_key) || [];
+        const existingSizeKeys =
+          existingSizes?.map((s: { size_key: string }) => s.size_key) || [];
         const defaultSizes = [
           { size_key: "hasta_15cm", price: 0 },
           { size_key: "hasta_20x30cm", price: 500 },

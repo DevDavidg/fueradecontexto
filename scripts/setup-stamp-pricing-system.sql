@@ -86,28 +86,32 @@ ALTER TABLE print_sizes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE stamp_options ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para permitir lectura a todos los usuarios autenticados
+DROP POLICY IF EXISTS "Allow read access to print_sizes" ON print_sizes;
 CREATE POLICY "Allow read access to print_sizes" ON print_sizes
     FOR SELECT USING (auth.role() = 'authenticated');
 
+DROP POLICY IF EXISTS "Allow read access to stamp_options" ON stamp_options;
 CREATE POLICY "Allow read access to stamp_options" ON stamp_options
     FOR SELECT USING (auth.role() = 'authenticated');
 
 -- Políticas para permitir escritura solo a administradores
+DROP POLICY IF EXISTS "Allow admin write access to print_sizes" ON print_sizes;
 CREATE POLICY "Allow admin write access to print_sizes" ON print_sizes
     FOR ALL USING (
         EXISTS (
             SELECT 1 FROM profiles 
             WHERE profiles.id = auth.uid() 
-            AND profiles.is_admin = true
+            AND profiles.role = 'admin'
         )
     );
 
+DROP POLICY IF EXISTS "Allow admin write access to stamp_options" ON stamp_options;
 CREATE POLICY "Allow admin write access to stamp_options" ON stamp_options
     FOR ALL USING (
         EXISTS (
             SELECT 1 FROM profiles 
             WHERE profiles.id = auth.uid() 
-            AND profiles.is_admin = true
+            AND profiles.role = 'admin'
         )
     );
 
