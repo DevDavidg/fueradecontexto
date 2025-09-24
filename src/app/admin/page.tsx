@@ -220,35 +220,33 @@ const AdminDashboard = () => {
                   Productos por Categoría
                 </h3>
                 <div className="space-y-3">
-                  {stats.categoryDistribution
-                    .slice(0, 5)
-                    .map((category, index) => (
-                      <div
-                        key={category.name}
-                        className="flex items-center justify-between"
-                      >
-                        <span className="text-sm text-neutral-300">
-                          {category.name}
-                        </span>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-20 bg-neutral-700 rounded-full h-2">
-                            <div
-                              className="bg-blue-400 h-2 rounded-full"
-                              style={{
-                                width: `${
-                                  (category.count /
-                                    stats.overview.totalProducts) *
-                                  100
-                                }%`,
-                              }}
-                            ></div>
-                          </div>
-                          <span className="text-sm font-medium text-[#ededed] w-8 text-right">
-                            {category.count}
-                          </span>
+                  {stats.categoryDistribution.slice(0, 5).map((category) => (
+                    <div
+                      key={category.name}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="text-sm text-neutral-300">
+                        {category.name}
+                      </span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-20 bg-neutral-700 rounded-full h-2">
+                          <div
+                            className="bg-blue-400 h-2 rounded-full"
+                            style={{
+                              width: `${
+                                (category.count /
+                                  stats.overview.totalProducts) *
+                                100
+                              }%`,
+                            }}
+                          ></div>
                         </div>
+                        <span className="text-sm font-medium text-[#ededed] w-8 text-right">
+                          {category.count}
+                        </span>
                       </div>
-                    ))}
+                    </div>
+                  ))}
                 </div>
               </div>
 
