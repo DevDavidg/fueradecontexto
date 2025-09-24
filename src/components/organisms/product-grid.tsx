@@ -16,7 +16,10 @@ export const ProductGrid = ({ categoria }: { categoria?: string }) => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5 md:gap-6">
         {Array.from({ length: GRID_SKELETON_COUNT }).map((_, i) => (
-          <ProductCardSkeleton key={`sk-${i}`} />
+          <ProductCardSkeleton
+            key={`sk-${i}`}
+            className="animate-in fade-in-0 duration-300"
+          />
         ))}
       </div>
     );
@@ -35,16 +38,21 @@ export const ProductGrid = ({ categoria }: { categoria?: string }) => {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5 md:gap-6">
-        {items.map((product) => (
-          <ProductCard
+        {items.map((product, index) => (
+          <div
             key={product.id}
-            product={product}
-            onAdd={() => addItem(product)}
-          />
+            className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <ProductCard product={product} onAdd={() => addItem(product)} />
+          </div>
         ))}
         {isFetchingNextPage &&
           Array.from({ length: GRID_SKELETON_COUNT }).map((_, i) => (
-            <ProductCardSkeleton key={`skeleton-${i}`} />
+            <ProductCardSkeleton
+              key={`skeleton-${i}`}
+              className="animate-in fade-in-0 duration-300"
+            />
           ))}
       </div>
       <div className="mt-8 flex items-center justify-center">
