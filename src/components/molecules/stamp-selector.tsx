@@ -132,6 +132,7 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
               className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
+              inert={true}
             />
 
             {/* Minimodal */}

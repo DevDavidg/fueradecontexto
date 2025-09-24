@@ -56,6 +56,7 @@ export const CartSidebar = () => {
             : "opacity-0 scale-95 -translate-y-1 pointer-events-none")
         }
         style={{ willChange: "transform, opacity" }}
+        inert={!open ? true : undefined}
       >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold">Tu carrito</h2>
