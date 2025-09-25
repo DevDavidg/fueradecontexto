@@ -8,7 +8,7 @@ interface SEOHeadProps {
   ogImage?: string;
   ogType?: string;
   twitterCard?: string;
-  structuredData?: any;
+  structuredData?: Record<string, unknown>;
 }
 
 export const SEOHead: React.FC<SEOHeadProps> = ({

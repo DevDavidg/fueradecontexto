@@ -1,12 +1,19 @@
 "use client";
 
 import { ProfileAdminGuard } from "@/components/providers/profile-admin-guard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabase-browser";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Save, X, Plus } from "lucide-react";
+
+const sizeLabels: Record<string, string> = {
+  hasta_15cm: "Hasta 15cm",
+  hasta_20x30cm: "Hasta 20x30cm",
+  hasta_30x40cm: "Hasta 30x40cm",
+  hasta_40x50cm: "Hasta 40x50cm",
+};
 
 interface Category {
   id: string;
@@ -88,20 +95,7 @@ const NewProduct = () => {
 
   const availableSizes = ["XS", "S", "M", "L", "XL", "XXL", "Único"];
 
-  const sizeLabels: Record<string, string> = {
-    hasta_15cm: "Hasta 15cm",
-    hasta_20x30cm: "Hasta 20x30cm",
-    hasta_30x40cm: "Hasta 30x40cm",
-    hasta_40x50cm: "Hasta 40x50cm",
-  };
-
-  useEffect(() => {
-    fetchCategories();
-    fetchStampOptions();
-    fetchDynamicPrintSizes();
-  }, []);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("categories")
@@ -115,9 +109,9 @@ const NewProduct = () => {
         console.error("Error fetching categories:", error);
       }
     }
-  };
+  }, []);
 
-  const fetchStampOptions = async () => {
+  const fetchStampOptions = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("stamp_options")
@@ -133,9 +127,9 @@ const NewProduct = () => {
         console.error("Error fetching stamp options:", error);
       }
     }
-  };
+  }, []);
 
-  const fetchDynamicPrintSizes = async () => {
+  const fetchDynamicPrintSizes = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("print_sizes")
@@ -227,7 +221,13 @@ const NewProduct = () => {
       ];
       setDynamicPrintSizes(fallbackSizes);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchStampOptions();
+    fetchDynamicPrintSizes();
+  }, [fetchCategories, fetchStampOptions, fetchDynamicPrintSizes]);
 
   const handleInputChange = (
     e: React.ChangeEvent<

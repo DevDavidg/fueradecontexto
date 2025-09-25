@@ -1,8 +1,26 @@
 import Script from "next/script";
 
+interface ProductData {
+  name: string;
+  description?: string;
+  price: number;
+  currency: string;
+  images?: string[];
+  category: string;
+  inStock: boolean;
+  customizable?: {
+    colors?: Array<{ name: string; hex: string }>;
+  };
+}
+
+interface BreadcrumbData {
+  name: string;
+  url: string;
+}
+
 interface StructuredDataProps {
   type: "website" | "organization" | "product" | "breadcrumb";
-  data: any;
+  data: Record<string, unknown> | ProductData | BreadcrumbData[];
 }
 
 export const StructuredData: React.FC<StructuredDataProps> = ({
@@ -66,21 +84,22 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
         };
 
       case "product":
+        const productData = data as ProductData;
         return {
           "@context": "https://schema.org",
           "@type": "Product",
-          name: data.name,
-          description: data.description,
-          image: data.images || [],
+          name: productData.name,
+          description: productData.description,
+          image: productData.images || [],
           brand: {
             "@type": "Brand",
             name: "Fueradecontexto",
           },
           offers: {
             "@type": "Offer",
-            price: data.price,
-            priceCurrency: data.currency,
-            availability: data.inStock
+            price: productData.price,
+            priceCurrency: productData.currency,
+            availability: productData.inStock
               ? "https://schema.org/InStock"
               : "https://schema.org/OutOfStock",
             seller: {
@@ -88,8 +107,8 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
               name: "Fueradecontexto",
             },
           },
-          category: data.category,
-          additionalProperty: data.customizable
+          category: productData.category,
+          additionalProperty: productData.customizable
             ? [
                 {
                   "@type": "PropertyValue",
@@ -99,7 +118,7 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
                 {
                   "@type": "PropertyValue",
                   name: "Colores disponibles",
-                  value: data.customizable.colors?.length || 0,
+                  value: productData.customizable?.colors?.length || 0,
                 },
               ]
             : [],
@@ -109,12 +128,15 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
         return {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
-          itemListElement: data.map((item: any, index: number) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            name: item.name,
-            item: item.url,
-          })),
+          itemListElement:
+            type === "breadcrumb"
+              ? (data as BreadcrumbData[]).map((item, index: number) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  name: item.name,
+                  item: item.url,
+                }))
+              : [],
         };
 
       default:
@@ -154,7 +176,7 @@ export const ProductStructuredData: React.FC<{
     category: string;
     inStock: boolean;
     customizable?: {
-      colors?: any[];
+      colors?: Array<{ name: string; hex: string }>;
     };
   };
 }> = ({ product }) => {

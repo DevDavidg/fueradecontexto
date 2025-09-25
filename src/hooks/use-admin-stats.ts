@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLogger } from "@/hooks/use-logger";
 
 interface AdminStats {
@@ -30,7 +30,7 @@ export const useAdminStats = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -52,11 +52,11 @@ export const useAdminStats = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [logger]);
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [fetchStats]);
 
   const refreshStats = () => {
     fetchStats();

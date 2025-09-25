@@ -1,5 +1,4 @@
 import { MetadataRoute } from "next";
-import { getSectionsContent } from "@/lib/sections-server";
 import productsData from "../../products.json";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

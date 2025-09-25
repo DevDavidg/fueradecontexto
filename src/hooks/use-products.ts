@@ -2,7 +2,6 @@
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { productsService } from "@/services/products";
-import { productsServiceFallback } from "@/services/products-fallback";
 import { type Product } from "@/lib/types";
 
 // Use main service with stamp options support

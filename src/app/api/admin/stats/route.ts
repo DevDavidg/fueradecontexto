@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 // Create admin client for stats
@@ -11,7 +11,7 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Para estadísticas, usamos el cliente admin directamente
     // ya que estas son operaciones de solo lectura y no sensibles

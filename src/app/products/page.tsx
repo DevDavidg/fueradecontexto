@@ -5,9 +5,10 @@ import { Navbar } from "@/components/organisms/navbar";
 import { ProductGrid } from "@/components/organisms/product-grid";
 import { ProductsPageSkeleton } from "@/components/molecules/products-page-skeleton";
 import { getSectionsContent } from "@/lib/sections-server";
+import { Sections } from "@/lib/schemas";
 
 export default function ProductsPage() {
-  const [sections, setSections] = useState<any>(null);
+  const [sections, setSections] = useState<Sections | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

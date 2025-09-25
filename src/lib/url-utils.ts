@@ -2,6 +2,8 @@
  * Utility functions for generating SEO-friendly URLs
  */
 
+import { type Product } from "./types";
+
 /**
  * Converts a string to a URL-friendly slug
  */
@@ -81,13 +83,9 @@ export const parseProductSlug = (
  * This function will be used to resolve the full product ID
  */
 export const findProductBySlug = (
-  products: Array<{
-    id: string;
-    name: string;
-    customizable?: { colors?: Array<{ name: string }> };
-  }>,
+  products: Product[],
   slug: string
-): { product: (typeof products)[0]; colorName: string } | null => {
+): { product: Product; colorName: string } | null => {
   const parsed = parseProductSlug(slug);
   if (!parsed) return null;
 

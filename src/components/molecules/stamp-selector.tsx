@@ -3,11 +3,7 @@
 import * as React from "react";
 import { clsx } from "clsx";
 import { ChevronDown, Check, X } from "lucide-react";
-import {
-  type StampOption,
-  type PrintSizeId,
-  type PrintPlacement,
-} from "@/lib/types";
+import { type StampOption, type PrintPlacement } from "@/lib/types";
 
 export type StampSelectorProps = {
   selectedOptions?: StampOption[];
@@ -28,19 +24,6 @@ const getPlacementIcon = (placement: PrintPlacement) => {
       return "FB"; // Both indicators
     default:
       return "?";
-  }
-};
-
-const getPlacementText = (placement: PrintPlacement) => {
-  switch (placement) {
-    case "front":
-      return "Adelante";
-    case "back":
-      return "Atrás";
-    case "front_back":
-      return "Adelante + Atrás";
-    default:
-      return "Sin especificar";
   }
 };
 

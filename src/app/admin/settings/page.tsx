@@ -7,7 +7,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Database,
-  Image,
+  Image as ImageIcon,
   Users,
   Settings as SettingsIcon,
 } from "lucide-react";
@@ -162,7 +162,7 @@ const AdminSettings = () => {
             <div className="bg-[#0b0b0b] border border-[#333333] rounded-lg shadow p-6">
               <div className="flex items-center">
                 <div className="p-2 bg-purple-100 rounded-lg">
-                  <Image className="h-6 w-6 text-purple-600" />
+                  <ImageIcon className="h-6 w-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-neutral-400">

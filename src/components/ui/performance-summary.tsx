@@ -32,7 +32,7 @@ export const PerformanceSummary = () => {
             const lcp = lcpEntries[lcpEntries.length - 1] as PerformanceEntry;
             newMetrics.lcp = lcp.startTime;
           }
-        } catch (e) {
+        } catch {
           // Ignore errors
         }
 
@@ -45,7 +45,7 @@ export const PerformanceSummary = () => {
             const fcp = fcpEntries[0] as PerformanceEntry;
             newMetrics.fcp = fcp.startTime;
           }
-        } catch (e) {
+        } catch {
           // Ignore errors
         }
 
@@ -56,7 +56,7 @@ export const PerformanceSummary = () => {
             const nav = navEntries[0] as PerformanceNavigationTiming;
             newMetrics.ttfb = nav.responseStart - nav.requestStart;
           }
-        } catch (e) {
+        } catch {
           // Ignore errors
         }
 

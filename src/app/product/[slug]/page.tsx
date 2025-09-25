@@ -19,7 +19,7 @@ export default function ProductSlugPage() {
   const { addItem } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
-  const [selectedColorName, setSelectedColorName] = useState<string>("");
+  const [, setSelectedColorName] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<
     Product["availableSizes"][number] | undefined
   >();
