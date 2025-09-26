@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 interface LogLevel {
   error: "error";
@@ -19,7 +19,7 @@ interface LogContext {
 interface Logger {
   error: (
     message: string,
-    error?: Error | unknown,
+    error?: Error | Record<string, unknown>,
     context?: LogContext
   ) => void;
   warn: (message: string, context?: LogContext) => void;
@@ -33,13 +33,13 @@ const formatLogMessage = (
   level: LogLevelType,
   message: string,
   context?: LogContext,
-  error?: Error | unknown
+  error?: Error | Record<string, unknown>
 ): string => {
   const timestamp = new Date().toISOString();
   const contextStr = context ? ` [${JSON.stringify(context)}]` : "";
-  const errorStr = error
-    ? ` - Error: ${error instanceof Error ? error.message : String(error)}`
-    : "";
+  const errorMessage =
+    error instanceof Error ? error.message : JSON.stringify(error);
+  const errorStr = error ? ` - Error: ${errorMessage}` : "";
 
   return `[${timestamp}] ${level.toUpperCase()}: ${message}${contextStr}${errorStr}`;
 };
@@ -49,7 +49,7 @@ export const useLogger = (): Logger => {
     (
       level: LogLevelType,
       message: string,
-      error?: Error | unknown,
+      error?: Error | Record<string, unknown>,
       context?: LogContext
     ) => {
       const formattedMessage = formatLogMessage(level, message, context, error);
@@ -85,20 +85,27 @@ export const useLogger = (): Logger => {
     []
   );
 
-  const logger: Logger = {
-    error: (message: string, error?: Error | unknown, context?: LogContext) => {
-      log("error", message, error, context);
-    },
-    warn: (message: string, context?: LogContext) => {
-      log("warn", message, undefined, context);
-    },
-    info: (message: string, context?: LogContext) => {
-      log("info", message, undefined, context);
-    },
-    debug: (message: string, context?: LogContext) => {
-      log("debug", message, undefined, context);
-    },
-  };
+  const logger: Logger = useMemo(
+    () => ({
+      error: (
+        message: string,
+        error?: Error | Record<string, unknown>,
+        context?: LogContext
+      ) => {
+        log("error", message, error, context);
+      },
+      warn: (message: string, context?: LogContext) => {
+        log("warn", message, undefined, context);
+      },
+      info: (message: string, context?: LogContext) => {
+        log("info", message, undefined, context);
+      },
+      debug: (message: string, context?: LogContext) => {
+        log("debug", message, undefined, context);
+      },
+    }),
+    [log]
+  );
 
   return logger;
 };

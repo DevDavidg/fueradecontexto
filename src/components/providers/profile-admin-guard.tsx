@@ -56,8 +56,8 @@ export const ProfileAdminGuard = ({
     profile,
     profileLoading,
     profileError,
-    router,
     redirected,
+    // Removed router dependency to prevent infinite loop
   ]);
 
   // Show loading while checking
