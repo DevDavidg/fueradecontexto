@@ -80,10 +80,14 @@ const StampPricingAdmin = () => {
       setNeedsSetup(result.needsSetup || false);
       setSetupMessage(result.message || "");
     } catch (error) {
-      logger.error("Error fetching stamp pricing data", error, {
-        component: "StampPricingAdmin",
-        action: "fetchData",
-      });
+      logger.error(
+        "Error fetching stamp pricing data",
+        error instanceof Error ? error : { error },
+        {
+          component: "StampPricingAdmin",
+          action: "fetchData",
+        }
+      );
       alert("Error al cargar los datos");
     } finally {
       setLoading(false);
@@ -130,11 +134,15 @@ const StampPricingAdmin = () => {
         setTimeout(() => setSaveSuccess(false), 3000);
       }
     } catch (error) {
-      logger.error("Error updating print size price", error, {
-        component: "StampPricingAdmin",
-        action: "updatePrintSizePrice",
-        metadata: { sizeId: id, newPrice },
-      });
+      logger.error(
+        "Error updating print size price",
+        error instanceof Error ? error : { error },
+        {
+          component: "StampPricingAdmin",
+          action: "updatePrintSizePrice",
+          metadata: { sizeId: id, newPrice },
+        }
+      );
       alert(
         error instanceof Error ? error.message : "Error al actualizar el precio"
       );
@@ -179,11 +187,15 @@ const StampPricingAdmin = () => {
         setTimeout(() => setSaveSuccess(false), 3000);
       }
     } catch (error) {
-      logger.error("Error updating stamp option price", error, {
-        component: "StampPricingAdmin",
-        action: "updateStampOptionPrice",
-        metadata: { optionId: id, newPrice },
-      });
+      logger.error(
+        "Error updating stamp option price",
+        error instanceof Error ? error : { error },
+        {
+          component: "StampPricingAdmin",
+          action: "updateStampOptionPrice",
+          metadata: { optionId: id, newPrice },
+        }
+      );
       alert(
         error instanceof Error ? error.message : "Error al actualizar el precio"
       );
@@ -228,10 +240,14 @@ const StampPricingAdmin = () => {
         setTimeout(() => setSaveSuccess(false), 3000);
       }
     } catch (error) {
-      logger.error("Error setting up stamp pricing system", error, {
-        component: "StampPricingAdmin",
-        action: "setupSystem",
-      });
+      logger.error(
+        "Error setting up stamp pricing system",
+        error instanceof Error ? error : { error },
+        {
+          component: "StampPricingAdmin",
+          action: "setupSystem",
+        }
+      );
       alert(
         error instanceof Error
           ? error.message

@@ -222,11 +222,15 @@ const EditProduct = () => {
         stampOptionsData?.map((item) => item.stamp_option_id) || []
       );
     } catch (error) {
-      logger.error("Error loading product data", error, {
-        component: "EditProduct",
-        action: "fetchProductData",
-        metadata: { productId },
-      });
+      logger.error(
+        "Error loading product data",
+        error instanceof Error ? error : { error },
+        {
+          component: "EditProduct",
+          action: "fetchProductData",
+          metadata: { productId },
+        }
+      );
       alert("Error al cargar los datos del producto");
     } finally {
       setLoading(false);
@@ -242,10 +246,14 @@ const EditProduct = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      logger.error("Error fetching categories", error, {
-        component: "EditProduct",
-        action: "fetchCategories",
-      });
+      logger.error(
+        "Error fetching categories",
+        error instanceof Error ? error : { error },
+        {
+          component: "EditProduct",
+          action: "fetchCategories",
+        }
+      );
     }
   }, [logger]);
 
@@ -260,10 +268,14 @@ const EditProduct = () => {
       if (error) throw error;
       setAvailableStampOptions(data || []);
     } catch (error) {
-      logger.error("Error fetching stamp options", error, {
-        component: "EditProduct",
-        action: "fetchStampOptions",
-      });
+      logger.error(
+        "Error fetching stamp options",
+        error instanceof Error ? error : { error },
+        {
+          component: "EditProduct",
+          action: "fetchStampOptions",
+        }
+      );
     }
   }, [logger]);
 
@@ -322,10 +334,14 @@ const EditProduct = () => {
 
       setDynamicPrintSizes(sizesWithLabels);
     } catch (error) {
-      logger.error("Error fetching print sizes", error, {
-        component: "EditProduct",
-        action: "fetchDynamicPrintSizes",
-      });
+      logger.error(
+        "Error fetching print sizes",
+        error instanceof Error ? error : { error },
+        {
+          component: "EditProduct",
+          action: "fetchDynamicPrintSizes",
+        }
+      );
       // Fallback data en caso de error
       const fallbackSizes = [
         {
@@ -524,11 +540,15 @@ const EditProduct = () => {
 
       setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
     } catch (error) {
-      logger.error("Error deleting image", error, {
-        component: "EditProduct",
-        action: "handleDeleteImage",
-        metadata: { imageId },
-      });
+      logger.error(
+        "Error deleting image",
+        error instanceof Error ? error : { error },
+        {
+          component: "EditProduct",
+          action: "handleDeleteImage",
+          metadata: { imageId },
+        }
+      );
       alert("Error al eliminar la imagen");
     }
   };
