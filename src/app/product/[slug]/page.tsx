@@ -194,7 +194,6 @@ export default function ProductSlugPage() {
                   onOptionsChange={setSelectedStampOptions}
                   productId={product.id}
                   stampOptions={product.stampOptions}
-                  compact={false}
                 />
 
                 <div>

@@ -63,7 +63,7 @@ export default function RootLayout({
                         } else if (entry.entryType === 'first-input') {
                           console.log('Performance metric: FID = ' + (entry.processingStart - entry.startTime) + 'ms');
                         } else if (entry.entryType === 'layout-shift') {
-                          if (!entry.hadRecentInput) {
+                          if (!entry.hadRecentInput && entry.value > 0.1) {
                             console.log('Performance metric: CLS = ' + entry.value + 'ms');
                           }
                         } else if (entry.entryType === 'paint') {

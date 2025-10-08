@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { clsx } from "clsx";
-import { ChevronDown, Check, X } from "lucide-react";
+import { Check, ChevronDown, X } from "lucide-react";
 import { type StampOption, type PrintPlacement } from "@/lib/types";
 
 export type StampSelectorProps = {
@@ -17,15 +17,80 @@ export type StampSelectorProps = {
 const getPlacementIcon = (placement: PrintPlacement) => {
   switch (placement) {
     case "front":
-      return "F"; // Front indicator
+      return "F";
     case "back":
-      return "B"; // Back indicator
+      return "B";
     case "front_back":
-      return "FB"; // Both indicators
+      return "FB";
     default:
       return "?";
   }
 };
+
+// Memoized option component to prevent unnecessary re-renders
+const StampOptionItem = React.memo(
+  ({
+    option,
+    isSelected,
+    onToggle,
+    productId,
+    index,
+  }: {
+    option: StampOption;
+    isSelected: boolean;
+    onToggle: (option: StampOption) => void;
+    productId: string;
+    index: number;
+  }) => {
+    const handleClick = React.useCallback(() => {
+      onToggle(option);
+    }, [onToggle, option]);
+
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        className={clsx(
+          "w-full px-4 py-3 text-left transition-all duration-150 flex items-center gap-3 rounded-lg border",
+          isSelected
+            ? "bg-[var(--accent)]/10 text-[var(--accent)] border-[var(--accent)]/30"
+            : "text-neutral-200 hover:bg-neutral-800/60 hover:text-neutral-100 border-neutral-700/50"
+        )}
+      >
+        <div className="flex items-center justify-center w-8 h-8 bg-neutral-800/50 rounded-full">
+          {isSelected ? (
+            <Check className="w-4 h-4" />
+          ) : (
+            <span className="text-sm font-medium">
+              {getPlacementIcon(option.placement)}
+            </span>
+          )}
+        </div>
+        <div className="flex-1">
+          <span className="font-medium block text-sm">{option.label}</span>
+          <span className="text-xs text-neutral-400 block mt-1">
+            {option.placement === "front_back"
+              ? "Personalización en ambos lados"
+              : option.placement === "front"
+              ? "Solo adelante"
+              : "Solo atrás"}
+          </span>
+        </div>
+        {option.extraCost > 0 ? (
+          <span className="text-sm font-semibold text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
+            +${option.extraCost}
+          </span>
+        ) : (
+          <span className="text-sm text-neutral-400 bg-neutral-800/50 px-3 py-1 rounded-full">
+            Gratis
+          </span>
+        )}
+      </button>
+    );
+  }
+);
+
+StampOptionItem.displayName = "StampOptionItem";
 
 export const StampSelector: React.FC<StampSelectorProps> = ({
   selectedOptions = [],
@@ -35,8 +100,11 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
   compact = false,
   className,
 }) => {
+  // Use ref to avoid re-renders from state changes
   const [isOpen, setIsOpen] = React.useState(false);
+  const modalRef = React.useRef<HTMLDivElement>(null);
 
+  // Memoized handlers to prevent re-renders
   const handleOptionToggle = React.useCallback(
     (option: StampOption) => {
       const isSelected = selectedOptions.some(
@@ -44,19 +112,71 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
       );
 
       if (isSelected) {
-        // Remove option
         onOptionsChange(
           selectedOptions.filter((selected) => selected.id !== option.id)
         );
       } else {
-        // Add option
         onOptionsChange([...selectedOptions, option]);
       }
     },
     [selectedOptions, onOptionsChange]
   );
 
-  // If no stamp options are provided, don't render anything
+  const handleOpenModal = React.useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const handleCloseModal = React.useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // Close modal when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        handleCloseModal();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, handleCloseModal]);
+
+  // Close modal with Escape key
+  React.useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleCloseModal();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, handleCloseModal]);
+
+  // Calculate totals once to avoid recalculation
+  const totalCost = React.useMemo(() => {
+    return selectedOptions.reduce(
+      (total, option) => total + option.extraCost,
+      0
+    );
+  }, [selectedOptions]);
+
   if (!stampOptions || stampOptions.length === 0) {
     return null;
   }
@@ -66,14 +186,12 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
       <div className={clsx("relative", className)}>
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleOpenModal}
           className={clsx(
             "w-full px-4 py-3 text-left bg-neutral-900/80 backdrop-blur-sm border border-neutral-700/50 rounded-lg text-sm text-neutral-200 transition-all duration-200",
-            "hover:border-neutral-600 hover:bg-neutral-800/80 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40 focus:border-[var(--accent)]/60",
-            isOpen && "border-[var(--accent)]/60 bg-neutral-800/80"
+            "hover:border-neutral-600 hover:bg-neutral-800/80 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/40 focus:border-[var(--accent)]/60"
           )}
           aria-label="Seleccionar opciones de estampa"
-          aria-expanded={isOpen}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -89,137 +207,80 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
                   </span>
                   {selectedOptions.length > 0 && (
                     <span className="text-xs text-green-400 font-medium ml-2 flex-shrink-0">
-                      +$
-                      {selectedOptions.reduce(
-                        (total, option) => total + option.extraCost,
-                        0
-                      )}
+                      +${totalCost}
                     </span>
                   )}
                 </div>
               </div>
             </div>
-            <ChevronDown
-              className={clsx(
-                "w-4 h-4 transition-transform duration-200",
-                isOpen ? "rotate-180" : "rotate-0"
-              )}
-            />
+            <ChevronDown className="w-4 h-4 transition-transform duration-200" />
           </div>
         </button>
 
         {isOpen && (
-          <>
-            {/* Overlay */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <div
-              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-              onClick={() => setIsOpen(false)}
-              aria-hidden="true"
-              inert={true}
-            />
+              ref={modalRef}
+              className="w-full max-w-md bg-neutral-900 border border-neutral-700/50 rounded-xl shadow-2xl max-h-[80vh] overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-neutral-800/50">
+                <h3 className="text-lg font-semibold text-neutral-100">
+                  Opciones de personalización
+                </h3>
+                <button
+                  onClick={handleCloseModal}
+                  className="p-1 hover:bg-neutral-800 rounded-lg transition-colors"
+                  aria-label="Cerrar"
+                >
+                  <X className="w-5 h-5 text-neutral-400" />
+                </button>
+              </div>
 
-            {/* Minimodal */}
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div
-                className="w-full max-w-md bg-neutral-900 border border-neutral-700/50 rounded-xl shadow-2xl max-h-[80vh] overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-neutral-800/50">
-                  <h3 className="text-lg font-semibold text-neutral-100">
-                    Opciones de personalización
-                  </h3>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-1 hover:bg-neutral-800 rounded-lg transition-colors"
-                    aria-label="Cerrar"
-                  >
-                    <X className="w-5 h-5 text-neutral-400" />
-                  </button>
+              {/* Content */}
+              <div className="p-4 max-h-96 overflow-y-auto">
+                <div className="space-y-2">
+                  {stampOptions.map((option, index) => {
+                    const isSelected = selectedOptions.some(
+                      (selected) => selected.id === option.id
+                    );
+                    return (
+                      <StampOptionItem
+                        key={`${productId}-stamp-${index}`}
+                        option={option}
+                        isSelected={isSelected}
+                        onToggle={handleOptionToggle}
+                        productId={productId}
+                        index={index}
+                      />
+                    );
+                  })}
                 </div>
+              </div>
 
-                {/* Content */}
-                <div className="p-4 max-h-96 overflow-y-auto">
-                  <div className="space-y-2">
-                    {stampOptions.map((option, index) => {
-                      const isSelected = selectedOptions.some(
-                        (selected) => selected.id === option.id
-                      );
-                      return (
-                        <button
-                          key={`${productId}-stamp-${index}`}
-                          type="button"
-                          onClick={() => handleOptionToggle(option)}
-                          className={clsx(
-                            "w-full px-4 py-3 text-left transition-all duration-150 flex items-center gap-3 rounded-lg border",
-                            isSelected
-                              ? "bg-[var(--accent)]/10 text-[var(--accent)] border-[var(--accent)]/30"
-                              : "text-neutral-200 hover:bg-neutral-800/60 hover:text-neutral-100 border-neutral-700/50"
-                          )}
-                        >
-                          <div className="flex items-center justify-center w-8 h-8 bg-neutral-800/50 rounded-full">
-                            {isSelected ? (
-                              <Check className="w-4 h-4" />
-                            ) : (
-                              <span className="text-sm font-medium">
-                                {getPlacementIcon(option.placement)}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <span className="font-medium block text-sm">
-                              {option.label}
-                            </span>
-                            <span className="text-xs text-neutral-400 block mt-1">
-                              {option.placement === "front_back"
-                                ? "Personalización en ambos lados"
-                                : option.placement === "front"
-                                ? "Solo adelante"
-                                : "Solo atrás"}
-                            </span>
-                          </div>
-                          {option.extraCost > 0 ? (
-                            <span className="text-sm font-semibold text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
-                              +${option.extraCost}
-                            </span>
-                          ) : (
-                            <span className="text-sm text-neutral-400 bg-neutral-800/50 px-3 py-1 rounded-full">
-                              Gratis
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="p-4 border-t border-neutral-800/50 bg-neutral-900/50">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-neutral-400">
-                      {selectedOptions.length} opción
-                      {selectedOptions.length !== 1 ? "es" : ""} seleccionada
-                      {selectedOptions.length !== 1 ? "s" : ""}
+              {/* Footer */}
+              <div className="p-4 border-t border-neutral-800/50 bg-neutral-900/50">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-neutral-400">
+                    {selectedOptions.length} opción
+                    {selectedOptions.length !== 1 ? "es" : ""} seleccionada
+                    {selectedOptions.length !== 1 ? "s" : ""}
+                  </span>
+                  {selectedOptions.length > 0 && (
+                    <span className="text-sm font-semibold text-green-400">
+                      Total: +${totalCost}
                     </span>
-                    {selectedOptions.length > 0 && (
-                      <span className="text-sm font-semibold text-green-400">
-                        Total: +$
-                        {selectedOptions.reduce(
-                          (total, option) => total + option.extraCost,
-                          0
-                        )}
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     );
   }
 
+  // Non-compact version (inline)
   return (
     <div className={clsx("space-y-4", className)}>
       <div className="flex items-center gap-2">
@@ -269,33 +330,16 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
                 <span className="text-sm font-medium text-neutral-100 block">
                   {option.label}
                 </span>
-                <span className="text-xs text-neutral-400 block mt-1">
-                  {option.placement === "front_back"
-                    ? "Personalización en ambos lados"
-                    : option.placement === "front"
-                    ? "Personalización solo adelante"
-                    : "Personalización solo atrás"}
-                </span>
               </div>
 
               {option.extraCost > 0 ? (
-                <div className="text-right">
-                  <span className="text-sm font-semibold text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
-                    +${option.extraCost}
-                  </span>
-                  <span className="text-xs text-neutral-500 block mt-1">
-                    Costo extra
-                  </span>
-                </div>
+                <span className="text-sm font-semibold text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
+                  +${option.extraCost}
+                </span>
               ) : (
-                <div className="text-right">
-                  <span className="text-sm text-neutral-400 bg-neutral-800/50 px-3 py-1 rounded-full">
-                    Gratis
-                  </span>
-                  <span className="text-xs text-neutral-500 block mt-1">
-                    Sin costo
-                  </span>
-                </div>
+                <span className="text-sm text-neutral-400 bg-neutral-800/50 px-3 py-1 rounded-full">
+                  Gratis
+                </span>
               )}
             </label>
           );

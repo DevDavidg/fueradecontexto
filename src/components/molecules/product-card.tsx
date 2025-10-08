@@ -133,11 +133,14 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
           !validColorsResult.find((c) => c.name === selectedColor.name)
         ) {
           setSelectedColor(validColorsResult[0] || null);
+        } else if (!selectedColor && validColorsResult.length > 0) {
+          setSelectedColor(validColorsResult[0]);
         }
       } else {
         setValidColors(product.customizable?.colors || []);
       }
-    }, [product, selectedColor]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [product]);
 
     React.useEffect(() => {
       setImageError(false);
