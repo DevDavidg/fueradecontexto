@@ -18,15 +18,31 @@ export default function ProductDetailPage() {
   const { data: product } = useProduct(params.id);
   const { addItem } = useCart();
 
+  // Handler to update stamp selection and URL
+  const handleStampSelect = (option: StampOption | null) => {
+    setSelectedStampOption(option);
+    // Update URL with stamp parameter
+    const newParams = new URLSearchParams(searchParams);
+    if (option?.id) {
+      newParams.set("stamp", option.id);
+    } else {
+      // Si se deselecciona, eliminar el parámetro de la URL
+      newParams.delete("stamp");
+    }
+    const queryString = newParams.toString();
+    router.replace(queryString ? `?${queryString}` : window.location.pathname, {
+      scroll: false,
+    });
+  };
+
   const [selectedSize, setSelectedSize] = useState<
     Product["availableSizes"][number] | undefined
   >(product?.availableSizes[0]);
   const [selectedPrint] = useState<PrintOption | undefined>(
     product?.customizable?.printOptions[0]
   );
-  const [selectedStampOptions, setSelectedStampOptions] = useState<
-    StampOption[]
-  >([]);
+  const [selectedStampOption, setSelectedStampOption] =
+    useState<StampOption | null>(null);
   const [selectedColor, setSelectedColor] = useState<
     { name: string; hex: string } | undefined
   >(product?.customizable?.colors[0]);
@@ -52,6 +68,21 @@ export default function ProductDetailPage() {
     }
   }, [product, searchParams]);
 
+  // Initialize selected stamp option from URL parameter
+  useEffect(() => {
+    if (product?.stampOptions && product.stampOptions.length > 0) {
+      const stampParam = searchParams.get("stamp");
+      if (stampParam) {
+        const stampFromUrl = product.stampOptions.find(
+          (stamp) => stamp.id === stampParam
+        );
+        if (stampFromUrl) {
+          setSelectedStampOption(stampFromUrl);
+        }
+      }
+    }
+  }, [product, searchParams]);
+
   // Reset image error when color changes
   useEffect(() => {
     setImageError(false);
@@ -68,9 +99,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const extra =
-    selectedPrint?.extraCost ??
-    selectedStampOptions.reduce((total, option) => total + option.extraCost, 0);
+  const extra = selectedPrint?.extraCost ?? selectedStampOption?.extraCost ?? 0;
   const total = product.price + extra;
 
   const handleAddToCart = () => {
@@ -78,19 +107,15 @@ export default function ProductDetailPage() {
       product,
       selectedSize,
       1,
-      (selectedPrint || selectedStampOptions) && selectedColor
+      (selectedPrint || selectedStampOption) && selectedColor
         ? {
             printSizeId:
-              selectedPrint?.id ||
-              selectedStampOptions?.[0]?.size ||
-              "hasta_15cm",
-            printPlacement: selectedStampOptions?.[0]?.placement,
+              selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
+            printPlacement: selectedStampOption?.placement,
             colorName: selectedColor.name,
             colorHex: selectedColor.hex,
             extraCost:
-              selectedPrint?.extraCost ||
-              selectedStampOptions?.[0]?.extraCost ||
-              0,
+              selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
           }
         : undefined
     );
@@ -137,6 +162,7 @@ export default function ProductDetailPage() {
               src={getCurrentImageUrl()}
               alt={product.name}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain md:object-cover transition-all duration-300"
               onError={() => setImageError(true)}
             />
@@ -179,13 +205,6 @@ export default function ProductDetailPage() {
 
             {isCustomizable && (
               <div className="space-y-4">
-                <StampSelector
-                  selectedOptions={selectedStampOptions}
-                  onOptionsChange={setSelectedStampOptions}
-                  productId={product.id}
-                  stampOptions={product.stampOptions}
-                />
-
                 <div>
                   <p className="text-sm font-medium mb-2">Color</p>
                   <div className="flex flex-wrap gap-2">
@@ -212,6 +231,15 @@ export default function ProductDetailPage() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {product.stampOptions && product.stampOptions.length > 0 && (
+              <StampSelector
+                stampOptions={product.stampOptions}
+                selectedOption={selectedStampOption}
+                onSelectOption={handleStampSelect}
+                currency={product.currency}
+              />
             )}
 
             <Button

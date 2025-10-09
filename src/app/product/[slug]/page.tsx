@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Navbar } from "@/components/organisms/navbar";
 import { Button } from "@/components/ui/button";
@@ -9,14 +9,32 @@ import { useProducts } from "@/hooks/use-products";
 import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
 import { type PrintOption, type Product, type StampOption } from "@/lib/types";
-import { StampSelector } from "@/components/molecules/stamp-selector";
 import { findProductBySlug } from "@/lib/url-utils";
+import { StampSelector } from "@/components/molecules/stamp-selector";
 
 export default function ProductSlugPage() {
   const params = useParams<{ slug: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: allProducts } = useProducts(); // Get all products to search through
   const { addItem } = useCart();
+
+  // Handler to update stamp selection and URL
+  const handleStampSelect = (option: StampOption | null) => {
+    setSelectedStampOption(option);
+    // Update URL with stamp parameter
+    const newParams = new URLSearchParams(searchParams);
+    if (option?.id) {
+      newParams.set("stamp", option.id);
+    } else {
+      // Si se deselecciona, eliminar el parámetro de la URL
+      newParams.delete("stamp");
+    }
+    const queryString = newParams.toString();
+    router.replace(queryString ? `?${queryString}` : window.location.pathname, {
+      scroll: false,
+    });
+  };
 
   const [product, setProduct] = useState<Product | null>(null);
   const [, setSelectedColorName] = useState<string>("");
@@ -24,9 +42,8 @@ export default function ProductSlugPage() {
     Product["availableSizes"][number] | undefined
   >();
   const [selectedPrint] = useState<PrintOption | undefined>();
-  const [selectedStampOptions, setSelectedStampOptions] = useState<
-    StampOption[]
-  >([]);
+  const [selectedStampOption, setSelectedStampOption] =
+    useState<StampOption | null>(null);
   const [selectedColor, setSelectedColor] = useState<
     { name: string; hex: string } | undefined
   >();
@@ -62,6 +79,21 @@ export default function ProductSlugPage() {
     }
   }, [allProducts, params.slug, router]);
 
+  // Initialize selected stamp option from URL parameter
+  useEffect(() => {
+    if (product?.stampOptions && product.stampOptions.length > 0) {
+      const stampParam = searchParams.get("stamp");
+      if (stampParam) {
+        const stampFromUrl = product.stampOptions.find(
+          (stamp) => stamp.id === stampParam
+        );
+        if (stampFromUrl) {
+          setSelectedStampOption(stampFromUrl);
+        }
+      }
+    }
+  }, [product, searchParams]);
+
   // Reset image error when color changes
   useEffect(() => {
     setImageError(false);
@@ -78,9 +110,7 @@ export default function ProductSlugPage() {
     );
   }
 
-  const extra =
-    selectedPrint?.extraCost ??
-    selectedStampOptions.reduce((total, option) => total + option.extraCost, 0);
+  const extra = selectedPrint?.extraCost ?? selectedStampOption?.extraCost ?? 0;
   const total = product.price + extra;
 
   const handleAddToCart = () => {
@@ -88,19 +118,15 @@ export default function ProductSlugPage() {
       product,
       selectedSize,
       1,
-      (selectedPrint || selectedStampOptions) && selectedColor
+      (selectedPrint || selectedStampOption) && selectedColor
         ? {
             printSizeId:
-              selectedPrint?.id ||
-              selectedStampOptions?.[0]?.size ||
-              "hasta_15cm",
-            printPlacement: selectedStampOptions?.[0]?.placement,
+              selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
+            printPlacement: selectedStampOption?.placement,
             colorName: selectedColor.name,
             colorHex: selectedColor.hex,
             extraCost:
-              selectedPrint?.extraCost ||
-              selectedStampOptions?.[0]?.extraCost ||
-              0,
+              selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
           }
         : undefined
     );
@@ -147,6 +173,7 @@ export default function ProductSlugPage() {
               src={getCurrentImageUrl()}
               alt={product.name}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain md:object-cover transition-all duration-300"
               onError={() => setImageError(true)}
             />
@@ -189,13 +216,6 @@ export default function ProductSlugPage() {
 
             {isCustomizable && (
               <div className="space-y-4">
-                <StampSelector
-                  selectedOptions={selectedStampOptions}
-                  onOptionsChange={setSelectedStampOptions}
-                  productId={product.id}
-                  stampOptions={product.stampOptions}
-                />
-
                 <div>
                   <p className="text-sm font-medium mb-2">Color</p>
                   <div className="flex flex-wrap gap-2">
@@ -222,6 +242,15 @@ export default function ProductSlugPage() {
                   </div>
                 </div>
               </div>
+            )}
+
+            {product.stampOptions && product.stampOptions.length > 0 && (
+              <StampSelector
+                stampOptions={product.stampOptions}
+                selectedOption={selectedStampOption}
+                onSelectOption={handleStampSelect}
+                currency={product.currency}
+              />
             )}
 
             <Button

@@ -10,8 +10,8 @@ import { HeartIcon, CartIcon } from "@/components/ui/icons";
 import { formatCurrency } from "@/lib/format-currency";
 import { type Product, type ColorOption, type StampOption } from "@/lib/types";
 import { useFavorites } from "@/hooks/use-favorites";
-import { StampSelector } from "@/components/molecules/stamp-selector";
 import { generateProductSlug } from "@/lib/url-utils";
+import { StampBadge } from "./stamp-badge";
 
 const COMPOUND_COLOR_MAP: Record<string, { color1: string; color2: string }> = {
   "Negro Blanca": { color1: "#000000", color2: "#FFFFFF" },
@@ -61,10 +61,7 @@ const CompoundColorBadge: React.FC<{
 
 export type ProductCardProps = {
   product: Product;
-  onAdd?: (
-    product: Product,
-    options?: { color?: ColorOption; stampOptions?: StampOption[] }
-  ) => void;
+  onAdd?: (product: Product, options?: { color?: ColorOption }) => void;
   className?: string;
   highlight?: boolean;
 };
@@ -112,9 +109,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       React.useState<ColorOption | null>(
         product.customizable?.colors?.[0] || null
       );
-    const [selectedStampOptions, setSelectedStampOptions] = React.useState<
-      StampOption[]
-    >([]);
+    const [selectedStamp, setSelectedStamp] =
+      React.useState<StampOption | null>(null);
 
     React.useEffect(() => {
       // Set valid colors based on available product images
@@ -150,11 +146,8 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     const isDisabled = !product.inStock;
     const isFav = isFavorite(product.id);
     const accentHex = "#e12afb"; // Always use fixed pink color
-    const stampExtraCost = selectedStampOptions.reduce(
-      (total, option) => total + option.extraCost,
-      0
-    );
-    const totalPrice = product.price + stampExtraCost;
+
+    const totalPrice = product.price;
     const discounted = Math.round(totalPrice * 0.9);
 
     const imageUrl = React.useMemo(() => {
@@ -171,6 +164,17 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       }
       return null;
     }, [product.name, selectedColor, product.id]);
+
+    const productUrl = React.useMemo(() => {
+      const baseUrl = productSlug
+        ? `/product/${productSlug}`
+        : `/products/${product.id}`;
+
+      if (selectedStamp?.id) {
+        return `${baseUrl}?stamp=${selectedStamp.id}`;
+      }
+      return baseUrl;
+    }, [productSlug, product.id, selectedStamp]);
 
     // Pre-load image in background
     React.useEffect(() => {
@@ -200,10 +204,9 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       if (!isDisabled) {
         onAdd?.(product, {
           color: selectedColor || undefined,
-          stampOptions: selectedStampOptions,
         });
       }
-    }, [isDisabled, onAdd, product, selectedColor, selectedStampOptions]);
+    }, [isDisabled, onAdd, product, selectedColor]);
 
     const handleColorChange = React.useCallback((color: ColorOption) => {
       setSelectedColor(color);
@@ -324,11 +327,7 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       >
         <div className="relative isolate aspect-[4/5] w-full overflow-hidden rounded-t-2xl bg-gradient-to-br from-neutral-800 to-neutral-900">
           <Link
-            href={
-              productSlug
-                ? `/product/${productSlug}`
-                : `/products/${product.id}`
-            }
+            href={productUrl}
             aria-label={`Ver ${product.name}`}
             className="relative block h-full w-full group/image"
           >
@@ -385,27 +384,9 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
             </fieldset>
           )}
 
-          {/* Stamp Options - Solo mostrar si hay opciones disponibles */}
-          {product.stampOptions && product.stampOptions.length > 0 && (
-            <div className="mt-2">
-              <StampSelector
-                selectedOptions={selectedStampOptions}
-                onOptionsChange={setSelectedStampOptions}
-                productId={product.id}
-                stampOptions={product.stampOptions}
-                compact={true}
-                className="w-full"
-              />
-            </div>
-          )}
-
           <div className="flex-1 space-y-2">
             <Link
-              href={
-                productSlug
-                  ? `/product/${productSlug}`
-                  : `/products/${product.id}`
-              }
+              href={productUrl}
               className="block group/title"
               title={product.name}
             >
@@ -424,6 +405,15 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
               </p>
             </div>
           </div>
+
+          {product.stampOptions && product.stampOptions.length > 0 && (
+            <StampBadge
+              stampOptions={product.stampOptions}
+              selectedStamp={selectedStamp}
+              onStampSelect={setSelectedStamp}
+              currency={product.currency}
+            />
+          )}
 
           <Button
             onClick={addToCart}
