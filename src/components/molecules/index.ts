@@ -7,7 +7,6 @@ export { StampBadge } from "./stamp-badge";
 export { ProductCard } from "./product-card";
 export { Banner } from "./banner";
 export { HomeHero } from "./home-hero";
-export { LoadMoreCta } from "./load-more-cta";
+export { LoadMoreCTA } from "./load-more-cta";
 export { ProductCardSkeleton } from "./product-card-skeleton";
 export { ProductsPageSkeleton } from "./products-page-skeleton";
-export { SkeletonLoading } from "./skeleton-loading";
