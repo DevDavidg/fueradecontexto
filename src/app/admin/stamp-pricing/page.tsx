@@ -123,12 +123,7 @@ const StampPricingAdmin = () => {
       if (result.warning) {
         alert(result.message);
       } else {
-        setPrintSizes((prev) =>
-          prev.map((size) =>
-            size.id === id ? { ...size, price: newPrice } : size
-          )
-        );
-
+        await fetchData();
         setEditingPrintSize(null);
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);
@@ -176,12 +171,7 @@ const StampPricingAdmin = () => {
       if (result.warning) {
         alert(result.message);
       } else {
-        setStampOptions((prev) =>
-          prev.map((option) =>
-            option.id === id ? { ...option, extra_cost: newPrice } : option
-          )
-        );
-
+        await fetchData();
         setEditingStampOption(null);
         setSaveSuccess(true);
         setTimeout(() => setSaveSuccess(false), 3000);

@@ -10,3 +10,4 @@ export { HomeHero } from "./home-hero";
 export { LoadMoreCTA } from "./load-more-cta";
 export { ProductCardSkeleton } from "./product-card-skeleton";
 export { ProductsPageSkeleton } from "./products-page-skeleton";
+export { SizeChart } from "./size-chart";

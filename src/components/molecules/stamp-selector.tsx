@@ -11,6 +11,7 @@ type StampSelectorProps = {
   onSelectOption: (option: StampOption | null) => void;
   currency?: string;
   className?: string;
+  productCategory?: string;
 };
 
 const PLACEMENT_LABELS: Record<PrintPlacement, string> = {
@@ -85,6 +86,7 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
   onSelectOption,
   currency = "ARS",
   className,
+  productCategory,
 }) => {
   // Group options by placement
   const groupedOptions = React.useMemo(() => {
@@ -94,12 +96,20 @@ export const StampSelector: React.FC<StampSelectorProps> = ({
       front_back: [],
     };
 
-    stampOptions.forEach((option) => {
+    for (const option of stampOptions) {
+      const isBuzo = productCategory === "buzos";
+      const is40x50Front =
+        option.size === "hasta_40x50cm" && option.placement === "front";
+
+      if (isBuzo && is40x50Front) {
+        continue;
+      }
+
       groups[option.placement].push(option);
-    });
+    }
 
     return groups;
-  }, [stampOptions]);
+  }, [stampOptions, productCategory]);
 
   if (!stampOptions || stampOptions.length === 0) {
     return null;

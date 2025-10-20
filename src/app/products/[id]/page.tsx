@@ -10,6 +10,8 @@ import { useCart } from "@/hooks/use-cart";
 import { formatCurrency } from "@/lib/format-currency";
 import { type PrintOption, type Product, type StampOption } from "@/lib/types";
 import { StampSelector } from "@/components/molecules/stamp-selector";
+import { SizeChart } from "@/components/molecules/size-chart";
+import { getSizeChart } from "@/lib/size-charts";
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
@@ -103,17 +105,21 @@ export default function ProductDetailPage() {
   const total = product.price + extra;
 
   const handleAddToCart = () => {
+    const hasStampOption =
+      selectedStampOption && selectedStampOption.extraCost > 0;
+    const hasPrintOption = selectedPrint && selectedPrint.extraCost > 0;
+
     addItem(
       product,
       selectedSize,
       1,
-      (selectedPrint || selectedStampOption) && selectedColor
+      hasStampOption || hasPrintOption
         ? {
             printSizeId:
               selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
             printPlacement: selectedStampOption?.placement,
-            colorName: selectedColor.name,
-            colorHex: selectedColor.hex,
+            colorName: selectedColor?.name || "Estándar",
+            colorHex: selectedColor?.hex || "#000000",
             extraCost:
               selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
           }
@@ -239,8 +245,18 @@ export default function ProductDetailPage() {
                 selectedOption={selectedStampOption}
                 onSelectOption={handleStampSelect}
                 currency={product.currency}
+                productCategory={product.categoria}
               />
             )}
+
+            {(() => {
+              const sizeChart = getSizeChart(product.categoria, product.name);
+              return sizeChart ? (
+                <div className="mt-6">
+                  <SizeChart sizeChart={sizeChart} />
+                </div>
+              ) : null;
+            })()}
 
             <Button
               className="w-full mt-4"

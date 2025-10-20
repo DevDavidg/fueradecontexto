@@ -232,7 +232,8 @@ insert into public.categories (id, name, description) values
   ('buzos', 'Buzos', 'Buzos y hoodies premium'),
   ('camperas', 'Camperas', 'Camperas y abrigos'),
   ('gorras', 'Gorras', 'Gorras y accesorios para la cabeza'),
-  ('totebags', 'Tote Bags', 'Bolsos y accesorios')
+  ('totebags', 'Tote Bags', 'Bolsos y accesorios'),
+  ('remeras', 'Remeras', 'Remeras y camisetas premium')
 on conflict (id) do nothing;
 
 -- =============================================

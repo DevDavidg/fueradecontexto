@@ -37,7 +37,28 @@ export default async function Home() {
                 de personalización únicas.
               </p>
             </header>
-            <ProductGrid />
+
+            <div className="space-y-12">
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Buzos Premium</h2>
+                <ProductGrid categoria="buzos" />
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Remeras</h2>
+                <ProductGrid categoria="remeras" />
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Gorras</h2>
+                <ProductGrid categoria="gorras" />
+              </div>
+
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Tote Bags</h2>
+                <ProductGrid categoria="totebags" />
+              </div>
+            </div>
           </section>
 
           {/* SEO Content Section */}
