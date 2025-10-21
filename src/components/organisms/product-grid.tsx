@@ -6,11 +6,37 @@ import { useCart } from "@/hooks/use-cart";
 import { ProductCardSkeleton } from "@/components/molecules/product-card-skeleton";
 import { GRID_SKELETON_COUNT } from "@/lib/constants";
 import { LoadMoreCTA } from "@/components/molecules/load-more-cta";
+import type { Product, ColorOption, StampOption } from "@/lib/types";
 
 export const ProductGrid = ({ categoria }: { categoria?: string }) => {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useProducts(categoria);
   const { addItem } = useCart();
+
+  const handleAddToCart = (
+    product: Product,
+    options?: { color?: ColorOption; stamp?: StampOption }
+  ) => {
+    const hasCustomization = options?.stamp !== undefined;
+
+    const customization =
+      hasCustomization && options?.stamp
+        ? {
+            printSizeId: options.stamp.size,
+            printPlacement: options.stamp.placement,
+            colorName: options.color?.name || "Estándar",
+            colorHex: options.color?.hex || "#000000",
+            extraCost: options.stamp.extraCost,
+          }
+        : undefined;
+
+    addItem(
+      product,
+      product.availableSizes?.[0], // Default to first size
+      1,
+      customization
+    );
+  };
 
   if (isLoading) {
     return (
@@ -44,7 +70,7 @@ export const ProductGrid = ({ categoria }: { categoria?: string }) => {
             className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
             style={{ animationDelay: `${index * 100}ms` }}
           >
-            <ProductCard product={product} onAdd={() => addItem(product)} />
+            <ProductCard product={product} onAdd={handleAddToCart} />
           </div>
         ))}
         {isFetchingNextPage &&

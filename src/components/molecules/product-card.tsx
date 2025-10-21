@@ -61,7 +61,10 @@ const CompoundColorBadge: React.FC<{
 
 export type ProductCardProps = {
   product: Product;
-  onAdd?: (product: Product, options?: { color?: ColorOption }) => void;
+  onAdd?: (
+    product: Product,
+    options?: { color?: ColorOption; stamp?: StampOption }
+  ) => void;
   className?: string;
   highlight?: boolean;
 };
@@ -147,8 +150,14 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
     const isFav = isFavorite(product.id);
     const accentHex = "#e12afb"; // Always use fixed pink color
 
-    const totalPrice = product.price;
-    const discounted = Math.round(totalPrice * 0.9);
+    const totalPrice = React.useMemo(() => {
+      const stampExtraCost = selectedStamp?.extraCost ?? 0;
+      return product.price + stampExtraCost;
+    }, [product.price, selectedStamp]);
+
+    const discounted = React.useMemo(() => {
+      return Math.round(totalPrice * 0.9);
+    }, [totalPrice]);
 
     const imageUrl = React.useMemo(() => {
       return getImageForColor(product, selectedColor?.name);
@@ -204,9 +213,10 @@ export const ProductCard: React.FC<ProductCardProps> = React.memo(
       if (!isDisabled) {
         onAdd?.(product, {
           color: selectedColor || undefined,
+          stamp: selectedStamp || undefined,
         });
       }
-    }, [isDisabled, onAdd, product, selectedColor]);
+    }, [isDisabled, onAdd, product, selectedColor, selectedStamp]);
 
     const handleColorChange = React.useCallback((color: ColorOption) => {
       setSelectedColor(color);

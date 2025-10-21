@@ -105,26 +105,22 @@ export default function ProductDetailPage() {
   const total = product.price + extra;
 
   const handleAddToCart = () => {
-    const hasStampOption =
-      selectedStampOption && selectedStampOption.extraCost > 0;
-    const hasPrintOption = selectedPrint && selectedPrint.extraCost > 0;
+    const hasCustomization =
+      selectedStampOption !== null || selectedPrint !== undefined;
 
-    addItem(
-      product,
-      selectedSize,
-      1,
-      hasStampOption || hasPrintOption
-        ? {
-            printSizeId:
-              selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
-            printPlacement: selectedStampOption?.placement,
-            colorName: selectedColor?.name || "Estándar",
-            colorHex: selectedColor?.hex || "#000000",
-            extraCost:
-              selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
-          }
-        : undefined
-    );
+    const customization = hasCustomization
+      ? {
+          printSizeId:
+            selectedPrint?.id || selectedStampOption?.size || "hasta_15cm",
+          printPlacement: selectedStampOption?.placement,
+          colorName: selectedColor?.name || "Estándar",
+          colorHex: selectedColor?.hex || "#000000",
+          extraCost:
+            selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
+        }
+      : undefined;
+
+    addItem(product, selectedSize, 1, customization);
     router.push("/checkout");
   };
 

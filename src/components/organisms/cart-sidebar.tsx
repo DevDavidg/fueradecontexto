@@ -95,7 +95,8 @@ export const CartSidebar = () => {
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-medium">
                     {formatCurrency(
-                      item.price + (item.customization?.extraCost ?? 0),
+                      (item.price + (item.customization?.extraCost ?? 0)) *
+                        item.quantity,
                       item.currency
                     )}
                   </p>
