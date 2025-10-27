@@ -123,3 +123,44 @@ export const calculateCartTotals = (cart: CartState) => {
   }, 0);
   return { subtotal };
 };
+
+// Mercado Pago Types
+export type MercadoPagoPaymentData = {
+  token: string;
+  payment_method_id: string;
+  installments: number;
+  issuer_id: string;
+  payer?: {
+    email?: string;
+    identification?: {
+      type: string;
+      number: string;
+    };
+  };
+};
+
+export type MercadoPagoPaymentRequest = {
+  amount: number;
+  orderId: string;
+  paymentData: MercadoPagoPaymentData;
+  paymentMethod: string;
+};
+
+export type MercadoPagoPaymentResponse = {
+  id: number;
+  status: string;
+  status_detail: string;
+  transaction_amount: number;
+  payment_method_id: string;
+  installments: number;
+  external_reference?: string;
+};
+
+export type OrderData = {
+  id: string;
+  items: CartItem[];
+  total: number;
+  currency: CurrencyCode;
+  email?: string;
+  createdAt: string;
+};
