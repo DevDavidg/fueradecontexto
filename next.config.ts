@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "glbwyjwetgqxsjncpyhe.supabase.co",
       },
+      {
+        protocol: "https",
+        hostname: "http2.mlstatic.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.mercadopago.com",
+      },
     ],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 31536000, // 1 year

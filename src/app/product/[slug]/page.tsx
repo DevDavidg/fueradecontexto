@@ -33,17 +33,19 @@ export default function ProductSlugPage() {
       newParams.delete("stamp");
     }
     const queryString = newParams.toString();
-    router.replace(queryString ? `?${queryString}` : window.location.pathname, {
-      scroll: false,
-    });
+    router.replace(
+      queryString ? `?${queryString}` : globalThis.location.pathname,
+      {
+        scroll: false,
+      }
+    );
   };
 
   const [product, setProduct] = useState<Product | null>(null);
-  const [, setSelectedColorName] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<
     Product["availableSizes"][number] | undefined
   >();
-  const [selectedPrint] = useState<PrintOption | undefined>();
+  const selectedPrint: PrintOption | undefined = undefined;
   const [selectedStampOption, setSelectedStampOption] =
     useState<StampOption | null>(null);
   const [selectedColor, setSelectedColor] = useState<
@@ -60,8 +62,6 @@ export default function ProductSlugPage() {
       );
       if (result) {
         setProduct(result.product);
-        setSelectedColorName(result.colorName);
-
         // Find the color object
         const color = result.product.customizable?.colors?.find(
           (c) => c.name === result.colorName
@@ -123,7 +123,6 @@ export default function ProductSlugPage() {
     addItem(
       product,
       selectedSize,
-      1,
       hasStampOption || hasPrintOption
         ? {
             printSizeId:
@@ -134,7 +133,8 @@ export default function ProductSlugPage() {
             extraCost:
               selectedPrint?.extraCost || selectedStampOption?.extraCost || 0,
           }
-        : undefined
+        : undefined,
+      1
     );
     router.push("/checkout");
   };

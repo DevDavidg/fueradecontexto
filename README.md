@@ -56,3 +56,30 @@ Accessibility:
   - Fuchsia accents should be paired with white text for buttons (`#C2187A` on white) or used as outlines/icons on neutral surfaces.
 
 Example usage can be seen on the home page where the palette swatches are centered and labeled for reference.
+
+## Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+MERCADOPAGO_ACCESS_TOKEN=your_mercadopago_access_token
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Mercado Pago Setup
+
+1. Create a Mercado Pago account at [mercadopago.com](https://www.mercadopago.com)
+2. Go to your credentials section and create a new application
+3. Copy your Access Token (test or production)
+4. Add it to your `.env.local` file
+5. For production, update the webhook URL in your Mercado Pago dashboard to: `https://yourdomain.com/api/checkout/webhook`
+
+## Supabase Setup
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run the SQL script from `supabase.sql` in your Supabase SQL Editor
+3. Configure storage buckets for product images
+4. Set up RLS policies as specified in the SQL script

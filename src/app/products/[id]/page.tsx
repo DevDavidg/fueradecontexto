@@ -32,9 +32,12 @@ export default function ProductDetailPage() {
       newParams.delete("stamp");
     }
     const queryString = newParams.toString();
-    router.replace(queryString ? `?${queryString}` : window.location.pathname, {
-      scroll: false,
-    });
+    router.replace(
+      queryString ? `?${queryString}` : globalThis.location.pathname,
+      {
+        scroll: false,
+      }
+    );
   };
 
   const [selectedSize, setSelectedSize] = useState<
@@ -120,7 +123,7 @@ export default function ProductDetailPage() {
         }
       : undefined;
 
-    addItem(product, selectedSize, 1, customization);
+    addItem(product, selectedSize, customization, 1);
     router.push("/checkout");
   };
 

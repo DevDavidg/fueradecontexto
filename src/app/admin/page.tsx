@@ -30,6 +30,13 @@ const AdminDashboard = () => {
 
   const adminMenuItems = [
     {
+      title: "Órdenes de Compra",
+      description: "Ver y gestionar todas las órdenes",
+      icon: ShoppingCart,
+      href: "/admin/orders",
+      color: "bg-pink-500",
+    },
+    {
       title: "Gestión de Productos",
       description: "Agregar, editar y eliminar productos",
       icon: Package,

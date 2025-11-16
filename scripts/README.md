@@ -90,6 +90,51 @@ Después de ejecutar el script, puedes verificar que funciona:
 2. Intenta acceder a `/admin/sections` nuevamente
 3. Si aún hay problemas, revisa la consola del navegador para errores específicos
 
+## Solucionar Error de Autorización en Checkout
+
+**PROBLEMA**: Error "At least one policy returned UNAUTHORIZED" al procesar pagos.
+
+**CAUSA**: La tabla `sections` no tiene políticas RLS que permitan lectura pública, causando que usuarios no autenticados no puedan acceder al checkout.
+
+**SOLUCIÓN**: Ejecutar el script `fix-checkout-authorization.sql`
+
+```bash
+# En Supabase SQL Editor:
+# 1. Copia y pega el contenido de scripts/fix-checkout-authorization.sql
+# 2. Ejecuta el script
+```
+
+Este script:
+
+- Crea la tabla `sections` con las políticas correctas
+- Permite lectura pública de sections (necesario para checkout sin autenticación)
+- Permite gestión completa solo a admins
+- Puebla la tabla con el contenido inicial
+
+**Verificación:**
+
+1. Abre `/checkout` sin estar autenticado
+2. El subtotal debe mostrarse correctamente
+3. Al hacer clic en "Pagar" no debe aparecer el error de autorización
+
+## Create Orders Table
+
+Para habilitar la funcionalidad de Mercado Pago, necesitas crear la tabla de órdenes:
+
+```sql
+-- Copia y pega el contenido de scripts/create-orders-table.sql
+-- Este script crea la tabla orders para almacenar las transacciones de Mercado Pago
+```
+
+**Pasos:**
+
+1. Ve a tu proyecto de Supabase
+2. Abre el SQL Editor
+3. Copia y pega el contenido de `scripts/create-orders-table.sql`
+4. Ejecuta el script
+
+**Nota**: Este script se ejecuta automáticamente si usas el archivo `supabase.sql` principal.
+
 ## Archivos modificados
 
 - `src/hooks/use-admin.tsx` - Mejorado manejo de errores

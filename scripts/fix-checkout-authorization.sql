@@ -1,5 +1,58 @@
-{
-  "inicio": {
+create table if not exists public.sections (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  content jsonb default '{}'::jsonb,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.sections enable row level security;
+
+drop trigger if exists trg_sections_updated_at on public.sections;
+create trigger trg_sections_updated_at
+before update on public.sections
+for each row execute function public.set_updated_at();
+
+create index if not exists idx_sections_slug on public.sections(slug);
+
+drop policy if exists "Authenticated users can read sections" on public.sections;
+drop policy if exists "Authenticated users can insert sections" on public.sections;
+drop policy if exists "Authenticated users can update sections" on public.sections;
+drop policy if exists "Authenticated users can delete sections" on public.sections;
+drop policy if exists "Admins select sections" on public.sections;
+drop policy if exists "Admins insert sections" on public.sections;
+drop policy if exists "Admins update sections" on public.sections;
+drop policy if exists "Admins delete sections" on public.sections;
+
+drop policy if exists "Allow public read sections" on public.sections;
+create policy "Allow public read sections"
+on public.sections
+for select
+using (true);
+
+drop policy if exists "Admin can manage sections" on public.sections;
+create policy "Admin can manage sections"
+on public.sections
+for all
+to authenticated
+using (
+  exists (
+    select 1 from public.profiles
+    where profiles.id = auth.uid()
+    and profiles.role = 'admin'
+  )
+)
+with check (
+  exists (
+    select 1 from public.profiles
+    where profiles.id = auth.uid()
+    and profiles.role = 'admin'
+  )
+);
+
+insert into public.sections (slug, content)
+values
+  ('inicio', '{
     "titles": {
       "tituloPrincipal": "Fueradecontexto",
       "subtitulo": "No seguimos tendencias, creamos prendas que cuentan tu historia"
@@ -21,8 +74,8 @@
         "descripcion": "Catálogo de productos disponibles"
       }
     }
-  },
-  "productos": {
+  }'::jsonb),
+  ('productos', '{
     "titles": {
       "tituloPrincipal": "Productos",
       "subtitulo": "Catálogo de Fueradecontexto"
@@ -52,30 +105,10 @@
     "tablaTalles": {
       "titulo": "Tabla de talles",
       "medidas": [
-        {
-          "talle": "S",
-          "ancho": "48 cm",
-          "largo": "67 cm",
-          "equivalencia": "36-38"
-        },
-        {
-          "talle": "M",
-          "ancho": "51 cm",
-          "largo": "70 cm",
-          "equivalencia": "38-40"
-        },
-        {
-          "talle": "L",
-          "ancho": "54 cm",
-          "largo": "73 cm",
-          "equivalencia": "40-42"
-        },
-        {
-          "talle": "XL",
-          "ancho": "57 cm",
-          "largo": "76 cm",
-          "equivalencia": "42-44"
-        }
+        {"talle": "S", "ancho": "48 cm", "largo": "67 cm", "equivalencia": "36-38"},
+        {"talle": "M", "ancho": "51 cm", "largo": "70 cm", "equivalencia": "38-40"},
+        {"talle": "L", "ancho": "54 cm", "largo": "73 cm", "equivalencia": "40-42"},
+        {"talle": "XL", "ancho": "57 cm", "largo": "76 cm", "equivalencia": "42-44"}
       ],
       "notas": [
         "Las medidas pueden variar ±2 cm según el lote.",
@@ -83,8 +116,8 @@
         "Consulta cambios y devoluciones en la sección de ayuda."
       ]
     }
-  },
-  "sobreNosotros": {
+  }'::jsonb),
+  ('sobreNosotros', '{
     "titles": {
       "tituloPrincipal": "Nuestra historia",
       "subtitulo": "Sobre nosotros"
@@ -105,8 +138,8 @@
       "titulo": "Valores",
       "descripcion": "Creemos en la calidad como base de cada prenda, en el diseño sostenible como compromiso, en la expresión individual como motor creativo y en la transparencia como principio en cada proceso."
     }
-  },
-  "contactanos": {
+  }'::jsonb),
+  ('contactanos', '{
     "titles": {
       "tituloPrincipal": "Ponte en contacto",
       "subtitulo": "Contáctanos"
@@ -114,43 +147,11 @@
     "descripcion": "¿Tienes alguna pregunta, sugerencia o quieres trabajar con nosotros? Estamos aquí para ayudarte. Completa el formulario y nos pondremos en contacto contigo.",
     "formulario": {
       "campos": [
-        {
-          "nombre": "nombre",
-          "etiqueta": "Nombre completo",
-          "tipo": "text",
-          "requerido": true,
-          "placeholder": "Tu nombre completo"
-        },
-        {
-          "nombre": "email",
-          "etiqueta": "Correo electrónico",
-          "tipo": "email",
-          "requerido": true,
-          "placeholder": "tu@email.com"
-        },
-        {
-          "nombre": "telefono",
-          "etiqueta": "Número telefónico",
-          "tipo": "tel",
-          "requerido": false,
-          "placeholder": "+54 9 11 1234-5678"
-        },
-        {
-          "nombre": "mensaje",
-          "etiqueta": "Mensaje",
-          "tipo": "textarea",
-          "requerido": true,
-          "placeholder": "Cuéntanos en qué podemos ayudarte...",
-          "filas": 5
-        },
-        {
-          "nombre": "imagen",
-          "etiqueta": "Subir imagen",
-          "tipo": "file",
-          "requerido": false,
-          "acepta": "image/*",
-          "descripcion": "Formatos aceptados: JPG, PNG, GIF (máximo 5MB)"
-        }
+        {"nombre": "nombre", "etiqueta": "Nombre completo", "tipo": "text", "requerido": true, "placeholder": "Tu nombre completo"},
+        {"nombre": "email", "etiqueta": "Correo electrónico", "tipo": "email", "requerido": true, "placeholder": "tu@email.com"},
+        {"nombre": "telefono", "etiqueta": "Número telefónico", "tipo": "tel", "requerido": false, "placeholder": "+54 9 11 1234-5678"},
+        {"nombre": "mensaje", "etiqueta": "Mensaje", "tipo": "textarea", "requerido": true, "placeholder": "Cuéntanos en qué podemos ayudarte...", "filas": 5},
+        {"nombre": "imagen", "etiqueta": "Subir imagen", "tipo": "file", "requerido": false, "acepta": "image/*", "descripcion": "Formatos aceptados: JPG, PNG, GIF (máximo 5MB)"}
       ],
       "botones": {
         "enviar": "Enviar formulario",
@@ -167,8 +168,8 @@
       "sabados": "Sábados: 10:00 - 14:00",
       "domingos": "Domingos: Cerrado"
     }
-  },
-  "checkout": {
+  }'::jsonb),
+  ('checkout', '{
     "titles": {
       "tituloPrincipal": "Checkout",
       "subtitulo": "Finalizar compra"
@@ -183,8 +184,8 @@
       "asuntoEmail": "Pedido Fueradecontexto - Envío de estampa",
       "cuerpoEmail": "Hola! Adjunto mi estampa para personalizar el pedido."
     }
-  },
-  "detalleProducto": {
+  }'::jsonb),
+  ('detalleProducto', '{
     "titles": {
       "tituloPrincipal": "Detalle del producto",
       "subtitulo": "Información completa del producto"
@@ -205,30 +206,18 @@
         "color": "Color"
       }
     }
-  },
-  "navegacion": {
+  }'::jsonb),
+  ('navegacion', '{
     "logo": "Fueradecontexto",
     "enlaces": [
-      {
-        "nombre": "Inicio",
-        "ruta": "/"
-      },
-      {
-        "nombre": "Productos",
-        "ruta": "/products"
-      },
-      {
-        "nombre": "Sobre nosotros",
-        "ruta": "/sobre-nosotros"
-      },
-      {
-        "nombre": "Contáctanos",
-        "ruta": "/contactanos"
-      }
+      {"nombre": "Inicio", "ruta": "/"},
+      {"nombre": "Productos", "ruta": "/products"},
+      {"nombre": "Sobre nosotros", "ruta": "/sobre-nosotros"},
+      {"nombre": "Contáctanos", "ruta": "/contactanos"}
     ],
     "carrito": "Carrito de compras"
-  },
-  "metadata": {
+  }'::jsonb),
+  ('metadata', '{
     "titulo": "Fueradecontexto",
     "descripcion": "Marca de ropa personalizada que crea prendas que cuentan tu historia",
     "idioma": "es",
@@ -239,5 +228,8 @@
       "moda",
       "Argentina"
     ]
-  }
-}
+  }'::jsonb)
+on conflict (slug) do update
+set content = excluded.content,
+    updated_at = now();
+

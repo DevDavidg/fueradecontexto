@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useProducts } from "@/hooks/use-products";
 import { ProductCard } from "@/components/molecules/product-card";
 import { useCart } from "@/hooks/use-cart";
@@ -12,6 +13,10 @@ export const ProductGrid = ({ categoria }: { categoria?: string }) => {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useProducts(categoria);
   const { addItem } = useCart();
+  const skeletonIds = useMemo(
+    () => Array.from({ length: GRID_SKELETON_COUNT }, (_, idx) => `sk-${idx}`),
+    []
+  );
 
   const handleAddToCart = (
     product: Product,
@@ -33,17 +38,17 @@ export const ProductGrid = ({ categoria }: { categoria?: string }) => {
     addItem(
       product,
       product.availableSizes?.[0], // Default to first size
-      1,
-      customization
+      customization,
+      1
     );
   };
 
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-5 md:gap-6">
-        {Array.from({ length: GRID_SKELETON_COUNT }).map((_, i) => (
+        {skeletonIds.map((id) => (
           <ProductCardSkeleton
-            key={`sk-${i}`}
+            key={id}
             className="animate-in fade-in-0 duration-300"
           />
         ))}
@@ -74,9 +79,9 @@ export const ProductGrid = ({ categoria }: { categoria?: string }) => {
           </div>
         ))}
         {isFetchingNextPage &&
-          Array.from({ length: GRID_SKELETON_COUNT }).map((_, i) => (
+          skeletonIds.map((id) => (
             <ProductCardSkeleton
-              key={`skeleton-${i}`}
+              key={`loading-${id}`}
               className="animate-in fade-in-0 duration-300"
             />
           ))}

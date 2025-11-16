@@ -263,4 +263,116 @@ create index if not exists idx_product_stock_color on public.product_stock(color
 create index if not exists idx_product_stock_size on public.product_stock(size);
 create index if not exists idx_product_stock_quantity on public.product_stock(quantity);
 
+-- =============================================
+-- SECTIONS SCHEMA
+-- =============================================
+
+create table if not exists public.sections (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  content jsonb default '{}'::jsonb,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.sections enable row level security;
+
+drop trigger if exists trg_sections_updated_at on public.sections;
+create trigger trg_sections_updated_at
+before update on public.sections
+for each row execute function public.set_updated_at();
+
+create index if not exists idx_sections_slug on public.sections(slug);
+
+drop policy if exists "Allow public read sections" on public.sections;
+create policy "Allow public read sections"
+on public.sections
+for select
+using (true);
+
+drop policy if exists "Admin can manage sections" on public.sections;
+create policy "Admin can manage sections"
+on public.sections
+for all
+to authenticated
+using (
+  exists (
+    select 1 from public.profiles
+    where profiles.id = auth.uid()
+    and profiles.role = 'admin'
+  )
+)
+with check (
+  exists (
+    select 1 from public.profiles
+    where profiles.id = auth.uid()
+    and profiles.role = 'admin'
+  )
+);
+
+-- =============================================
+-- ORDERS SCHEMA
+-- =============================================
+
+create table if not exists public.orders (
+  id uuid primary key default gen_random_uuid(),
+  mercadopago_payment_id bigint unique,
+  external_reference text,
+  status text not null,
+  total numeric not null,
+  currency text not null,
+  payment_data jsonb,
+  items jsonb default '[]'::jsonb,
+  customer_email text,
+  customer_name text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table public.orders enable row level security;
+
+drop trigger if exists trg_orders_updated_at on public.orders;
+create trigger trg_orders_updated_at
+before update on public.orders
+for each row execute function public.set_updated_at();
+
+create index if not exists idx_orders_mercadopago_payment_id on public.orders(mercadopago_payment_id);
+create index if not exists idx_orders_external_reference on public.orders(external_reference);
+create index if not exists idx_orders_status on public.orders(status);
+create index if not exists idx_orders_created_at on public.orders(created_at);
+create index if not exists idx_orders_customer_email on public.orders(customer_email);
+
+drop policy if exists "Admin can view all orders" on public.orders;
+create policy "Admin can view all orders"
+on public.orders
+for select
+to authenticated
+using (
+  exists (
+    select 1 from public.profiles
+    where profiles.id = auth.uid()
+    and profiles.role = 'admin'
+  )
+);
+
+drop policy if exists "Admin can manage orders" on public.orders;
+create policy "Admin can manage orders"
+on public.orders
+for all
+to authenticated
+using (
+  exists (
+    select 1 from public.profiles
+    where profiles.id = auth.uid()
+    and profiles.role = 'admin'
+  )
+)
+with check (
+  exists (
+    select 1 from public.profiles
+    where profiles.id = auth.uid()
+    and profiles.role = 'admin'
+  )
+);
+
 
