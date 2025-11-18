@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
+import type {
+  CheckoutItemPayload,
+  CreatePreferencePayload,
+  PreferencePayload,
+} from "@/types/checkout";
 
 const accessToken =
   process.env.MP_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN;
@@ -19,9 +24,9 @@ const preference = new Preference(client);
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as CreatePreferencePayload;
 
-    if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
+    if (!Array.isArray(body.items) || body.items.length === 0) {
       return NextResponse.json(
         { error: "Items are required" },
         { status: 400 }
@@ -47,7 +52,7 @@ export async function POST(request: NextRequest) {
       configuredBaseUrl?.replace(/\/$/, "") || `${protocol}://${host}`
     ).replace(/\/$/, "");
     
-    const items = body.items.map((item: any) => {
+    const items = body.items.map((item: CheckoutItemPayload) => {
       const sizeText = item.selectedSize ? `Talle ${item.selectedSize}` : "";
       const customizationText = item.customization 
         ? `· Estampa ${item.customization.printSizeId} · ${item.customization.colorName}` 
@@ -98,7 +103,7 @@ export async function POST(request: NextRequest) {
       throw new Error("Invalid URL format for back URLs");
     }
     
-    const preferenceData: any = {
+    const preferenceData: PreferencePayload = {
       items,
       external_reference: externalRef,
       back_urls: {
@@ -139,18 +144,31 @@ export async function POST(request: NextRequest) {
       initPoint: response.init_point, 
       preferenceId: response.id 
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating preference:", error);
-    
-    const errorMessage = error?.message || error?.body?.message || "Failed to create preference";
-    const errorDetails = error?.body || error?.cause || {};
-    
+
+    const safeError =
+      typeof error === "object" && error !== null ? error : null;
+
+    const errorMessage =
+      safeError && "message" in safeError && typeof safeError.message === "string"
+        ? safeError.message
+        : "Failed to create preference";
+
+    const errorDetails =
+      process.env.NODE_ENV === "development" ? safeError : undefined;
+
+    const status =
+      safeError && "status" in safeError && typeof safeError.status === "number"
+        ? safeError.status
+        : 500;
+
     return NextResponse.json(
       { 
         error: errorMessage,
-        details: process.env.NODE_ENV === "development" ? errorDetails : undefined
+        details: errorDetails,
       },
-      { status: error?.status || 500 }
+      { status }
     );
   }
 }

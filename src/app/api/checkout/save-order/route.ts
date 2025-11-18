@@ -1,10 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { updateStockForOrder, sendOrderEmail } from "@/lib/order-utils";
+import type {
+  CheckoutItemPayload,
+  MercadoPagoPayment,
+  MercadoPagoPaymentItem,
+  MercadoPagoPaymentSearchResponse,
+} from "@/types/checkout";
+
+type SaveOrderPayload = {
+  paymentId?: string;
+  preferenceId?: string;
+  items?: CheckoutItemPayload[];
+  externalRef?: string;
+};
+
+const mapPaymentItemToCheckout = (
+  item: MercadoPagoPaymentItem,
+  payment: MercadoPagoPayment
+): CheckoutItemPayload => {
+  const selectedSize = item.description?.match(/Talle (\w+)/)?.[1];
+  const customizationMatch = item.description?.match(/Estampa (\w+)/)?.[1];
+  const colorMatch = item.description?.match(/· (\w+)$/)?.[1];
+
+  return {
+    productId: item.id,
+    name: item.title,
+    quantity: item.quantity,
+    price: item.unit_price,
+    currency: payment.currency_id,
+    selectedSize,
+    customization: customizationMatch
+      ? {
+          printSizeId: customizationMatch,
+          colorName: colorMatch || "Estándar",
+          extraCost: 0,
+        }
+      : undefined,
+  };
+};
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as SaveOrderPayload;
     const { paymentId, preferenceId, items, externalRef } = body;
 
     if (!paymentId && !preferenceId) {
@@ -14,7 +52,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let paymentData = null;
+    let paymentData: MercadoPagoPayment | null = null;
 
     if (paymentId) {
       const response = await fetch(
@@ -30,7 +68,7 @@ export async function POST(request: NextRequest) {
         throw new Error(`Failed to fetch payment: ${response.statusText}`);
       }
 
-      paymentData = await response.json();
+      paymentData = (await response.json()) as MercadoPagoPayment;
     }
 
     if (!paymentData && preferenceId) {
@@ -44,7 +82,6 @@ export async function POST(request: NextRequest) {
       );
 
       if (preferenceResponse.ok) {
-        const preferenceData = await preferenceResponse.json();
         const paymentsResponse = await fetch(
           `https://api.mercadopago.com/v1/payments/search?preference_id=${preferenceId}&sort=date_created&criteria=desc&limit=1`,
           {
@@ -55,19 +92,23 @@ export async function POST(request: NextRequest) {
         );
 
         if (paymentsResponse.ok) {
-          const paymentsData = await paymentsResponse.json();
+          const paymentsData =
+            (await paymentsResponse.json()) as MercadoPagoPaymentSearchResponse;
           if (paymentsData.results && paymentsData.results.length > 0) {
             const latestPayment = paymentsData.results[0];
             const paymentResponse = await fetch(
               `https://api.mercadopago.com/v1/payments/${latestPayment.id}`,
               {
                 headers: {
-                  Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN}`,
+                  Authorization: `Bearer ${
+                    process.env.MP_ACCESS_TOKEN ||
+                    process.env.MERCADOPAGO_ACCESS_TOKEN
+                  }`,
                 },
               }
             );
             if (paymentResponse.ok) {
-              paymentData = await paymentResponse.json();
+              paymentData = (await paymentResponse.json()) as MercadoPagoPayment;
             }
           }
         }
@@ -102,22 +143,12 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const orderItems = items || paymentData.additional_info?.items?.map((item: any) => ({
-      productId: item.id,
-      name: item.title,
-      quantity: item.quantity,
-      price: item.unit_price,
-      currency: paymentData.currency_id,
-      selectedSize: item.description?.match(/Talle (\w+)/)?.[1],
-      customization: item.description?.includes("Estampa")
-        ? {
-            printSizeId: item.description?.match(/Estampa (\w+)/)?.[1] || "",
-            colorName:
-              item.description?.match(/· (\w+)$/)?.[1] || "Estándar",
-            extraCost: 0,
-          }
-        : undefined,
-    })) || [];
+    const orderItems: CheckoutItemPayload[] =
+      (items && items.length > 0
+        ? items
+        : paymentData.additional_info?.items?.map((item) =>
+            mapPaymentItemToCheckout(item, paymentData as MercadoPagoPayment)
+          )) || [];
 
     const { data: newOrder, error: insertError } = await supabaseAdmin
       .from("orders")
@@ -144,11 +175,15 @@ export async function POST(request: NextRequest) {
     }
 
     if (newOrder) {
-      await updateStockForOrder(orderItems.map(item => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        selectedSize: item.selectedSize,
-      })));
+      await updateStockForOrder(
+        orderItems
+          .filter((item) => item.productId)
+          .map((item) => ({
+            productId: item.productId as string,
+            quantity: item.quantity,
+            selectedSize: item.selectedSize,
+          }))
+      );
       await sendOrderEmail({
         ...newOrder,
         mercadopago_payment_id: paymentData.id,
@@ -159,12 +194,20 @@ export async function POST(request: NextRequest) {
       success: true,
       orderId: newOrder.id,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error saving order:", error);
+    const safeError =
+      typeof error === "object" && error !== null ? error : null;
+    const errorMessage =
+      safeError && "message" in safeError && typeof safeError.message === "string"
+        ? safeError.message
+        : "Failed to save order";
+    const errorDetails =
+      process.env.NODE_ENV === "development" ? safeError : undefined;
     return NextResponse.json(
       {
-        error: error?.message || "Failed to save order",
-        details: process.env.NODE_ENV === "development" ? error : undefined,
+        error: errorMessage,
+        details: errorDetails,
       },
       { status: 500 }
     );
