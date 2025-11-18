@@ -12,6 +12,19 @@ import {
 import Link from "next/link";
 import { formatCurrency } from "@/lib/format-currency";
 
+// Función helper para formatear moneda sin símbolo (cuando ya hay un ícono)
+const formatCurrencyWithoutSymbol = (amount: number, currency: string) => {
+  try {
+    return new Intl.NumberFormat("es-AR", {
+      style: "decimal",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return amount.toFixed(2);
+  }
+};
+
 type OrderItem = {
   productId: string;
   name: string;
@@ -52,7 +65,47 @@ const OrdersPage = () => {
           throw new Error("Error al cargar las órdenes");
         }
         const data = await response.json();
-        setOrders(data.orders || []);
+        // Normalizar los datos: convertir precios de string a número
+        const normalizeItem = (item: OrderItem | any): OrderItem => {
+          const price =
+            typeof item.price === "string"
+              ? Number.parseFloat(item.price)
+              : typeof item.price === "number"
+              ? item.price
+              : 0;
+
+          const quantity =
+            typeof item.quantity === "string"
+              ? Number.parseInt(item.quantity, 10)
+              : typeof item.quantity === "number"
+              ? item.quantity
+              : 1;
+
+          return {
+            ...item,
+            price,
+            quantity,
+            customization: item.customization
+              ? {
+                  ...item.customization,
+                  extraCost:
+                    typeof item.customization.extraCost === "string"
+                      ? Number.parseFloat(item.customization.extraCost)
+                      : typeof item.customization.extraCost === "number"
+                      ? item.customization.extraCost
+                      : 0,
+                }
+              : undefined,
+          };
+        };
+
+        const normalizedOrders = (data.orders || []).map(
+          (order: Order | any) => ({
+            ...order,
+            items: order.items?.map(normalizeItem) || [],
+          })
+        );
+        setOrders(normalizedOrders);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");
       } finally {
@@ -184,7 +237,10 @@ const OrdersPage = () => {
                     <div className="text-right">
                       <div className="flex items-center text-2xl font-bold text-[#ededed]">
                         <DollarSign className="h-6 w-6" />
-                        {formatCurrency(order.total, order.currency)}
+                        {formatCurrencyWithoutSymbol(
+                          order.total,
+                          order.currency
+                        )}
                       </div>
                       <p className="text-xs text-neutral-500 mt-1">
                         MP: {order.mercadopago_payment_id}
@@ -193,10 +249,20 @@ const OrdersPage = () => {
                   </div>
 
                   <div className="border-t border-[#333333] pt-4">
-                    <h4 className="text-sm font-semibold text-neutral-300 mb-3 flex items-center">
-                      <Package className="h-4 w-4 mr-2" />
-                      Productos ({order.items?.length || 0})
-                    </h4>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-neutral-300 flex items-center">
+                        <Package className="h-4 w-4 mr-2" />
+                        Productos ({order.items?.length || 0})
+                      </h4>
+                      <p className="text-xs text-neutral-400">
+                        Total:{" "}
+                        {order.items?.reduce(
+                          (sum, item) => sum + item.quantity,
+                          0
+                        ) || 0}{" "}
+                        unidades
+                      </p>
+                    </div>
                     <div className="space-y-2">
                       {order.items?.map((item, idx) => (
                         <div
@@ -218,12 +284,20 @@ const OrdersPage = () => {
                             </p>
                           </div>
                           <div className="text-right">
+                            <p className="text-xs text-neutral-400">
+                              {formatCurrency(
+                                Number(item.price) +
+                                  Number(item.customization?.extraCost || 0),
+                                item.currency || "ARS"
+                              )}{" "}
+                              c/u
+                            </p>
                             <p className="text-sm font-semibold text-[#ededed]">
                               {formatCurrency(
-                                (item.price +
-                                  (item.customization?.extraCost || 0)) *
-                                  item.quantity,
-                                item.currency
+                                (Number(item.price) +
+                                  Number(item.customization?.extraCost || 0)) *
+                                  Number(item.quantity),
+                                item.currency || "ARS"
                               )}
                             </p>
                           </div>

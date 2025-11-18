@@ -23,11 +23,24 @@ const mapPaymentItemToCheckout = (
   const customizationMatch = item.description?.match(/Estampa (\w+)/)?.[1];
   const colorMatch = item.description?.match(/· (\w+)$/)?.[1];
 
+  // Calcular el precio unitario correcto desde el total de la orden
+  // para evitar discrepancias con el unit_price que viene de Mercado Pago
+  const totalQuantity = payment.additional_info?.items?.reduce(
+    (sum, i) => sum + i.quantity,
+    0
+  ) || item.quantity;
+  
+  // Si hay un solo item, usar el total de la transacción dividido por la cantidad
+  // Esto asegura que el precio unitario sea correcto
+  const calculatedUnitPrice = totalQuantity > 0 && payment.additional_info?.items?.length === 1
+    ? payment.transaction_amount / totalQuantity
+    : item.unit_price;
+
   return {
     productId: item.id,
     name: item.title,
     quantity: item.quantity,
-    price: item.unit_price,
+    price: calculatedUnitPrice,
     currency: payment.currency_id,
     selectedSize,
     customization: customizationMatch
@@ -143,12 +156,27 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Siempre priorizar items del frontend si están disponibles (tienen el precio correcto)
+    // Solo usar items de Mercado Pago como fallback si no hay items del frontend
     const orderItems: CheckoutItemPayload[] =
       (items && items.length > 0
         ? items
         : paymentData.additional_info?.items?.map((item) =>
             mapPaymentItemToCheckout(item, paymentData as MercadoPagoPayment)
           )) || [];
+    
+    // Validar que los precios sean razonables (no más de 10x el total de la orden)
+    // Si hay un solo item y el precio parece incorrecto, calcularlo desde el total
+    if (orderItems.length === 1 && paymentData.transaction_amount > 0) {
+      const item = orderItems[0];
+      const calculatedPrice = paymentData.transaction_amount / item.quantity;
+      const currentTotal = item.price * item.quantity;
+      
+      // Si el precio actual es mucho mayor que el total de la transacción, usar el calculado
+      if (currentTotal > paymentData.transaction_amount * 1.1) {
+        orderItems[0].price = calculatedPrice;
+      }
+    }
 
     const { data: newOrder, error: insertError } = await supabaseAdmin
       .from("orders")

@@ -24,6 +24,9 @@ function CheckoutSuccessContent() {
   const [content, setContent] = useState<SectionsContent["checkout"] | null>(
     null
   );
+  // Guardar los items del pedido en estado local antes de limpiar pendingOrder
+  const [orderItems, setOrderItems] = useState<typeof pendingOrder>([]);
+  const itemsSavedRef = useRef(false);
   const clearedRef = useRef(false);
   const emailSentRef = useRef(false);
 
@@ -35,6 +38,23 @@ function CheckoutSuccessContent() {
   const preferenceId =
     searchParams.get("preference_id") || searchParams.get("preference-id");
   const orderSavedRef = useRef(false);
+
+  // Guardar los items del pedido INMEDIATAMENTE al montar el componente
+  // antes de que se limpien en el otro useEffect
+  useEffect(() => {
+    console.log("[DEBUG] useEffect - pendingOrder changed:", {
+      pendingOrderLength: pendingOrder.length,
+      pendingOrder,
+      itemsSavedRef: itemsSavedRef.current,
+      currentOrderItemsLength: orderItems.length,
+    });
+
+    if (!itemsSavedRef.current && pendingOrder.length > 0) {
+      console.log("[DEBUG] Saving items from pendingOrder:", pendingOrder);
+      setOrderItems([...pendingOrder]);
+      itemsSavedRef.current = true;
+    }
+  }, [pendingOrder]);
 
   useEffect(() => {
     const load = async () => {
@@ -58,13 +78,40 @@ function CheckoutSuccessContent() {
       approvedStatuses.has(collectionStatus) ||
       (preferenceId && !status && !collectionStatus);
 
+    console.log("[DEBUG] Clear cart useEffect:", {
+      isApproved,
+      status,
+      collectionStatus,
+      preferenceId,
+      pendingOrderLength: pendingOrder.length,
+      orderItemsLength: orderItems.length,
+      itemsSavedRef: itemsSavedRef.current,
+    });
+
     if (isApproved) {
+      // Asegurarse de que los items estén guardados antes de limpiar
+      if (!itemsSavedRef.current && pendingOrder.length > 0) {
+        console.log("[DEBUG] Saving items before clearing:", pendingOrder);
+        setOrderItems([...pendingOrder]);
+        itemsSavedRef.current = true;
+      }
+
       clearCart();
       clearPendingOrder();
       localStorage.removeItem("mercadopago_preference_id");
       clearedRef.current = true;
+
+      console.log("[DEBUG] Cart and pendingOrder cleared");
     }
-  }, [clearCart, clearPendingOrder, status, collectionStatus, preferenceId]);
+  }, [
+    clearCart,
+    clearPendingOrder,
+    status,
+    collectionStatus,
+    preferenceId,
+    pendingOrder,
+    orderItems,
+  ]);
 
   const sendEmail = useCallback(() => {
     const subject = encodeURIComponent(
@@ -123,6 +170,13 @@ function CheckoutSuccessContent() {
         return;
       }
 
+      const itemsToSave =
+        orderItems.length > 0
+          ? orderItems
+          : pendingOrder.length > 0
+          ? pendingOrder
+          : undefined;
+
       try {
         const response = await fetch("/api/checkout/save-order", {
           method: "POST",
@@ -132,7 +186,7 @@ function CheckoutSuccessContent() {
           body: JSON.stringify({
             paymentId: effectivePaymentId,
             preferenceId: effectivePreferenceId,
-            items: pendingOrder.length > 0 ? pendingOrder : undefined,
+            items: itemsToSave,
             externalRef:
               effectivePreferenceId ||
               effectivePaymentId ||
@@ -146,6 +200,112 @@ function CheckoutSuccessContent() {
         } else {
           const result = await response.json();
           console.log("Order saved successfully:", result);
+
+          // Si no tenemos items y la orden se guardó exitosamente,
+          // intentar obtener los items desde la orden guardada
+          if (
+            orderItems.length === 0 &&
+            pendingOrder.length === 0 &&
+            result.orderId
+          ) {
+            try {
+              const ordersResponse = await fetch("/api/admin/orders");
+              if (ordersResponse.ok) {
+                const ordersData = (await ordersResponse.json()) as {
+                  orders?: Array<{
+                    id: string;
+                    mercadopago_payment_id: number | string;
+                    external_reference?: string;
+                    items?: Array<{
+                      productId?: string;
+                      name?: string;
+                      price: number | string;
+                      currency?: string;
+                      quantity: number | string;
+                      selectedSize?: string;
+                      customization?: unknown;
+                      imageUrl?: string;
+                    }>;
+                  }>;
+                };
+                const savedOrder = ordersData.orders?.find(
+                  (o) =>
+                    o.id === result.orderId ||
+                    String(o.mercadopago_payment_id) ===
+                      String(effectivePaymentId) ||
+                    o.external_reference?.includes(
+                      effectivePreferenceId?.split("-")[0] || ""
+                    )
+                );
+                if (savedOrder?.items && savedOrder.items.length > 0) {
+                  // Convertir los items de la orden guardada al formato esperado
+                  const convertedItems = savedOrder.items.map((item) => {
+                    const custom = item.customization as
+                      | {
+                          printSizeId?: string;
+                          printPlacement?: string;
+                          colorName?: string;
+                          colorHex?: string;
+                          extraCost?: number;
+                        }
+                      | undefined;
+
+                    return {
+                      productId: item.productId || "",
+                      name: item.name || "",
+                      price:
+                        typeof item.price === "string"
+                          ? Number.parseFloat(item.price)
+                          : item.price,
+                      currency: (item.currency || "ARS") as
+                        | "ARS"
+                        | "USD"
+                        | "EUR",
+                      quantity:
+                        typeof item.quantity === "string"
+                          ? Number.parseInt(item.quantity, 10)
+                          : item.quantity,
+                      imageUrl: item.imageUrl || "",
+                      selectedSize: item.selectedSize as
+                        | "XS"
+                        | "S"
+                        | "M"
+                        | "L"
+                        | "XL"
+                        | "XXL"
+                        | "Único"
+                        | undefined,
+                      customization:
+                        custom &&
+                        custom.printSizeId &&
+                        custom.colorName &&
+                        custom.colorHex !== undefined &&
+                        custom.extraCost !== undefined
+                          ? {
+                              printSizeId: custom.printSizeId as
+                                | "hasta_15cm"
+                                | "hasta_20x30cm"
+                                | "hasta_30x40cm"
+                                | "hasta_40x50cm",
+                              printPlacement: custom.printPlacement as
+                                | "front"
+                                | "back"
+                                | "front_back"
+                                | undefined,
+                              colorName: custom.colorName,
+                              colorHex: custom.colorHex,
+                              extraCost: custom.extraCost,
+                            }
+                          : undefined,
+                    };
+                  });
+                  setOrderItems(convertedItems);
+                }
+              }
+            } catch (err) {
+              console.error("Error fetching saved order items:", err);
+            }
+          }
         }
       } catch (error) {
         console.error("Error saving order:", error);
@@ -157,21 +317,47 @@ function CheckoutSuccessContent() {
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [paymentId, preferenceId, status, collectionStatus, pendingOrder]);
+  }, [
+    paymentId,
+    preferenceId,
+    status,
+    collectionStatus,
+    orderItems,
+    pendingOrder,
+  ]);
 
   useEffect(() => {
-    if (pendingOrder.length === 0) return;
+    const itemsToUse = orderItems.length > 0 ? orderItems : pendingOrder;
+    if (itemsToUse.length === 0) return;
     if (!content) return;
     if (emailSentRef.current) return;
     emailSentRef.current = true;
     sendEmail();
-  }, [pendingOrder.length, content, sendEmail]);
+  }, [orderItems, pendingOrder, content, sendEmail]);
+
+  const itemsToDisplay = orderItems.length > 0 ? orderItems : pendingOrder;
+
+  // Debug logging
+  useEffect(() => {
+    console.log("[DEBUG] itemsToDisplay state:", {
+      orderItemsLength: orderItems.length,
+      pendingOrderLength: pendingOrder.length,
+      itemsToDisplayLength: itemsToDisplay.length,
+      orderItems,
+      pendingOrder,
+      itemsToDisplay,
+    });
+  }, [orderItems, pendingOrder, itemsToDisplay]);
 
   const subtotal = useMemo(() => {
-    return calculateCartTotals({ items: pendingOrder }).subtotal;
-  }, [pendingOrder]);
+    return calculateCartTotals({ items: itemsToDisplay }).subtotal;
+  }, [itemsToDisplay]);
 
-  const currency = pendingOrder[0]?.currency ?? "ARS";
+  const totalQuantity = useMemo(() => {
+    return itemsToDisplay.reduce((sum, item) => sum + item.quantity, 0);
+  }, [itemsToDisplay]);
+
+  const currency = itemsToDisplay[0]?.currency ?? "ARS";
 
   return (
     <div className="min-h-screen bg-black text-[#ededed]">
@@ -201,11 +387,17 @@ function CheckoutSuccessContent() {
             </p>
           </div>
 
-          {pendingOrder.length > 0 ? (
+          {itemsToDisplay.length > 0 ? (
             <section className="space-y-6">
-              <h2 className="text-xl font-semibold">Resumen del pedido</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold">Resumen del pedido</h2>
+                <p className="text-sm text-neutral-400">
+                  {totalQuantity}{" "}
+                  {totalQuantity === 1 ? "producto" : "productos"}
+                </p>
+              </div>
               <ul className="space-y-4">
-                {pendingOrder.map((item) => (
+                {itemsToDisplay.map((item) => (
                   <li
                     key={`${item.productId}-${item.selectedSize}-${item.customization?.printSizeId}-${item.customization?.colorName}`}
                     className="border border-[#333333] rounded-lg p-4"
@@ -223,13 +415,23 @@ function CheckoutSuccessContent() {
                             : ""}
                         </p>
                       </div>
-                      <p className="text-sm font-semibold">
-                        {formatCurrency(
-                          (item.price + (item.customization?.extraCost ?? 0)) *
-                            item.quantity,
-                          item.currency
-                        )}
-                      </p>
+                      <div className="text-right">
+                        <p className="text-xs text-neutral-400">
+                          {formatCurrency(
+                            item.price + (item.customization?.extraCost ?? 0),
+                            item.currency
+                          )}{" "}
+                          c/u
+                        </p>
+                        <p className="text-sm font-semibold">
+                          {formatCurrency(
+                            (item.price +
+                              (item.customization?.extraCost ?? 0)) *
+                              item.quantity,
+                            item.currency
+                          )}
+                        </p>
+                      </div>
                     </div>
                   </li>
                 ))}

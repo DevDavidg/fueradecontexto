@@ -15,11 +15,24 @@ const mapPaymentItemToCheckout = (
   const customizationMatch = item.description?.match(/Estampa (\w+)/)?.[1];
   const colorMatch = item.description?.match(/· (\w+)$/)?.[1];
 
+  // Calcular el precio unitario correcto desde el total de la orden
+  // para evitar discrepancias con el unit_price que viene de Mercado Pago
+  const totalQuantity = payment.additional_info?.items?.reduce(
+    (sum, i) => sum + i.quantity,
+    0
+  ) || item.quantity;
+  
+  // Si hay un solo item, usar el total de la transacción dividido por la cantidad
+  // Esto asegura que el precio unitario sea correcto
+  const calculatedUnitPrice = totalQuantity > 0 && payment.additional_info?.items?.length === 1
+    ? payment.transaction_amount / totalQuantity
+    : item.unit_price;
+
   return {
     productId: item.id,
     name: item.title,
     quantity: item.quantity,
-    price: item.unit_price,
+    price: calculatedUnitPrice,
     currency: payment.currency_id,
     selectedSize,
     customization: customizationMatch
