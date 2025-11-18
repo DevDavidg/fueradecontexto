@@ -8,9 +8,16 @@ import { SUPPORT_EMAIL } from "@/lib/constants";
 import type { SectionsContent } from "@/lib/sections-server";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  Suspense,
+} from "react";
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const { clearCart, pendingOrder, clearPendingOrder } = useCart();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -23,8 +30,10 @@ export default function CheckoutSuccessPage() {
   const status = searchParams.get("status")?.toLowerCase() ?? "";
   const collectionStatus =
     searchParams.get("collection_status")?.toLowerCase() ?? "";
-  const paymentId = searchParams.get("payment_id") || searchParams.get("payment-id");
-  const preferenceId = searchParams.get("preference_id") || searchParams.get("preference-id");
+  const paymentId =
+    searchParams.get("payment_id") || searchParams.get("payment-id");
+  const preferenceId =
+    searchParams.get("preference_id") || searchParams.get("preference-id");
   const orderSavedRef = useRef(false);
 
   useEffect(() => {
@@ -38,10 +47,11 @@ export default function CheckoutSuccessPage() {
 
   useEffect(() => {
     if (clearedRef.current) return;
-    
+
     const approvedStatuses = new Set(["approved", "success"]);
     const pathname = window.location.pathname;
-    const isFromMercadoPago = pathname.includes("congrats") || pathname.includes("approved");
+    const isFromMercadoPago =
+      pathname.includes("congrats") || pathname.includes("approved");
     const isApproved =
       isFromMercadoPago ||
       approvedStatuses.has(status) ||
@@ -71,20 +81,22 @@ export default function CheckoutSuccessPage() {
   useEffect(() => {
     const saveOrder = async () => {
       if (orderSavedRef.current) return;
-      
+
       const approvedStatuses = new Set(["approved", "success"]);
       const pathname = window.location.pathname;
       const urlParams = new URLSearchParams(window.location.search);
-      const urlPreferenceId = urlParams.get("preference-id") || urlParams.get("preference_id");
-      const urlPaymentId = urlParams.get("payment_id") || urlParams.get("payment-id");
-      
-      const isFromMercadoPago = 
-        pathname.includes("congrats") || 
-        pathname.includes("approved") || 
-        status === "approved" || 
+      const urlPreferenceId =
+        urlParams.get("preference-id") || urlParams.get("preference_id");
+      const urlPaymentId =
+        urlParams.get("payment_id") || urlParams.get("payment-id");
+
+      const isFromMercadoPago =
+        pathname.includes("congrats") ||
+        pathname.includes("approved") ||
+        status === "approved" ||
         collectionStatus === "approved" ||
         urlPreferenceId !== null;
-      
+
       const isApproved =
         isFromMercadoPago ||
         approvedStatuses.has(status) ||
@@ -97,11 +109,17 @@ export default function CheckoutSuccessPage() {
 
       orderSavedRef.current = true;
 
-      const effectivePreferenceId = preferenceId || urlPreferenceId || localStorage.getItem("mercadopago_preference_id");
+      const effectivePreferenceId =
+        preferenceId ||
+        urlPreferenceId ||
+        localStorage.getItem("mercadopago_preference_id");
       const effectivePaymentId = paymentId || urlPaymentId;
 
       if (!effectivePaymentId && !effectivePreferenceId) {
-        console.warn("No payment ID or preference ID found. URL:", window.location.href);
+        console.warn(
+          "No payment ID or preference ID found. URL:",
+          window.location.href
+        );
         return;
       }
 
@@ -115,7 +133,10 @@ export default function CheckoutSuccessPage() {
             paymentId: effectivePaymentId,
             preferenceId: effectivePreferenceId,
             items: pendingOrder.length > 0 ? pendingOrder : undefined,
-            externalRef: effectivePreferenceId || effectivePaymentId || `order_${Date.now()}`,
+            externalRef:
+              effectivePreferenceId ||
+              effectivePaymentId ||
+              `order_${Date.now()}`,
           }),
         });
 
@@ -253,5 +274,24 @@ export default function CheckoutSuccessPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black text-[#ededed]">
+          <Navbar />
+          <main className="mx-auto max-w-3xl px-4 md:px-6 py-12">
+            <div className="text-center">
+              <p className="text-neutral-400">Cargando...</p>
+            </div>
+          </main>
+        </div>
+      }
+    >
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
