@@ -45,7 +45,9 @@ export default function ProductSlugPage() {
   const [selectedSize, setSelectedSize] = useState<
     Product["availableSizes"][number] | undefined
   >();
-  const selectedPrint: PrintOption | undefined = undefined;
+  const [selectedPrint, setSelectedPrint] = useState<PrintOption | undefined>(
+    undefined
+  );
   const [selectedStampOption, setSelectedStampOption] =
     useState<StampOption | null>(null);
   const [selectedColor, setSelectedColor] = useState<
