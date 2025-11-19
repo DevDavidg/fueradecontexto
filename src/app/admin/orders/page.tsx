@@ -13,7 +13,7 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/format-currency";
 
 // Función helper para formatear moneda sin símbolo (cuando ya hay un ícono)
-const formatCurrencyWithoutSymbol = (amount: number, currency: string) => {
+const formatCurrencyWithoutSymbol = (amount: number) => {
   try {
     return new Intl.NumberFormat("es-AR", {
       style: "decimal",
@@ -66,7 +66,23 @@ const OrdersPage = () => {
         }
         const data = await response.json();
         // Normalizar los datos: convertir precios de string a número
-        const normalizeItem = (item: OrderItem | any): OrderItem => {
+        const normalizeItem = (
+          item:
+            | OrderItem
+            | {
+                productId?: string;
+                name?: string;
+                price: number | string;
+                quantity: number | string;
+                currency?: string;
+                selectedSize?: string;
+                customization?: {
+                  printSizeId?: string;
+                  colorName?: string;
+                  extraCost?: number | string;
+                };
+              }
+        ): OrderItem => {
           const price =
             typeof item.price === "string"
               ? Number.parseFloat(item.price)
@@ -82,25 +98,54 @@ const OrdersPage = () => {
               : 1;
 
           return {
-            ...item,
+            productId: item.productId || "",
+            name: item.name || "",
             price,
             quantity,
-            customization: item.customization
-              ? {
-                  ...item.customization,
-                  extraCost:
-                    typeof item.customization.extraCost === "string"
-                      ? Number.parseFloat(item.customization.extraCost)
-                      : typeof item.customization.extraCost === "number"
-                      ? item.customization.extraCost
-                      : 0,
-                }
-              : undefined,
+            currency: item.currency || "ARS",
+            selectedSize: item.selectedSize,
+            customization:
+              item.customization &&
+              typeof item.customization === "object" &&
+              "printSizeId" in item.customization &&
+              "colorName" in item.customization &&
+              "extraCost" in item.customization
+                ? {
+                    printSizeId: String(item.customization.printSizeId || ""),
+                    colorName: String(item.customization.colorName || ""),
+                    extraCost:
+                      typeof item.customization.extraCost === "string"
+                        ? Number.parseFloat(item.customization.extraCost)
+                        : typeof item.customization.extraCost === "number"
+                        ? item.customization.extraCost
+                        : 0,
+                  }
+                : undefined,
           };
         };
 
         const normalizedOrders = (data.orders || []).map(
-          (order: Order | any) => ({
+          (
+            order:
+              | Order
+              | {
+                  id?: string;
+                  items?: Array<{
+                    productId?: string;
+                    name?: string;
+                    price: number | string;
+                    quantity: number | string;
+                    currency?: string;
+                    selectedSize?: string;
+                    customization?: {
+                      printSizeId?: string;
+                      colorName?: string;
+                      extraCost?: number | string;
+                    };
+                  }>;
+                  [key: string]: unknown;
+                }
+          ) => ({
             ...order,
             items: order.items?.map(normalizeItem) || [],
           })
@@ -237,10 +282,7 @@ const OrdersPage = () => {
                     <div className="text-right">
                       <div className="flex items-center text-2xl font-bold text-[#ededed]">
                         <DollarSign className="h-6 w-6" />
-                        {formatCurrencyWithoutSymbol(
-                          order.total,
-                          order.currency
-                        )}
+                        {formatCurrencyWithoutSymbol(order.total)}
                       </div>
                       <p className="text-xs text-neutral-500 mt-1">
                         MP: {order.mercadopago_payment_id}

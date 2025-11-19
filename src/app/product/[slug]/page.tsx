@@ -45,6 +45,7 @@ export default function ProductSlugPage() {
   const [selectedSize, setSelectedSize] = useState<
     Product["availableSizes"][number] | undefined
   >();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedPrint, setSelectedPrint] = useState<PrintOption | undefined>(
     undefined
   );
